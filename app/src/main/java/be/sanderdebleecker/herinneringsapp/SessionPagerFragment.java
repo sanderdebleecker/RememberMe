@@ -1,5 +1,7 @@
 package be.sanderdebleecker.herinneringsapp;
 
-public class SessionPagerFragment {
+import android.support.v4.app.Fragment;
+
+public class SessionPagerFragment extends Fragment {
 
 }
