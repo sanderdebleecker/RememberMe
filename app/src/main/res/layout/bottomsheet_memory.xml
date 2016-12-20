@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/bottomsheet_memory_imgvMemory"
+        android:background="#00FFFFFF"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_margin="10dp"
+        android:src="@drawable/ic_media"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="5dp"
+        >
+        <TextView
+            android:layout_width="match_parent"
+            android:text="Title"
+            android:layout_height="wrap_content"
+            android:id="@+id/bottomsheet_memory_txtvTile"
+            android:textStyle="bold"
+            android:textSize="22sp"
+            />
+        <TextView
+            android:text="Creator - Date"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/bottomsheet_memory_txtvCreatorDate"
+            android:textStyle="italic"
+            android:textSize="14sp"
+            />
+        <TextView
+            android:text="Description this is a summary of what the memory is about, in most cases this will be multiple sentences. They give the user a hint about what he was thinking when he saw this image."
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/bottomsheet_memory_txtvDescription"
+            />
+        <TextView
+            android:text="Location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textStyle="italic"
+            android:id="@+id/bottomsheet_memory_txtvLocation" />
+    </LinearLayout>
+
+</LinearLayout>

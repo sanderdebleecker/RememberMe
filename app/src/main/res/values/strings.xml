@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">HerinneringsApp</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="Username"> Gebruikersnaam </string>
+    <string name="lblUsername"> Gebruikersnaam : </string>
+    <string name="password">Wachtwoord</string>
+    <string name="login">Aanmelden</string>
+    <string name="of">of</string>
+    <string name="FirstName">Voornaam</string>
+    <string name="LastName">Familienaam</string>
+    <string name="QuestionA">Vraag 1</string>
+    <string name="Answer1">Antwoord 1</string>
+    <string name="Question2">Vraag 2</string>
+    <string name="Answer2">Antwoord 2</string>
+    <string name="Password">Wachtwoord</string>
+    <string name="ConfirmPassword">Bevestig wachtwoord</string>
+    <string name="hasDementia">Ik heb dementie</string>
+    <string name="Cancel">Annuleer</string>
+    <string name="Register">Registreer</string>
+    <string name="navigation_drawer_open">Drawer Open</string>
+    <string name="navigation_drawer_close">Drawer Closed</string>
+    <string name="action_settings">Instellingen</string>
+    <string name="title">Titel</string>
+    <string name="description">Beschrijving</string>
+    <string name="location">Locatie</string>
+    <string name="time">Tijdstip</string>
+    <string name="GPSAlertDialogTitle">GPSAlertDialogTitle</string>
+    <string name="GPSAlertDialogMessage">GPSAlertDialogMessage</string>cancel
+    <string name="cancel">cancel</string>
+    <string name="defaultLocation">Geen locatie</string>
+    <string name="datePicker">Wijzig datum</string>
+    <string name="timePicker">Wijzig tijdstip</string>
+    <string name="defaultDate">Huidige datum</string>
+    <string name="search_hint">Zoekterm</string>
+    <string name="registreer">Registreren</string>
+
+</resources>

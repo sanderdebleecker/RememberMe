@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.percent.PercentRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/itemTimeline"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent">
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/txtvDateTimeline"
+        android:text="21 maart '05"
+        android:textSize="20sp"
+        app:layout_widthPercent="100%"
+        android:layout_height="wrap_content"
+        app:layout_marginLeftPercent="5%"
+        android:src="@drawable/ic_landscape_black_24dp"
+        />
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/imgvTimeline"
+        android:layout_below="@id/txtvDateTimeline"
+        app:layout_widthPercent="20%"
+        app:layout_aspectRatio="100%"
+        app:layout_marginLeftPercent="5%"
+        android:src="@drawable/ic_icon"
+        />
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/txtvTitleTimeline"
+        android:layout_height="wrap_content"
+        android:text="Mijn herinnering"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:layout_below="@id/txtvDateTimeline"
+        android:layout_toRightOf="@id/imgvTimeline"
+        app:layout_widthPercent="70%"
+        app:layout_marginLeftPercent="5%"
+        />
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/txtvAuthorLocationTimeline"
+        android:layout_height="wrap_content"
+        android:text="Sander De Bleecker - GKG"
+        android:layout_toRightOf="@id/imgvTimeline"
+        android:layout_below="@id/txtvTitleTimeline"
+        app:layout_widthPercent="70%"
+        app:layout_marginLeftPercent="5%"
+        />
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/txtvDescrTimeline"
+        android:layout_height="wrap_content"
+        android:text="Een beschrijving van mijn herinnering, wat er op staat, wat ik erover denk. Hoe ik ermij bij voel... "
+        android:layout_toRightOf="@id/imgvTimeline"
+        android:layout_below="@+id/txtvAuthorLocationTimeline"
+        app:layout_widthPercent="70%"
+        app:layout_marginLeftPercent="5%"
+        />
+
+</android.support.percent.PercentRelativeLayout>

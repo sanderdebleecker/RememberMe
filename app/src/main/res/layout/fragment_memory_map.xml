@@ -1,0 +1,20 @@
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fragment_memory_map"
+    tools:context="be.sanderdebleecker.herinneringsapp.MemoryMapFragment">
+    <com.google.android.gms.maps.MapView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/memory_map_mapvMemories"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    <LinearLayout
+        android:id="@+id/memory_map_bottomsheet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        style="@style/Widget.Design.BottomSheet.Modal"
+        app:layout_behavior="android.support.design.widget.BottomSheetBehavior" >
+    </LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.percent.PercentRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/itemFollower"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent">
+    <TextView
+        android:id="@+id/txtvFollower"
+        app:layout_widthPercent="35%"
+        android:layout_height="wrap_content"
+        app:layout_marginLeftPercent="10%"
+        app:layout_marginRightPercent="10%"
+        />
+    <TextView
+        android:layout_toRightOf="@+id/txtvFollower"
+        android:id="@+id/txtvFollowerState"
+        app:layout_widthPercent="20%"
+        android:layout_height="wrap_content"
+        />
+    <android.support.v7.widget.AppCompatImageView
+        android:layout_toRightOf="@+id/txtvFollowerState"
+        android:id="@+id/imgvFollowerAction"
+        app:layout_widthPercent="5%"
+        android:layout_height="wrap_content"
+        app:layout_marginLeftPercent="10%"
+        app:layout_marginRightPercent="10%"
+        />
+</android.support.percent.PercentRelativeLayout>

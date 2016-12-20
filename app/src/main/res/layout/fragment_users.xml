@@ -1,0 +1,66 @@
+<android.support.percent.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/fragment_users"
+    tools:context="be.sanderdebleecker.herinneringsapp.UsersFragment">
+
+    <TextView
+        android:id="@+id/txtvUsers"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="34sp"
+        android:textAlignment="center"
+        android:text="Gebruikers"
+        android:layout_margin="32dp"
+        />
+    <TextView
+        android:layout_below="@id/txtvUsers"
+        android:id="@+id/txtvUsersDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginBottom="32dp"
+        android:textSize="18sp"
+        android:text="Tik om aan te melden"
+        />
+    <android.support.v7.widget.RecyclerView
+        android:layout_below="@id/txtvUsersDescription"
+        android:id="@+id/recyc_users"
+        app:layout_heightPercent="50%"
+        android:scrollbars="vertical"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+    />
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/btnOtherAccount"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:layout_widthPercent="40%"
+        android:text="Ander account"
+        app:layout_marginLeftPercent="5%"
+        app:layout_marginRightPercent="5%"
+        android:layout_margin="16dp"
+        android:padding="12dp"
+        android:background="@drawable/border_button"
+        />
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/btnNewAccount"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/btnOtherAccount"
+        android:text="Nieuw account"
+        android:layout_alignParentBottom="true"
+        app:layout_widthPercent="40%"
+        app:layout_marginLeftPercent="5%"
+        app:layout_marginRightPercent="5%"
+        android:layout_margin="16dp"
+        android:padding="12dp"
+        android:background="@drawable/border_button"
+        />
+
+</android.support.percent.PercentRelativeLayout>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <data name="AlbumMemoryItem">
+        <variable
+            name="mem"
+            type="be.sanderdebleecker.herinneringsapp.Models.Memory"
+        />
+    </data>
+    <android.support.percent.PercentRelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/row_album_memory">
+        <ImageView android:id="@+id/album_memory_imgvMemory" android:layout_width="match_parent" android:layout_height="match_parent" android:src="@drawable/ic_landscape_black_24dp"/>
+        <ImageView android:id="@+id/album_memory_imgvToggle" android:layout_gravity="bottom|right" app:layout_widthPercent="15%" app:layout_heightPercent="15%"
+            android:layout_height="wrap_content" android:src="@drawable/ic_panorama_fish_eye_red_24dp" android:layout_alignParentBottom="true" android:layout_alignParentRight="true"/>
+        <TextView android:text="@{mem.title}" />
+    </android.support.percent.PercentRelativeLayout>
+</layout>

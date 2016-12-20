@@ -1,0 +1,18 @@
+<android.support.percent.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/fragment_followers"
+    >
+    <android.support.v7.widget.AppCompatTextView
+        app:layout_widthPercent="60%"
+        android:layout_height="wrap_content"
+        android:id="@+id/followers_txtvTitle"
+        />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyc_followers"
+        android:scrollbars="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</android.support.percent.PercentRelativeLayout>
