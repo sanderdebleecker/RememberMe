@@ -27,12 +27,14 @@
     <string name="time">Tijdstip</string>
     <string name="GPSAlertDialogTitle">GPSAlertDialogTitle</string>
     <string name="GPSAlertDialogMessage">GPSAlertDialogMessage</string>cancel
-    <string name="cancel">cancel</string>
+    <string name="cancel">Cancel</string>
     <string name="defaultLocation">Geen locatie</string>
     <string name="datePicker">Wijzig datum</string>
     <string name="timePicker">Wijzig tijdstip</string>
     <string name="defaultDate">Huidige datum</string>
     <string name="search_hint">Zoekterm</string>
     <string name="registreer">Registreren</string>
+    <string name="Albums">Albums</string>
+    <string name="Name">Naam</string>
 
 </resources>
