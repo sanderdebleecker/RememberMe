@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.percent.PercentRelativeLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/row_session_album"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ImageView android:id="@+id/session_album_imgvAlbum" android:layout_width="match_parent" android:layout_height="match_parent" android:src="@drawable/ic_landscape_black_24dp"/>
+    <ImageView android:id="@+id/session_album_imgvToggle" android:layout_gravity="bottom|right" app:layout_widthPercent="15%" app:layout_heightPercent="15%"
+        android:layout_height="wrap_content" android:src="@drawable/ic_panorama_fish_eye_red_24dp" android:layout_alignParentBottom="true" android:layout_alignParentRight="true"/>
+    <TextView android:text="" />
+
+</android.support.percent.PercentRelativeLayout>

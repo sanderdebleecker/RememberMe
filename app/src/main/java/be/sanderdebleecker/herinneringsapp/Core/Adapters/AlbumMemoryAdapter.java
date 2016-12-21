@@ -102,7 +102,6 @@ public class AlbumMemoryAdapter extends RecyclerView.Adapter<AlbumMemoryAdapter.
                     selectionChange(getAdapterPosition(),selected==1);
                 }
             });
-
         }
     }
     private void selectionChange(int pos,boolean selected) {
