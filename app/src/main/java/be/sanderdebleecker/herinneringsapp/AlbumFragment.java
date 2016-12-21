@@ -59,7 +59,6 @@ public class AlbumFragment extends Fragment {
     }
 
     //lf
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -135,7 +134,6 @@ public class AlbumFragment extends Fragment {
         if(mListener!=null)
             mListener = null;
     }
-
     //lf m
     private void init(View v) {
         loadView(v);

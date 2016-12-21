@@ -47,6 +47,7 @@ public class UserRepository extends BaseRepository {
         values.put(DbHelper.UserColumns.UserQuestion2.toString(), newUser.getQ2());
         values.put(DbHelper.UserColumns.UserAnswer1.toString(), newUser.getA1());
         values.put(DbHelper.UserColumns.UserAnswer2.toString(), newUser.getA2());
+        values.put(DbHelper.UserColumns.UserName.toString(), newUser.getUsername());
         int id = -1;
         try{
             id = (int) db.insert(dbh.TBL_USERS,"",values);

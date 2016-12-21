@@ -60,24 +60,14 @@ public class AlbumMemoryAdapter extends RecyclerView.Adapter<AlbumMemoryAdapter.
         return selectedMems;
     }
 
-    public void setSelected(List<Integer> selectedMems) {
-        for(int i=0;i<mMems.size();i++) {
-            if(selectedMems.contains(mMems.get(i).getId())) {
-                mMems.get(i).setSelected(true);
-            }else{
-
-            }
-        }
-        notifyDataSetChanged();
-    }
     public void filterSelected(List<Integer> selectedMems) {
         for(int i=0;i<mMems.size();i++) {
             if (selectedMems.contains(mMems.get(i).getId())) {
                 mMems.get(i).setSelected(true);
             }
-        }
+        }//cant remove in same loop since array.size is condition
         for(int j=0;j<mMems.size();j++) {
-            if(!mMems.get(j).isSelected()) {
+            if(!selectedMems.contains(mMems.get(j).getId())) {
                 mMems.remove(mMems.get(j));
             }
         }
