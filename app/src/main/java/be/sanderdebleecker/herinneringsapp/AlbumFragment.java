@@ -37,7 +37,6 @@ import be.sanderdebleecker.herinneringsapp.Models.SelectableMemory;
 public class AlbumFragment extends Fragment {
     private static final int COLUMNS = 3;
     private int albumId=-1;
-    private String username;
     private Toolbar mToolbar;
     private INewAlbumFListener mListener;
     private TextInputEditText etxtSearch;
@@ -159,6 +158,14 @@ public class AlbumFragment extends Fragment {
         setHasOptionsMenu(true);
     }
     private void addEvents() {
+        etxtSearch.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus) {
+                    mAdapter.replaceAll(mMemories);
+                }
+            }
+        });
         etxtSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -212,7 +219,6 @@ public class AlbumFragment extends Fragment {
 
     private void getMemories() {
         MainApplication app = (MainApplication) getContext().getApplicationContext();
-        username = app.getCurrSessionValue();
         MemoryDA memoriesData = new MemoryDA(getContext());
         memoriesData.open();
         mMemories = memoriesData.getSelectabl(app.getCurrSession().getAuthIdentity());

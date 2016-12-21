@@ -68,6 +68,7 @@ public class AlbumMemoryAdapter extends RecyclerView.Adapter<AlbumMemoryAdapter.
         }//cant remove in same loop since array.size is condition
         for(int j=0;j<mMems.size();j++) {
             if(!selectedMems.contains(mMems.get(j).getId())) {
+                mMems.get(j).setSelected(false);
                 mMems.remove(mMems.get(j));
             }
         }
