@@ -11,9 +11,6 @@ import java.util.ArrayList;
 import be.sanderdebleecker.herinneringsapp.RegisterPagerFragment;
 
 
-//TODO make the adapter more dynamic with the enum RegisterPagerFragment.Page
-//TODO restructure dataflow into decent manner
-
 public class RegisterPagerAdapter extends FragmentStatePagerAdapter {
     private ArrayList<RegisterPagerFragment> mFragments = new ArrayList<RegisterPagerFragment>();
 
