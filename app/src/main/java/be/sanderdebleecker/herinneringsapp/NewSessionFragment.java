@@ -7,7 +7,6 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import java.util.ArrayList;
 
 import be.sanderdebleecker.herinneringsapp.Core.Adapters.SessionPagerAdapter;
@@ -20,7 +19,9 @@ public class NewSessionFragment extends Fragment {
     public NewSessionFragment() {
         // Required empty public constructor
     }
-
+    public static NewSessionFragment newInstance() {
+        return new NewSessionFragment();
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -39,12 +40,8 @@ public class NewSessionFragment extends Fragment {
     }
     private void loadViewPager()  {
         ArrayList<SessionPagerFragment> frags = new ArrayList<>();
-        frags.add(NewSessionPagerFragment.newInstance());
-        mPagerAdapter = new SessionPagerAdapter(getActivity().getSupportFragmentManager(),frags);
+        //mPagerAdapter = new SessionPagerAdapter(getActivity().getSupportFragmentManager(),frags);
         mPager.setAdapter(mPagerAdapter);
-
     }
-
-
 
 }

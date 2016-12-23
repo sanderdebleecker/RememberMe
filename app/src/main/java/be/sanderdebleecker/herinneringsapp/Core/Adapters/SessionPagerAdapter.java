@@ -10,7 +10,7 @@ import java.util.List;
 import be.sanderdebleecker.herinneringsapp.SessionPagerFragment;
 
 public class SessionPagerAdapter extends FragmentStatePagerAdapter {
-    private ArrayList<SessionPagerFragment> mFragments = new ArrayList<SessionPagerFragment>();
+    private ArrayList<SessionPagerFragment> mFragments = new ArrayList<>();
 
     public SessionPagerAdapter(FragmentManager fm, ArrayList<SessionPagerFragment> frags) {
         super(fm);

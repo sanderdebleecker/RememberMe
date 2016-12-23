@@ -185,6 +185,10 @@ public class MainActivity extends AppCompatActivity implements IMemoriesFListene
             trans.commit();
         }
     }
+    private void loadNewSessionFragment() {
+        Intent intent = new Intent(this, SessionActivity.class);
+        startActivity(intent);
+    }
     //LIFECYCLE
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -367,6 +371,8 @@ public class MainActivity extends AppCompatActivity implements IMemoriesFListene
             case Followers:
                 loadFollowersFragment();
                 break;
+            case NewSession:
+                loadNewSessionFragment();
             default:
                 break;
         }

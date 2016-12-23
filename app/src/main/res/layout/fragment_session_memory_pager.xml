@@ -1,0 +1,31 @@
+<android.support.percent.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <ImageView
+        android:id="@+id/session_memory_imgvMemory"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        />
+    <TextView
+        android:id="@+id/session_memory_txtvTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+    <TextView
+        android:id="@+id/session_memory_author"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+    <TextView
+        android:id="@+id/session_memory_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+    <TextView
+        android:id="@+id/session_memory_date_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+</android.support.percent.PercentRelativeLayout>
