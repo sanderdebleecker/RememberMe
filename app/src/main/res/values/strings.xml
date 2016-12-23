@@ -36,5 +36,9 @@
     <string name="registreer">Registreren</string>
     <string name="Albums">Albums</string>
     <string name="Name">Naam</string>
+    <string name="jouw_herinnering">Jouw herinnering</string>
+    <string name="auteur">Auteur</string>
+    <string name="een_beschrijving_van_jouw_herinnering">Een beschrijving van jouw herinnering</string>
+    <string name="_25_02_2014_locatie">25/02/2014 - Locatie</string>
 
 </resources>
