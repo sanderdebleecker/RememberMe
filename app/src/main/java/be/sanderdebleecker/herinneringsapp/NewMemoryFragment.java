@@ -155,18 +155,14 @@ public class NewMemoryFragment extends GenericMemoryFragment {
     }
     //CYCLE SUBMETHODS
     protected void init() {
-        final Runnable initLoader = new Runnable() {
-            public void run() {
-                mMediaItem = new MediaItem();
-                initMedia();
-                // checkGPSSettings();
-                addEvents();
-                createToolbar();
-            }
-        };
         AsyncTask bottomsheetLoader = new AsyncTask() {
             @Override
             protected Object doInBackground(Object[] params) {
+                mMediaItem = new MediaItem();
+                initMedia();
+                // checkGPSSettings(); GUI interaction ?
+                addEvents();
+                createToolbar();
                 createBottomSheet();
                 return "Executed";
             }
@@ -176,7 +172,6 @@ public class NewMemoryFragment extends GenericMemoryFragment {
                 inflateBottomsheet(R.layout.bottomsheet_media);
             }
         };
-        initLoader.run();
         bottomsheetLoader.execute();
     }
     private void loadUser() {

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.percent.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/end_session_txtvName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/end_session_txtvDuration"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/end_session_txtvDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+</android.support.percent.PercentRelativeLayout>

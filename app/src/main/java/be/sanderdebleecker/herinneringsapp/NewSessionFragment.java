@@ -4,7 +4,10 @@ package be.sanderdebleecker.herinneringsapp;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import java.util.ArrayList;
@@ -14,6 +17,7 @@ import be.sanderdebleecker.herinneringsapp.Core.Adapters.SessionPagerAdapter;
 public class NewSessionFragment extends Fragment {
     private SessionPagerAdapter mPagerAdapter;
     private ViewPager mPager;
+    private Toolbar mToolbar;
 
 
     public NewSessionFragment() {
@@ -30,7 +34,9 @@ public class NewSessionFragment extends Fragment {
         init(v);
         return v;
     }
-
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        getActivity().getMenuInflater().inflate(R.menu.menu_add,menu);
+    }
     private void init(View v) {
         loadView(v);
         loadViewPager();
@@ -40,7 +46,8 @@ public class NewSessionFragment extends Fragment {
     }
     private void loadViewPager()  {
         ArrayList<SessionPagerFragment> frags = new ArrayList<>();
-        //mPagerAdapter = new SessionPagerAdapter(getActivity().getSupportFragmentManager(),frags);
+        frags.add(SessionPagerFragment.newInstance(SessionPagerFragment.Pages.NewSession));
+        mPagerAdapter = new SessionPagerAdapter(getActivity().getSupportFragmentManager(),frags);
         mPager.setAdapter(mPagerAdapter);
     }
 

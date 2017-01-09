@@ -191,7 +191,8 @@ public class GenericMemoryFragment extends Fragment {
                 inflateBottomsheet(R.layout.bottomsheet_media);
             }
         };
-
+        initLoader.run();
+        bottomsheetLoader.execute();
     }
     protected void initMedia() {
         date = new DatePickerDialog.OnDateSetListener() {
