@@ -170,29 +170,6 @@ public class GenericMemoryFragment extends Fragment {
     }
 
     protected void init() {
-        mMediaItem = new MediaItem();
-        final Runnable initLoader = new Runnable() {
-            public void run() {
-                initMedia();
-                // checkGPSSettings();
-                addEvents();
-                createToolbar();
-            }
-        };
-        AsyncTask bottomsheetLoader = new AsyncTask() {
-            @Override
-            protected Object doInBackground(Object[] params) {
-                createBottomSheet();
-                return "Executed";
-            }
-
-            @Override
-            protected void onPostExecute(Object o) {
-                inflateBottomsheet(R.layout.bottomsheet_media);
-            }
-        };
-        initLoader.run();
-        bottomsheetLoader.execute();
     }
     protected void initMedia() {
         date = new DatePickerDialog.OnDateSetListener() {

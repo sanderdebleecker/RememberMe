@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -196,13 +197,25 @@ public class MemoryFragment extends GenericMemoryFragment {
     }
     //CYCLE SUBMETHODS
     protected void init() {
-        mMediaItem = new MediaItem();
-        initMedia();
-        addEvents();
+        AsyncTask asyncInit = new AsyncTask() {
+            @Override
+            protected Object doInBackground(Object[] params) {
+                mMediaItem = new MediaItem();
+                initMedia();
+                // checkGPSSettings(); GUI interaction ?
+                addEvents();
+                createToolbar();
+                createBottomSheet();
+                return "Executed";
+            }
+
+            @Override
+            protected void onPostExecute(Object o) {
+                inflateBottomsheet(R.layout.bottomsheet_media);
+            }
+        };
+        asyncInit.execute();
         addActions();
-        createToolbar();
-        createBottomSheet();
-        inflateBottomsheet(R.layout.bottomsheet_media);
     }
     private void loadView(View v) {
         coordinatorLayoutNewMemoryF = (CoordinatorLayout) v.findViewById(R.id.memory_coordinatorLayout);

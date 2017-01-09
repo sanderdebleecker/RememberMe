@@ -155,7 +155,7 @@ public class NewMemoryFragment extends GenericMemoryFragment {
     }
     //CYCLE SUBMETHODS
     protected void init() {
-        AsyncTask bottomsheetLoader = new AsyncTask() {
+        AsyncTask asyncInit = new AsyncTask() {
             @Override
             protected Object doInBackground(Object[] params) {
                 mMediaItem = new MediaItem();
@@ -172,7 +172,7 @@ public class NewMemoryFragment extends GenericMemoryFragment {
                 inflateBottomsheet(R.layout.bottomsheet_media);
             }
         };
-        bottomsheetLoader.execute();
+        asyncInit.execute();
     }
     private void loadUser() {
         MainApplication app = (MainApplication) getContext().getApplicationContext();
