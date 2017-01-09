@@ -4,6 +4,7 @@ package be.sanderdebleecker.herinneringsapp;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,7 +19,6 @@ public class NewSessionFragment extends Fragment {
     private SessionPagerAdapter mPagerAdapter;
     private ViewPager mPager;
     private Toolbar mToolbar;
-
 
     public NewSessionFragment() {
         // Required empty public constructor
@@ -40,9 +40,12 @@ public class NewSessionFragment extends Fragment {
     private void init(View v) {
         loadView(v);
         loadViewPager();
+        createToolbar();
     }
     private void loadView(View v) {
         mPager = (ViewPager) v.findViewById(R.id.new_session_viewpager);
+        mToolbar = (Toolbar) v.findViewById(R.id.new_session_toolbar);
+
     }
     private void loadViewPager()  {
         ArrayList<SessionPagerFragment> frags = new ArrayList<>();
@@ -50,5 +53,11 @@ public class NewSessionFragment extends Fragment {
         mPagerAdapter = new SessionPagerAdapter(getActivity().getSupportFragmentManager(),frags);
         mPager.setAdapter(mPagerAdapter);
     }
-
+    private void createToolbar() {
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        activity.setSupportActionBar(mToolbar);
+        activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        activity.getSupportActionBar().setHomeButtonEnabled(true);
+        setHasOptionsMenu(true);
+    }
 }

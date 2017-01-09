@@ -76,7 +76,6 @@ public class MemoryFragment extends GenericMemoryFragment {
         loadView(v);
         init();
         loadMemory();
-        toggleLock();
         return v;
     }
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -212,9 +211,10 @@ public class MemoryFragment extends GenericMemoryFragment {
             @Override
             protected void onPostExecute(Object o) {
                 inflateBottomsheet(R.layout.bottomsheet_media);
+                toggleLock();
             }
         };
-        asyncInit.execute();
+        asyncInit.execute(); // can specify < Pars, Progress, Result > pars to solve warning
         addActions();
     }
     private void loadView(View v) {
