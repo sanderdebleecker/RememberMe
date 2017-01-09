@@ -1,6 +1,5 @@
 package be.sanderdebleecker.herinneringsapp;
 
-
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
