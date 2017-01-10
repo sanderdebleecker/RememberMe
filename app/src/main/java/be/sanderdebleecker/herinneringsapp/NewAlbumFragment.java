@@ -22,7 +22,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import be.sanderdebleecker.herinneringsapp.Core.Adapters.AlbumMemoryAdapter;
+import be.sanderdebleecker.herinneringsapp.Core.Adapters.SelectableMemoryAdapter;
 import be.sanderdebleecker.herinneringsapp.Core.MainApplication;
 import be.sanderdebleecker.herinneringsapp.Data.AlbumDA;
 import be.sanderdebleecker.herinneringsapp.Data.MemoryDA;
@@ -35,7 +35,7 @@ public class NewAlbumFragment extends Fragment {
     private static final int COLUMNS = 3;
     private RecyclerView recycAlbums;
     private TextInputEditText etxtName,etxtSearch;
-    private AlbumMemoryAdapter mAdapter;
+    private SelectableMemoryAdapter mAdapter;
     private Toolbar mToolbar;
     private String username;
     private List<SelectableMemory> mMemories;
@@ -144,7 +144,7 @@ public class NewAlbumFragment extends Fragment {
         mMemories = memoryDA.getSelectabl(app.getCurrSession().getAuthIdentity());
         memoryDA.close();
         //Set adapter
-        mAdapter = new AlbumMemoryAdapter(getContext(),COLUMNS);
+        mAdapter = new SelectableMemoryAdapter(getContext(),COLUMNS);
         recycAlbums.setAdapter(mAdapter);
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(),COLUMNS);
         recycAlbums.setLayoutManager(mLayoutManager);

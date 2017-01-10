@@ -18,7 +18,7 @@ public class SelectableAlbum extends Album {
             this.setMemories(memories);
         Memory thumbnail = a.getThumbnail();
         if(thumbnail!=null)
-            this.setThumbnail(getThumbnail());
+            this.setThumbnail(a.getThumbnail());
     }
 
     public boolean isSelected() {

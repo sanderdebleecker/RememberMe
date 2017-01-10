@@ -25,7 +25,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import be.sanderdebleecker.herinneringsapp.Core.Adapters.AlbumMemoryAdapter;
+import be.sanderdebleecker.herinneringsapp.Core.Adapters.SelectableMemoryAdapter;
 import be.sanderdebleecker.herinneringsapp.Core.MainApplication;
 import be.sanderdebleecker.herinneringsapp.Data.AlbumDA;
 import be.sanderdebleecker.herinneringsapp.Data.MemoryDA;
@@ -44,7 +44,7 @@ public class AlbumFragment extends Fragment {
     private FloatingActionButton fabEdit;
     private FloatingActionButton fabDelete;
     private RecyclerView recycAlbums;
-    private AlbumMemoryAdapter mAdapter;
+    private SelectableMemoryAdapter mAdapter;
     private List<SelectableMemory> mMemories;
     private boolean editable;
 
@@ -208,7 +208,7 @@ public class AlbumFragment extends Fragment {
     }
     private void loadList() {
         //Set adapter
-        mAdapter = new AlbumMemoryAdapter(getContext(),COLUMNS);
+        mAdapter = new SelectableMemoryAdapter(getContext(),COLUMNS);
         recycAlbums.setAdapter(mAdapter);
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(),COLUMNS);
         recycAlbums.setLayoutManager(mLayoutManager);

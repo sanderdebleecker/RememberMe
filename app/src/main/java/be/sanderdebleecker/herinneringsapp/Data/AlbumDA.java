@@ -13,6 +13,7 @@ import be.sanderdebleecker.herinneringsapp.Data.Repositories.AlbumRepository;
 import be.sanderdebleecker.herinneringsapp.Helpers.DbHelper;
 import be.sanderdebleecker.herinneringsapp.Models.Album;
 import be.sanderdebleecker.herinneringsapp.Models.Memory;
+import be.sanderdebleecker.herinneringsapp.Models.SelectableAlbum;
 
 public class AlbumDA extends AlbumRepository {
     public AlbumDA(Context context) {
@@ -32,6 +33,15 @@ public class AlbumDA extends AlbumRepository {
         while(cursor.moveToNext()) {
             Album a = partiallyFrom(cursor);
             albums.add(a);
+        }
+        cursor.close();
+        return albums;
+    }
+    public ArrayList<SelectableAlbum> getSelectabl(int userId) {
+        ArrayList<SelectableAlbum> albums = new ArrayList<>();
+        Cursor cursor = getAllC(userId);
+        while(cursor.moveToNext()) {
+            albums.add(new SelectableAlbum(from(cursor)));
         }
         cursor.close();
         return albums;
@@ -123,7 +133,8 @@ public class AlbumDA extends AlbumRepository {
         a.setName(cursor.getString(cursor.getColumnIndex(DbHelper.AlbumColumns.AlbumTitle.toString())));
         a.setAuthor(cursor.getString(cursor.getColumnIndex(DbHelper.AlbumColumns.AlbumCreator.toString())));
         Memory thumbnail = new Memory();
-        thumbnail.setId(cursor.getInt(cursor.getColumnIndex(DbHelper.MemoryColumns.MemoryId.toString())));
+        thumbnail.setPath(cursor.getString(cursor.getColumnIndex(DbHelper.MemoryColumns.MemoryPath.toString())));
+        thumbnail.setType(cursor.getString(cursor.getColumnIndex(DbHelper.MemoryColumns.MemoryType.toString())));
         a.setThumbnail(thumbnail);
         return a;
         //a.setName(cursor.getString(cursor.getColumnIndex(DbHelper.AlbumColumns.MemoryCreator.toString())));

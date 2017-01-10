@@ -1,6 +1,5 @@
 package be.sanderdebleecker.herinneringsapp;
 
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -49,7 +48,7 @@ public class NewSessionFragment extends Fragment {
     }
     private void loadViewPager()  {
         ArrayList<SessionPagerFragment> frags = new ArrayList<>();
-        frags.add(SessionPagerFragment.newInstance(SessionPagerFragment.Pages.NewSession));
+        frags.add(NewSessionPagerFragment.newInstance());
         mPagerAdapter = new SessionPagerAdapter(getActivity().getSupportFragmentManager(),frags);
         mPager.setAdapter(mPagerAdapter);
     }

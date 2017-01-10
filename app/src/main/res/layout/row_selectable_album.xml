@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <data name="AlbumMemoryItem">
+        <variable
+            name="album"
+            type="be.sanderdebleecker.herinneringsapp.Models.Album"
+            />
+    </data>
+    <android.support.percent.PercentRelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/row_selectable_album">
+        <ImageView android:id="@+id/selectable_album_imgvAlbum" android:layout_width="match_parent" android:layout_height="match_parent" android:src="@drawable/ic_landscape_black_24dp"/>
+        <ImageView android:id="@+id/selectable_album_imgvToggle" android:layout_gravity="bottom|right" app:layout_widthPercent="15%" app:layout_heightPercent="15%"
+            android:layout_height="wrap_content" android:src="@drawable/ic_panorama_fish_eye_red_24dp" android:layout_alignParentBottom="true" android:layout_alignParentRight="true"/>
+        <TextView android:text="@{album.name}" />
+    </android.support.percent.PercentRelativeLayout>
+</layout>

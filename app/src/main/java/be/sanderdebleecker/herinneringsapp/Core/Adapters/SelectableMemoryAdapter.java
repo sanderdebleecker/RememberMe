@@ -21,7 +21,7 @@ import be.sanderdebleecker.herinneringsapp.Models.SelectableMemory;
 import be.sanderdebleecker.herinneringsapp.R;
 
 
-public class AlbumMemoryAdapter extends RecyclerView.Adapter<AlbumMemoryAdapter.MyViewHolder>  {
+public class SelectableMemoryAdapter extends RecyclerView.Adapter<SelectableMemoryAdapter.MyViewHolder>  {
     private boolean lockedSelection = false;
     private int[] resources = new int[]{R.drawable.ic_panorama_fish_eye_red_24dp,R.drawable.ic_lens_red_24dp};
     private static final Comparator<SelectableMemory> comperator = new Comparator<SelectableMemory>() {
@@ -35,16 +35,19 @@ public class AlbumMemoryAdapter extends RecyclerView.Adapter<AlbumMemoryAdapter.
     private float unitSize = 0;
     private int mColumns = 3;
     //CTOR
-    public AlbumMemoryAdapter(Context context) {
+    public SelectableMemoryAdapter(Context context) {
         this.mContext = context;
         init();
     }
-    public AlbumMemoryAdapter(Context context,int columns) {
+    public SelectableMemoryAdapter(Context context, int columns) {
         this.mContext = context;
         this.mColumns = columns;
         init();
     }
-
+    private void init() {
+        calculateUnitDimensions();
+        loadSortedList();
+    }
     //ADAPTER
     public int getItemCount() {
         return mMems.size();
@@ -107,7 +110,7 @@ public class AlbumMemoryAdapter extends RecyclerView.Adapter<AlbumMemoryAdapter.
     private void selectionChange(int pos,boolean selected) {
         mMems.get(pos).setSelected(selected);
     }
-    public AlbumMemoryAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public SelectableMemoryAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_album_memory,parent,false);
         return new MyViewHolder(itemView);
     }
@@ -129,10 +132,6 @@ public class AlbumMemoryAdapter extends RecyclerView.Adapter<AlbumMemoryAdapter.
     }
 
     //m
-    private void init() {
-        calculateUnitDimensions();
-        loadSortedList();
-    }
     private void loadSortedList() {
         mMems = new SortedList<>(SelectableMemory.class, new SortedList.Callback<SelectableMemory>() {
             @Override
