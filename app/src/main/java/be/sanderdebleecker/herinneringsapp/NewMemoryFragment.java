@@ -70,11 +70,6 @@ public class NewMemoryFragment extends GenericMemoryFragment {
         loadUser();
         loadView(v);
         init();
-
-        /*PermissionHelper.requestPermission(getActivity(),
-                PermissionHelper.Permissions.WRITE_EXTERNAL_STORAGE.toString(),
-                PermissionHelper.Permissions.ACCESS_FINE_LOCATION.toString(),
-                PermissionHelper.Permissions.INTERNET.toString());*/
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         return v;
     }

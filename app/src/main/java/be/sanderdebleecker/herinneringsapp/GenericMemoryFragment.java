@@ -74,29 +74,7 @@ public class GenericMemoryFragment extends Fragment {
     protected DatePickerDialog.OnDateSetListener date;
 
     //Media Methods
-    /*protected void checkGPSSettings(){
-        final LocationManager manager = (LocationManager) getActivity().getSystemService( Context.LOCATION_SERVICE );
-        if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
-            //demandGPSActivation();
-        }
-    }*/
-    /*protected void demandGPSActivation() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage("De GPS is niet geactiveerd wil je deze activeren?")
-                .setCancelable(false)
-                .setPositiveButton("Ja", new DialogInterface.OnClickListener() {
-                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                    }
-                })
-                .setNegativeButton("Nee", new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                        dialog.cancel();
-                    }
-                });
-        final AlertDialog alert = builder.create();
-        alert.show();
-    }*/
+
     protected void confirmAudioSave() {
         mBottomsheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         Snackbar snack = Snackbar.make(getActivity().findViewById(R.id.linearlayoutNewMemoryFContent),"Nieuw opname :",Snackbar.LENGTH_LONG).setAction("Opslaan", new View.OnClickListener() {
