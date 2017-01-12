@@ -99,6 +99,9 @@ public class NewAlbumFragment extends Fragment {
                     boolean success = albumDA.insert(newAlbum,selMems);
                     albumDA.close();
 
+
+
+
                     if(success) {
                         mListener.albumSaved();
                     }else{

@@ -121,7 +121,7 @@ public class SelectableAlbumAdapter extends RecyclerView.Adapter<SelectableAlbum
     }
 
     //Selection Methods
-    public List<Integer> getSelectedMemories() {
+    public List<Integer> getSelectedAlbums() {
         List<Integer> selectedAlbums = new ArrayList<Integer>();
         for(int i=0;i<mAlbums.size();i++) {
             if(mAlbums.get(i).isSelected()) {

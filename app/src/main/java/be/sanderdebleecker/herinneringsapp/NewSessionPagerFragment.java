@@ -10,8 +10,10 @@ import android.view.ViewGroup;
 import android.support.v7.widget.RecyclerView;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -20,6 +22,7 @@ import be.sanderdebleecker.herinneringsapp.Core.Adapters.SelectableAlbumAdapter;
 import be.sanderdebleecker.herinneringsapp.Core.MainApplication;
 import be.sanderdebleecker.herinneringsapp.Data.AlbumDA;
 import be.sanderdebleecker.herinneringsapp.Models.SelectableAlbum;
+import be.sanderdebleecker.herinneringsapp.Models.Session;
 
 public class NewSessionPagerFragment extends SessionPagerFragment {
     protected final String DATEFORMAT = "yyyy-MM-dd";
@@ -27,6 +30,7 @@ public class NewSessionPagerFragment extends SessionPagerFragment {
     private SelectableAlbumAdapter mAdapter;
     private List<SelectableAlbum> mAlbums;
     private Button btnDate;
+    private EditText txtName;
     protected Calendar mCalendar = Calendar.getInstance();
     protected DatePickerDialog.OnDateSetListener date;
     private final int COLUMNS = 3;
@@ -38,14 +42,14 @@ public class NewSessionPagerFragment extends SessionPagerFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v =  inflater.inflate(R.layout.fragment_new_session_pager, container, false);
-        loadView(v);
-        new Initializer().execute();
+        new Initializer().execute(v);
         return v;
     }
     private void loadView(View v) {
         mRecyclerView = (RecyclerView) v.findViewById(R.id.new_session_recyclerview);
         btnDate = (Button) v.findViewById(R.id.new_session_btnDate);
         btnDate.setText(new SimpleDateFormat(DATEFORMAT, Locale.ENGLISH).format(mCalendar.getTime()));
+        txtName =  (EditText) v.findViewById(R.id.new_session_txtName);
     }
     private void addCalendarEvent() {
         btnDate.setOnClickListener(new View.OnClickListener() {
@@ -81,10 +85,26 @@ public class NewSessionPagerFragment extends SessionPagerFragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter.add(mAlbums);
     }
+    public boolean validate() {
+        boolean hasContent = mAdapter.getSelectedAlbums().size()>0;
+        boolean hasTitle = txtName.getText().toString().trim().length()>0;
+        return hasContent & hasTitle;
+    }
 
+    //Get
+    public List<Integer> getAlbums() {
+        return mAdapter.getSelectedAlbums();
+    }
+    public String getName() {
+        return txtName.getText().toString().trim();
+    }
+    public String getDate() {
+        return new SimpleDateFormat(DATEFORMAT, Locale.ENGLISH).format(mCalendar.getTime());
+    }
     //Tasks
-    private class Initializer extends AsyncTask<Void, Void, Void> {
-        protected Void doInBackground(Void... params) {
+    private class Initializer extends AsyncTask<View, Void, Void> {
+        protected Void doInBackground(View... params) {
+            loadView(params[0]);
             addCalendarEvent();
             loadAlbums();
             loadList();

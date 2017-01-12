@@ -6,6 +6,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteStatement;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import be.sanderdebleecker.herinneringsapp.Data.Repositories.MemoryRepository;
 import be.sanderdebleecker.herinneringsapp.Helpers.DbHelper;
@@ -56,6 +57,14 @@ public class MemoryDA extends MemoryRepository {
             mems.add(from(cursor));
         }
         cursor.close();
+        return mems;
+    }
+    public ArrayList<Memory> getAllFromAlbums(List<Integer> albumIds ) {
+        ArrayList<Memory> mems = new ArrayList<>();
+        Cursor cursor = getAllCFromAlbums(albumIds);
+        while(cursor.moveToNext()) {
+            mems.add(from(cursor));
+        }
         return mems;
     }
     public boolean insert(Memory newMemory) {

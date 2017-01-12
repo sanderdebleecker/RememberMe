@@ -3,9 +3,12 @@ package be.sanderdebleecker.herinneringsapp.Data.Repositories;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.MergeCursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteStatement;
+
+import java.util.List;
 
 import be.sanderdebleecker.herinneringsapp.Helpers.DbHelper;
 import be.sanderdebleecker.herinneringsapp.Models.Location;
@@ -50,6 +53,26 @@ public class MemoryRepository extends BaseRepository {
             System.out.println(ex.getMessage());
         }catch(Exception e){
             System.out.println(e.getMessage());
+        }
+        return res;
+    }
+    public Cursor getAllCFromAlbums(List<Integer> albumIds) {
+        if(albumIds.size()<1) return null;
+        MergeCursor res = null;
+        try{
+            //RawQuery?
+            int size = albumIds.size();
+            Cursor[] rawQueries = new Cursor[size];
+            for(int i=0;i<size;i++) {
+                String sql = "SELECT * FROM "+ dbh.TBL_MEMORIES+" m INNER JOIN "+ dbh.TBL_ALBUMS_MEMORIES+" am"+
+                        " ON m."+ DbHelper.MemoryColumns.MemoryId +"="+"am."+ DbHelper.AlbumsMemoriesColumns.AMMemory +" WHERE "+
+                        " am."+ DbHelper.AlbumsMemoriesColumns.AMAlbum +" = ?";
+                rawQueries[i] =  db.rawQuery(sql,new String[]{""+albumIds.get(i)});
+            }
+            res = new MergeCursor(rawQueries);
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+            return null;
         }
         return res;
     }

@@ -19,7 +19,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DbHelper extends SQLiteOpenHelper {
     private static DbHelper mInstance = null;
 
-    private static final int DB_VERSION = 3;
+    private static final int DB_VERSION = 4;
     private static final String DB_NAME="HerinneringsApp.db";
     public final String TBL_USERS="tbl_users";
     public final String TBL_MEMORIES="tbl_memories";
@@ -102,10 +102,14 @@ public class DbHelper extends SQLiteOpenHelper {
         CollectionMemory,
         CollectionAlbum
     }
-    private enum SessionColumns {
+    public enum SessionColumns {
         SessionId,
+        SessionName,
         SessionDate,
-        SessionAuthor
+        SessionDuration,
+        SessionCount,
+        SessionIsFinished,
+        SessionAuthor,
     }
     private enum ResourceColumns {
         ResourceId,
@@ -285,6 +289,9 @@ public class DbHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE "+ TBL_SESSIONS + " ( "+
                 SessionColumns.SessionId +" INTEGER PRIMARY KEY AUTOINCREMENT, "+
                 SessionColumns.SessionDate +" INTEGER, "+
+                SessionColumns.SessionDuration +" INTEGER, "+
+                SessionColumns.SessionCount +" INTEGER, "+
+                SessionColumns.SessionIsFinished +" INTEGER, "+
                 SessionColumns.SessionAuthor + " INTEGER, "+
                 "FOREIGN KEY("+ SessionColumns.SessionAuthor +") REFERENCES "+TBL_USERS+"("+ UserColumns.UserId +")"+
                 ")" );

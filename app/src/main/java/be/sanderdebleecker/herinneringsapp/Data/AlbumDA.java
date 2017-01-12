@@ -54,7 +54,7 @@ public class AlbumDA extends AlbumRepository {
         if(id!=-1) {
             if(insertAlbumMemories(id,selectedMemories)) {
                 db.setTransactionSuccessful();
-                success = true; // only happy if both work
+                success = true;
             }
         }
         db.endTransaction();

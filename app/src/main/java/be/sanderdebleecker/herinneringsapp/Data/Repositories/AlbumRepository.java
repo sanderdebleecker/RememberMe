@@ -1,6 +1,7 @@
 package be.sanderdebleecker.herinneringsapp.Data.Repositories;
 
 //TODO make update a transaction
+//Todo change getAllC
 
 import android.content.ContentValues;
 import android.content.Context;
