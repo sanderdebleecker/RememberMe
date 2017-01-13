@@ -11,9 +11,13 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.List;
+
+import be.sanderdebleecker.herinneringsapp.Data.DummyDA;
 import be.sanderdebleecker.herinneringsapp.Data.UserDA;
 import be.sanderdebleecker.herinneringsapp.Helpers.Forms.Validator;
 import be.sanderdebleecker.herinneringsapp.Interfaces.ILoginFListener;
+import be.sanderdebleecker.herinneringsapp.Models.View.UserVM;
 
 public class LoginFragment extends Fragment {
     private ILoginFListener listener;
@@ -32,6 +36,7 @@ public class LoginFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

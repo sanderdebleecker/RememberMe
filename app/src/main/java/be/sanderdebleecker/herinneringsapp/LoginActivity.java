@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import be.sanderdebleecker.herinneringsapp.Core.MainApplication;
+import be.sanderdebleecker.herinneringsapp.Data.DummyDA;
 import be.sanderdebleecker.herinneringsapp.Data.UserDA;
 import be.sanderdebleecker.herinneringsapp.Helpers.Security.ClientSession;
 import be.sanderdebleecker.herinneringsapp.Interfaces.ILoginFListener;
@@ -22,11 +23,15 @@ public class LoginActivity extends AppCompatActivity implements ILoginFListener,
         MainApplication app = (MainApplication) getApplicationContext();
         UserDA usersData = new UserDA(this);
         usersData.open();
+        int userCount = usersData.count();
+        if(userCount==0) {
+            DummyDA dummyData = new DummyDA(this);
+        }
         if(app.getCurrSession()!=null) {
             usersData.close();
             start();
         } else{
-            if(usersData.count()>0) {
+            if(userCount>0) {
                 usersData.close();
                 FragmentManager fm = getSupportFragmentManager();
                 FragmentTransaction trans = fm.beginTransaction();
@@ -34,7 +39,6 @@ public class LoginActivity extends AppCompatActivity implements ILoginFListener,
                 trans.commit();
             }else{
                 usersData.close();
-
                 FragmentManager fm = getSupportFragmentManager();
                 FragmentTransaction trans = fm.beginTransaction();
                 trans.add(R.id.activity_login,LoginFragment.newInstance());

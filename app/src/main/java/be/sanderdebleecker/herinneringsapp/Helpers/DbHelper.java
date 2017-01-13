@@ -6,6 +6,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 
+//TODO REMEMBERME is not checked , every use is remembered even if never logged in !!!
+
 //TODO catch exceptions once you re completed with all development/testing on SQLite
 //TODO modern error frame
 //TODO deletememoryfromttimeline() must take user as argument once multi-user
@@ -165,10 +167,7 @@ public class DbHelper extends SQLiteOpenHelper {
         createDummyData();
     }
     private void createDummyData() {
-
     }
-
-
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         recreateDb(db);
