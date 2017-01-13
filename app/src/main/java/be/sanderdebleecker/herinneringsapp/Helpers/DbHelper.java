@@ -18,8 +18,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DbHelper extends SQLiteOpenHelper {
     private static DbHelper mInstance = null;
-
-    private static final int DB_VERSION = 4;
+    private static final int DB_VERSION = 5;
     private static final String DB_NAME="HerinneringsApp.db";
     public final String TBL_USERS="tbl_users";
     public final String TBL_MEMORIES="tbl_memories";
@@ -162,6 +161,11 @@ public class DbHelper extends SQLiteOpenHelper {
         createTblAlbumsMemories(db);
         createTblSessionsTests(db);
         createTblGWQTest(db);
+
+        createDummyData();
+    }
+    private void createDummyData() {
+
     }
 
 
@@ -305,5 +309,6 @@ public class DbHelper extends SQLiteOpenHelper {
                 "FOREIGN KEY("+ ResourceColumns.ResourceAlbum +") REFERENCES "+TBL_ALBUMS+"("+ AlbumColumns.AlbumId +")"+
                 ")" );
     }
+
 
 }

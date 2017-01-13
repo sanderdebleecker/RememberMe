@@ -34,6 +34,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginFListener,
                 trans.commit();
             }else{
                 usersData.close();
+
                 FragmentManager fm = getSupportFragmentManager();
                 FragmentTransaction trans = fm.beginTransaction();
                 trans.add(R.id.activity_login,LoginFragment.newInstance());

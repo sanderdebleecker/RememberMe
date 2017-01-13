@@ -60,6 +60,7 @@ public class AlbumDA extends AlbumRepository {
         db.endTransaction();
         return success;
     }
+
     public boolean update(Album a, List<Integer> selectedMemories) {
         boolean result = false;
         db.beginTransaction();
