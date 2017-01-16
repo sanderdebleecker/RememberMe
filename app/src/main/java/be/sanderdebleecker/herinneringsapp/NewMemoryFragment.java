@@ -20,7 +20,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -68,9 +67,7 @@ public class NewMemoryFragment extends GenericMemoryFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v=  inflater.inflate(R.layout.fragment_new_memory, container, false);
         loadUser();
-        loadView(v);
-        init();
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        new Initializer().execute(v);
         return v;
     }
 
@@ -149,26 +146,6 @@ public class NewMemoryFragment extends GenericMemoryFragment {
         return super.onOptionsItemSelected(item);
     }
     //CYCLE SUBMETHODS
-    protected void init() {
-        AsyncTask asyncInit = new AsyncTask() {
-            @Override
-            protected Object doInBackground(Object[] params) {
-                mMediaItem = new MediaItem();
-                initMedia();
-                // checkGPSSettings(); GUI interaction ?
-                addEvents();
-                createToolbar();
-                createBottomSheet();
-                return "Executed";
-            }
-
-            @Override
-            protected void onPostExecute(Object o) {
-                inflateBottomsheet(R.layout.bottomsheet_media);
-            }
-        };
-        asyncInit.execute();
-    }
     private void loadUser() {
         MainApplication app = (MainApplication) getContext().getApplicationContext();
         username = app.getCurrSessionValue();
@@ -184,7 +161,6 @@ public class NewMemoryFragment extends GenericMemoryFragment {
         btnLocation = (Button) v.findViewById(R.id.btnLocation);
         txtvMedia = (TextView) v.findViewById(R.id.txtvMedia);
 
-        btnDate.setText(new SimpleDateFormat(DATEFORMAT, Locale.ENGLISH).format(new Date()));
     }
     //MEDIA METHODS
 
@@ -231,5 +207,24 @@ public class NewMemoryFragment extends GenericMemoryFragment {
         activity.getSupportActionBar().setHomeButtonEnabled(true);
         activity.getSupportActionBar().setHomeAsUpIndicator(R.mipmap.ic_clear);
         setHasOptionsMenu(true);
+    }
+    //Tasks
+    private class Initializer extends AsyncTask<View, Void,Void> {
+
+        @Override
+        protected Void doInBackground(View... views) {
+            loadView(views[0]);
+            mMediaItem = new MediaItem();
+            initMedia();
+            addEvents();
+            createBottomSheet();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            btnDate.setText(new SimpleDateFormat(DATEFORMAT, Locale.ENGLISH).format(new Date()));
+        }
     }
 }

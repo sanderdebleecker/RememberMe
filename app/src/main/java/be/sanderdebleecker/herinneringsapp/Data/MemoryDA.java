@@ -60,6 +60,7 @@ public class MemoryDA extends MemoryRepository {
         return mems;
     }
     public ArrayList<Memory> getAllFromAlbums(List<Integer> albumIds ) {
+        if(albumIds.isEmpty()) return null;
         ArrayList<Memory> mems = new ArrayList<>();
         Cursor cursor = getAllCFromAlbums(albumIds);
         while(cursor.moveToNext()) {

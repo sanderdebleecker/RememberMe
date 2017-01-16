@@ -20,7 +20,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DbHelper extends SQLiteOpenHelper {
     private static DbHelper mInstance = null;
-    private static final int DB_VERSION = 5;
+    private static final int DB_VERSION = 6;
     private static final String DB_NAME="HerinneringsApp.db";
     public final String TBL_USERS="tbl_users";
     public final String TBL_MEMORIES="tbl_memories";
@@ -33,7 +33,6 @@ public class DbHelper extends SQLiteOpenHelper {
     public final String TBL_SESSIONS="tbl_sessions";
     public final String TBL_RESOURCES ="tbl_resources";
     public final String TBL_GWQTEST = "tbl_gwqtest";
-    public final String TBL_SESSIONS_ALBUMS = "tbl_sessions_albums";
 
     public enum TimelineColumns {
         TimelineId,
@@ -112,7 +111,7 @@ public class DbHelper extends SQLiteOpenHelper {
         SessionIsFinished,
         SessionAuthor,
     }
-    private enum ResourceColumns {
+    public enum ResourceColumns {
         ResourceId,
         ResourceSession,
         ResourceAlbum,
@@ -291,6 +290,7 @@ public class DbHelper extends SQLiteOpenHelper {
     private void createTblSessions(SQLiteDatabase db)  {
         db.execSQL("CREATE TABLE "+ TBL_SESSIONS + " ( "+
                 SessionColumns.SessionId +" INTEGER PRIMARY KEY AUTOINCREMENT, "+
+                SessionColumns.SessionName+ " VARCHAR(100), "+
                 SessionColumns.SessionDate +" INTEGER, "+
                 SessionColumns.SessionDuration +" INTEGER, "+
                 SessionColumns.SessionCount +" INTEGER, "+

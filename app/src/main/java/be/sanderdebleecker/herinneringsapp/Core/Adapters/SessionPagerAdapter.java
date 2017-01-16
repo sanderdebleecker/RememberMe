@@ -16,6 +16,9 @@ public class SessionPagerAdapter extends FragmentStatePagerAdapter {
         super(fm);
         this.mFragments = frags;
     }
+    public void add(SessionPagerFragment frag) {
+        mFragments.add(frag);
+    }
 
     @Override
     public Fragment getItem(int position) {

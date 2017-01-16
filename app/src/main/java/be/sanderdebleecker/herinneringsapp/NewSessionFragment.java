@@ -1,10 +1,12 @@
 package be.sanderdebleecker.herinneringsapp;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -13,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +34,7 @@ public class NewSessionFragment extends Fragment {
     private Toolbar mToolbar;
     private MenuItem menuContinue;
     private List<Memory> mMemories;
+    private int mSessionId;
 
     public NewSessionFragment() {}
     public static NewSessionFragment newInstance() {
@@ -73,34 +77,47 @@ public class NewSessionFragment extends Fragment {
             case R.id.action_add:
                 if (mMemories == null) {
                     NewSessionPagerFragment fragm = (NewSessionPagerFragment) mPagerAdapter.getItem(mPager.getCurrentItem());
-                    if(fragm.validate()) {
-                        MainApplication app = (MainApplication) getContext().getApplicationContext();
-                        createSession(new Session(fragm.getName(),fragm.getDate(),app.getCurrSession().getAuthIdentity()),fragm.getAlbums());
-                    }
+                    new SaveSession().execute(fragm);
                 }
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
-
-    private void createSession(Session newSession,List<Integer> albums) {
-        //Acquire mems
-        //methodname must correspond w/ content
+    private int createSession(Session newSession,List<Integer> albums) {
+        SessionDA sessionData = new SessionDA(getContext());
+        sessionData.open();
+        int sessionId = sessionData.insert(newSession,albums);
+        sessionData.close();
+        return sessionId;
+    }
+    private void startSession() {
+        //Get Memories
+        getMemories(getAlbums(mSessionId));
+        //Add MemoryFragments
+        loadSession();
+    }
+    private void loadSession() {
+        for(int i=0;i<mMemories.size();i++) {
+            Memory m = mMemories.get(i);
+            MemorySessionPagerFragment frag = MemorySessionPagerFragment.newInstance(m.getTitle(),m.getPath(),m.getType());
+            mPagerAdapter.add(frag);
+        }
+        mPagerAdapter.notifyDataSetChanged();
+    }
+    private void getMemories(List<Integer> albums) {
         MemoryDA memoryData = new MemoryDA(getContext());
         memoryData.open();
         mMemories = memoryData.getAllFromAlbums(albums);
         memoryData.close();
-
+    }
+    private List<Integer> getAlbums(int session) {
+        List<Integer> albums;
         SessionDA sessionData = new SessionDA(getContext());
         sessionData.open();
-        sessionData.insert(newSession,albums);
+        albums = sessionData.getAlbums(session);
         sessionData.close();
-
-
-
-        //Save session
+        return albums;
     }
-
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         getActivity().getMenuInflater().inflate(R.menu.menu_add,menu);
         menuContinue = menu.findItem(R.id.action_add);
@@ -137,5 +154,62 @@ public class NewSessionFragment extends Fragment {
         protected void onPostExecute(Void aVoid) {
             createToolbar();
         }
+    }
+    private class SaveSession extends AsyncTask<NewSessionPagerFragment, Void, Integer> {
+
+        @Override
+        protected Integer doInBackground(NewSessionPagerFragment... fragms) {
+            NewSessionPagerFragment fragm = fragms[0];
+            if(fragm.validate()) {
+                MainApplication app = (MainApplication) getContext().getApplicationContext();
+                List<Integer> albums = fragm.getAlbums();
+                return createSession(new Session(fragm.getName(),fragm.getDate(),app.getCurrSession().getAuthIdentity()),albums);
+            }
+            return -1;
+        }
+
+        @Override
+        protected void onPostExecute(Integer sessionId) {
+            if(sessionId==-1){
+                getSaveSessionFailureDialog().show();
+            }else{
+                mSessionId = sessionId;
+                getStartSessionDialog().show();
+            }
+        }
+    }
+    //Dialogs
+    private AlertDialog getStartSessionDialog() {
+        AlertDialog dialog =new AlertDialog.Builder(getContext())
+                //set message, title, and icon
+                .setTitle("Nieuwe Sessie")
+                .setMessage("Sessie direct starten?")
+                .setPositiveButton("Start", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        startSession();
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton("Later", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        mListener.cancel();
+                        dialog.dismiss();
+                    }
+                })
+                .create();
+        return dialog;
+    }
+    private AlertDialog getSaveSessionFailureDialog() {
+        AlertDialog dialog =new AlertDialog.Builder(getContext())
+                //set message, title, and icon
+                .setTitle("Opslaan Sessie")
+                .setMessage("Er was een fout bij het opslaan")
+                .setPositiveButton("Doorgaan", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        dialog.dismiss();
+                    }
+                })
+                .create();
+        return dialog;
     }
 }

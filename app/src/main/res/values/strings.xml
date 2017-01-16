@@ -40,5 +40,8 @@
     <string name="auteur">Auteur</string>
     <string name="een_beschrijving_van_jouw_herinnering">Een beschrijving van jouw herinnering</string>
     <string name="_25_02_2014_locatie">25/02/2014 - Locatie</string>
+    <string name="audioRecording">"audio-opname "</string>
+    <string name="audioSaved">audio opgeslaan</string>
+    <string name="actionDisallowed">actie niet toegestaan</string>
 
 </resources>

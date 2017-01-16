@@ -47,6 +47,7 @@ import be.sanderdebleecker.herinneringsapp.Helpers.StorageHelper;
 import be.sanderdebleecker.herinneringsapp.Interfaces.INewMemoryFListener;
 import be.sanderdebleecker.herinneringsapp.Models.MediaItem;
 
+
 public class GenericMemoryFragment extends Fragment {
     //CONST
     public static final int RECORD_AUDIO = 0;
@@ -60,7 +61,7 @@ public class GenericMemoryFragment extends Fragment {
     protected ViewGroup mBottomsheet;
     protected BottomSheetBehavior mBottomsheetBehavior;
     protected Toolbar mToolbar;
-    protected ImageView imgvMedia, imgvCamera, imgvAudio, imgvBrowse;
+    protected ImageView imgvMedia, imgvCamera, imgvBrowse;
     protected ImageButton imgbtnAudio;
     protected TextInputEditText etxtTitle,etxtDescription;
     protected TextView txtvMedia;
@@ -80,12 +81,12 @@ public class GenericMemoryFragment extends Fragment {
         Snackbar snack = Snackbar.make(getActivity().findViewById(R.id.linearlayoutNewMemoryFContent),"Nieuw opname :",Snackbar.LENGTH_LONG).setAction("Opslaan", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(),"Audio opgeslaan",Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(),getString(R.string.audioSaved),Toast.LENGTH_LONG).show();
                 mStorageHelper.saveAudio();
                 File audioFile = mStorageHelper.getFile();
                 mMediaItem = new MediaItem(MediaItem.Type.AUDIO,audioFile.getPath());
                 imgvMedia.setImageDrawable(ContextCompat.getDrawable(getContext(),R.drawable.ic_mic_black_24dp));
-                txtvMedia.setText("audio-opname "+recorder.getDurationString());
+                txtvMedia.setText(String.format("%s%s", getString(R.string.audioRecording), recorder.getDurationString()));
                 //set thumbnail here
             }
         });
@@ -140,15 +141,13 @@ public class GenericMemoryFragment extends Fragment {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == PermissionHelper.ALL && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-        }else {
-            Toast.makeText(getContext(),"Actie niet toegestaan",Toast.LENGTH_SHORT).show();
+        boolean allowed = (requestCode == PermissionHelper.ALL && grantResults[0] == PackageManager.PERMISSION_GRANTED);
+        if (!allowed) {
+            Toast.makeText(getContext(),getString(R.string.actionDisallowed),Toast.LENGTH_SHORT).show();
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 
-    protected void init() {
-    }
     protected void initMedia() {
         date = new DatePickerDialog.OnDateSetListener() {
             public void onDateSet(DatePicker view, int year, int monthOfYear,
@@ -189,21 +188,6 @@ public class GenericMemoryFragment extends Fragment {
                         mCalendar.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
-    }
-    private AlertDialog getDownloadGooglePlayDialog() {
-        AlertDialog dialog =new AlertDialog.Builder(getContext())
-                //set message, title, and icon
-                .setTitle("Google Play")
-                .setMessage("Je hebt Google Play Services nodig om deze functionaliteiten te gebruiken")
-                .setIcon(R.drawable.ic_delete_white_24px)
-                .setPositiveButton("Doorgaan", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        dialog.dismiss();
-                    }
-                })
-                .setCancelable(true)
-                .create();
-        return dialog;
     }
     protected void loadMediaView(View v) {
         imgvCamera = (ImageView) v.findViewById(R.id.imgvCamera);
@@ -252,8 +236,6 @@ public class GenericMemoryFragment extends Fragment {
         super.onDetach();
         mListener =null;
     }
-    //TO OVERRIDE
-    protected void createToolbar() {}
 
     //GUI
     protected void createBottomSheet() {
@@ -288,6 +270,23 @@ public class GenericMemoryFragment extends Fragment {
         } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e) {
             e.printStackTrace();
         }
+    }
+
+    //Dialogs
+    private AlertDialog getDownloadGooglePlayDialog() {
+        AlertDialog dialog =new AlertDialog.Builder(getContext())
+                //set message, title, and icon
+                .setTitle("Google Play")
+                .setMessage("Je hebt Google Play Services nodig om deze functionaliteiten te gebruiken")
+                .setIcon(R.drawable.ic_delete_white_24px)
+                .setPositiveButton("Doorgaan", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        dialog.dismiss();
+                    }
+                })
+                .setCancelable(true)
+                .create();
+        return dialog;
     }
 
 

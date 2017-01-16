@@ -34,7 +34,7 @@ public class AlbumRepository extends BaseRepository {
                 " WHERE"+
                 " a."+ DbHelper.AlbumColumns.AlbumCreator +"=?";*/
         try{
-            res =  db.rawQuery(sql,null);//new String[]{""+userId}
+            res =  db.rawQuery(sql,null);
         }catch(SQLiteException ex) {
             System.out.println(ex.getMessage());
         }catch(Exception e){

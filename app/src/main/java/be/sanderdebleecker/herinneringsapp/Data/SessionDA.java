@@ -14,18 +14,23 @@ public class SessionDA extends SessionRepository {
         super(context);
     }
 
-    public boolean insert(Session newSession,List<Integer> albums) {
-        if(newSession==null) return false;
-        boolean success = false;
+    public int insert(Session newSession,List<Integer> albums) {
+        if(newSession==null) return -1;
         db.beginTransaction();
         int sessionId = insertSession(newSession);
         if(sessionId>-1) {
             if(insertSessionAlbums(sessionId,albums)){
                 db.setTransactionSuccessful();
-                success = true;
+            }else{
+                return -1;
             }
         }
         db.endTransaction();
-        return success;
+        return sessionId;
     }
+    public List<Integer> getAlbums(int sessionId) {
+        return getAlbumIds(sessionId);
+    }
+
+
 }
