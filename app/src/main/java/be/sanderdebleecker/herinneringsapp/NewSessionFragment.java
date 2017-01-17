@@ -23,18 +23,19 @@ import be.sanderdebleecker.herinneringsapp.Core.Adapters.SessionPagerAdapter;
 import be.sanderdebleecker.herinneringsapp.Core.MainApplication;
 import be.sanderdebleecker.herinneringsapp.Data.MemoryDA;
 import be.sanderdebleecker.herinneringsapp.Data.SessionDA;
+import be.sanderdebleecker.herinneringsapp.Interfaces.IEndSessionPagerFListener;
 import be.sanderdebleecker.herinneringsapp.Interfaces.INewSessionFListener;
 import be.sanderdebleecker.herinneringsapp.Models.Memory;
 import be.sanderdebleecker.herinneringsapp.Models.Session;
 
-public class NewSessionFragment extends Fragment {
+public class NewSessionFragment extends Fragment implements IEndSessionPagerFListener {
     private INewSessionFListener mListener;
     private SessionPagerAdapter mPagerAdapter;
     private ViewPager mPager;
     private Toolbar mToolbar;
     private MenuItem menuContinue;
     private List<Memory> mMemories;
-    private int mSessionId;
+    private Session mSession;
 
     public NewSessionFragment() {}
     public static NewSessionFragment newInstance() {
@@ -88,27 +89,35 @@ public class NewSessionFragment extends Fragment {
         sessionData.open();
         int sessionId = sessionData.insert(newSession,albums);
         sessionData.close();
+        if(sessionId!=-1) {
+            mSession = newSession;
+            mSession.setId(sessionId);
+        }
         return sessionId;
     }
     private void startSession() {
         //Get Memories
-        getMemories(getAlbums(mSessionId));
+        getMemories(getAlbums(mSession.getId()));
         //Add MemoryFragments
         loadSession();
-    }
-    private void loadSession() {
-        for(int i=0;i<mMemories.size();i++) {
-            Memory m = mMemories.get(i);
-            MemorySessionPagerFragment frag = MemorySessionPagerFragment.newInstance(m.getTitle(),m.getPath(),m.getType());
-            mPagerAdapter.add(frag);
-        }
-        mPagerAdapter.notifyDataSetChanged();
     }
     private void getMemories(List<Integer> albums) {
         MemoryDA memoryData = new MemoryDA(getContext());
         memoryData.open();
         mMemories = memoryData.getAllFromAlbums(albums);
         memoryData.close();
+    }
+    private void loadSession() {
+        ArrayList<SessionPagerFragment> fragms = new ArrayList<>();
+        for(int i=0;i<mMemories.size();i++) {
+            Memory m = mMemories.get(i);
+            MemorySessionPagerFragment frag = MemorySessionPagerFragment.newInstance(m.getTitle(),m.getPath(),m.getType());
+            fragms.add(frag);
+        }
+        EndSessionPagerFragment frag = EndSessionPagerFragment.newInstance(this);
+        fragms.add(frag);
+        mPagerAdapter = new SessionPagerAdapter(getActivity().getSupportFragmentManager(),fragms);
+        mPager.setAdapter(mPagerAdapter);
     }
     private List<Integer> getAlbums(int session) {
         List<Integer> albums;
@@ -118,26 +127,44 @@ public class NewSessionFragment extends Fragment {
         sessionData.close();
         return albums;
     }
+
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         getActivity().getMenuInflater().inflate(R.menu.menu_add,menu);
         menuContinue = menu.findItem(R.id.action_add);
     }
+
     private void loadView(View v) {
         mPager = (ViewPager) v.findViewById(R.id.new_session_viewpager);
         mToolbar = (Toolbar) v.findViewById(R.id.new_session_toolbar);
     }
+
     private void loadViewPager()  {
         ArrayList<SessionPagerFragment> frags = new ArrayList<>();
         frags.add(NewSessionPagerFragment.newInstance());
         mPagerAdapter = new SessionPagerAdapter(getActivity().getSupportFragmentManager(),frags);
         mPager.setAdapter(mPagerAdapter);
     }
+
     private void createToolbar() {
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.setSupportActionBar(mToolbar);
         activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         activity.getSupportActionBar().setHomeButtonEnabled(true);
         setHasOptionsMenu(true);
+    }
+
+    //Interfaces
+    @Override
+    public String getSessionName() {
+        return mSession.getName();
+    }
+    @Override
+    public String getSessionDate() {
+        return mSession.getDate();
+    }
+    @Override
+    public int getSessionDuration() {
+        return mPagerAdapter.getDuration();
     }
 
     //Tasks
@@ -173,7 +200,8 @@ public class NewSessionFragment extends Fragment {
             if(sessionId==-1){
                 getSaveSessionFailureDialog().show();
             }else{
-                mSessionId = sessionId;
+                mSession = new Session();
+                mSession.setId(sessionId);
                 getStartSessionDialog().show();
             }
         }
