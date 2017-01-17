@@ -7,15 +7,29 @@
         android:id="@+id/end_session_txtvName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="name of session"
         />
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/end_session_txtvDuration"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/end_session_txtvName"
+        android:text="1 min 50"
         />
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/end_session_txtvDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/end_session_txtvDuration"
+        android:text="25/12/2016"
         />
+    <android.support.v7.widget.AppCompatEditText
+        android:id="@+id/end_session_etxtNotes"
+        android:layout_below="@+id/end_session_txtvDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Your notes can come here, this field can contain multiple lines of text"
+        />
+
+
 </android.support.percent.PercentRelativeLayout>

@@ -168,7 +168,7 @@ public class SelectableMemoryAdapter extends RecyclerView.Adapter<SelectableMemo
         StorageHelper.loadCroppedMedia(mContext,imgv,new MediaItem(MediaItem.Type.valueOf(type),path), (int) unitSize);
     }
 
-    //m load
+    //m getSessionName
     public void add(List<SelectableMemory> mems){
         mMems.beginBatchedUpdates();
         for(SelectableMemory m : mems) {
