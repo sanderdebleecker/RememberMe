@@ -225,6 +225,7 @@ public class NewMemoryFragment extends GenericMemoryFragment {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             btnDate.setText(new SimpleDateFormat(DATEFORMAT, Locale.ENGLISH).format(new Date()));
+            createToolbar();
         }
     }
 }

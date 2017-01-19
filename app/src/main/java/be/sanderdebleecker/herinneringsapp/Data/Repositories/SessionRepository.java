@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
-import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteStatement;
 
 import java.util.ArrayList;
@@ -23,9 +22,10 @@ public class SessionRepository extends BaseRepository {
         ContentValues cv = new ContentValues();
         cv.put(DbHelper.SessionColumns.SessionName.toString(),newSession.getName());
         cv.put(DbHelper.SessionColumns.SessionDate.toString(),newSession.getDate());
+        cv.put(DbHelper.SessionColumns.SessionNotes.toString(),newSession.getNotes());
         cv.put(DbHelper.SessionColumns.SessionDuration.toString(),newSession.getDuration());
         cv.put(DbHelper.SessionColumns.SessionCount.toString(),newSession.getCount());
-        cv.put(DbHelper.SessionColumns.SessionIsFinished.toString(), (newSession.getSessionIsFinished() ? 1 : 0));
+        cv.put(DbHelper.SessionColumns.SessionIsFinished.toString(), (newSession.isFinished() ? 1 : 0));
         cv.put(DbHelper.SessionColumns.SessionAuthor.toString(),newSession.getAuthor());
         try{
             result = (int) db.insert(dbh.TBL_SESSIONS,null,cv);
@@ -74,6 +74,55 @@ public class SessionRepository extends BaseRepository {
             System.out.println(e.getMessage());
         }
         return albums;
+    }
+    protected Session getSession(int id) {
+        Session session = null;
+        Cursor cursor;
+        String sql = "SELECT *"+
+                " FROM "+dbh.TBL_SESSIONS+
+                " WHERE "+ DbHelper.SessionColumns.SessionId +"=?";
+        try{
+            cursor =  db.rawQuery(sql,new String[]{ ""+id });
+            while(cursor.moveToNext()) {
+                session = from(cursor);
+            }
+        } catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+        return session;
+    }
+    protected boolean updateSession(Session session) {
+        int rowsAffected = -1;
+        ContentValues cv = new ContentValues();
+        cv.put(DbHelper.SessionColumns.SessionId.toString(),session.getId());
+        cv.put(DbHelper.SessionColumns.SessionName.toString(),session.getName());
+        cv.put(DbHelper.SessionColumns.SessionDate.toString(),session.getDate());
+        cv.put(DbHelper.SessionColumns.SessionNotes.toString(),session.getNotes());
+        cv.put(DbHelper.SessionColumns.SessionDuration.toString(),session.getDuration());
+        cv.put(DbHelper.SessionColumns.SessionCount.toString(),session.getCount());
+        cv.put(DbHelper.SessionColumns.SessionIsFinished.toString(),session.isFinished());
+        cv.put(DbHelper.SessionColumns.SessionAuthor.toString(),session.getAuthor());
+        String where = String.format("%s=?",DbHelper.SessionColumns.SessionId.toString());
+        String[] args = new String[] { ""+session.getId() };
+        try{
+            rowsAffected = db.update(dbh.TBL_SESSIONS,cv,where,args);
+        } catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+        return rowsAffected>0;
+    }
+
+    private Session from(Cursor c) {
+        Session session = new Session();
+        session.setId(c.getInt(c.getColumnIndex(DbHelper.SessionColumns.SessionId.toString())));
+        session.setName(c.getString(c.getColumnIndex(DbHelper.SessionColumns.SessionName.toString())));
+        session.setDate(c.getString(c.getColumnIndex(DbHelper.SessionColumns.SessionDate.toString())));
+        session.setNotes(c.getString(c.getColumnIndex(DbHelper.SessionColumns.SessionNotes.toString())));
+        session.setDuration(c.getInt(c.getColumnIndex(DbHelper.SessionColumns.SessionDuration.toString())));
+        session.setCount(c.getInt(c.getColumnIndex(DbHelper.SessionColumns.SessionCount.toString())));
+        session.setAuthor(c.getInt(c.getColumnIndex(DbHelper.SessionColumns.SessionAuthor.toString())));
+        session.setFinished(c.getInt(c.getColumnIndex(DbHelper.SessionColumns.SessionIsFinished.toString()))==1);
+        return session;
     }
 
 }

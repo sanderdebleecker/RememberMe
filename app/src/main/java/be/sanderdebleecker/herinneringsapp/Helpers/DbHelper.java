@@ -8,10 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 //TODO REMEMBERME is not checked , every use is remembered even if never logged in !!!
 
-//TODO catch exceptions once you re completed with all development/testing on SQLite
-//TODO modern error frame
 //TODO deletememoryfromttimeline() must take user as argument once multi-user
-//TODO prevent TBL_TIMELINE already EXISTS on recreateDb()
 
 //TODO CHANGE RESOURCES TO SESSIONSALBUMS FOR CLARITY SAKE
 /*
@@ -20,7 +17,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DbHelper extends SQLiteOpenHelper {
     private static DbHelper mInstance = null;
-    private static final int DB_VERSION = 6;
+    private static final int DB_VERSION = 7;
     private static final String DB_NAME="HerinneringsApp.db";
     public final String TBL_USERS="tbl_users";
     public final String TBL_MEMORIES="tbl_memories";
@@ -106,6 +103,7 @@ public class DbHelper extends SQLiteOpenHelper {
         SessionId,
         SessionName,
         SessionDate,
+        SessionNotes,
         SessionDuration,
         SessionCount,
         SessionIsFinished,
@@ -292,6 +290,7 @@ public class DbHelper extends SQLiteOpenHelper {
                 SessionColumns.SessionId +" INTEGER PRIMARY KEY AUTOINCREMENT, "+
                 SessionColumns.SessionName+ " VARCHAR(100), "+
                 SessionColumns.SessionDate +" INTEGER, "+
+                SessionColumns.SessionNotes+" VARCHAR(500), "+
                 SessionColumns.SessionDuration +" INTEGER, "+
                 SessionColumns.SessionCount +" INTEGER, "+
                 SessionColumns.SessionIsFinished +" INTEGER, "+

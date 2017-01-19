@@ -1,25 +1,17 @@
 package be.sanderdebleecker.herinneringsapp.Models;
 
-
-import java.util.ArrayList;
 import java.util.List;
-
-/*
-*       stmt.bindString(2, newSession.getDate());
-        stmt.bindString(3, newSession.getDuration());
-        stmt.bindLong(  4, newSession.getCount());
-        stmt.bindString(5, newSession.getSessionIsFinished());
-        stmt.bindString(6, newSession.getAuthor());*/
 
 public class Session {
     private int id;
     private String name;
     private List<Album> albums;
     private String date;
+    private String notes;
     private int duration;
     private int count;
     private int author;
-    private boolean sessionIsFinished;
+    private boolean isFinished;
 
     //CTOR
     public Session() {
@@ -30,7 +22,6 @@ public class Session {
         this.date = date;
         this.author = author;
     }
-
 
     public int getId() {
         return id;
@@ -68,16 +59,22 @@ public class Session {
     public void setCount(int count) {
         this.count = count;
     }
-    public boolean getSessionIsFinished() {
-        return sessionIsFinished;
+    public boolean isFinished() {
+        return isFinished;
     }
-    public void setSessionIsFinished(boolean sessionIsFinished) {
-        this.sessionIsFinished = sessionIsFinished;
+    public void setFinished(boolean finished) {
+        this.isFinished = finished;
     }
     public int getAuthor() {
         return author;
     }
     public void setAuthor(int author) {
         this.author = author;
+    }
+    public String getNotes() {
+        return notes;
+    }
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 }

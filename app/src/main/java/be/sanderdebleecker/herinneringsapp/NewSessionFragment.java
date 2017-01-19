@@ -35,7 +35,7 @@ public class NewSessionFragment extends Fragment implements IEndSessionPagerFLis
     private Toolbar mToolbar;
     private MenuItem menuContinue;
     private List<Memory> mMemories;
-    private Session mSession;
+    private int mSession;
 
     public NewSessionFragment() {}
     public static NewSessionFragment newInstance() {
@@ -58,7 +58,6 @@ public class NewSessionFragment extends Fragment implements IEndSessionPagerFLis
             mListener = null;
         }
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -71,14 +70,23 @@ public class NewSessionFragment extends Fragment implements IEndSessionPagerFLis
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
+        boolean endingSession = mPager.getCurrentItem()+1==mPagerAdapter.getCount() && mPagerAdapter.getCount()>1;
         switch(itemId) {
             case android.R.id.home:
-                mListener.cancel();
+                if(endingSession) {
+                    mListener.cancel();
+                }else{
+                    mListener.back();
+                }
                 break;
             case R.id.action_add:
-                if (mMemories == null) {
-                    NewSessionPagerFragment fragm = (NewSessionPagerFragment) mPagerAdapter.getItem(mPager.getCurrentItem());
-                    new SaveSession().execute(fragm);
+                if(endingSession ) {
+                    endSession();
+                }else{
+                    if (mMemories == null) {
+                        NewSessionPagerFragment fragm = (NewSessionPagerFragment) mPagerAdapter.getItem(mPager.getCurrentItem());
+                        new SaveSession().execute(fragm);
+                    }
                 }
                 break;
         }
@@ -89,17 +97,26 @@ public class NewSessionFragment extends Fragment implements IEndSessionPagerFLis
         sessionData.open();
         int sessionId = sessionData.insert(newSession,albums);
         sessionData.close();
-        if(sessionId!=-1) {
-            mSession = newSession;
-            mSession.setId(sessionId);
-        }
         return sessionId;
     }
     private void startSession() {
         //Get Memories
-        getMemories(getAlbums(mSession.getId()));
+        getMemories(getAlbums(mSession));
         //Add MemoryFragments
         loadSession();
+    }
+    private void endSession() {
+        EndSessionPagerFragment fragm = (EndSessionPagerFragment) mPagerAdapter.getItem(mPagerAdapter.getCount()-1);
+        Session session = fragm.getSession();
+        SessionDA sessionData = new SessionDA(getContext());
+        sessionData.open();
+        boolean result = sessionData.update(session);
+        sessionData.close();
+        if(result) {
+            mListener.onSaved();
+        } else {
+            getSaveSessionFailureDialog("").show();
+        }
     }
     private void getMemories(List<Integer> albums) {
         MemoryDA memoryData = new MemoryDA(getContext());
@@ -116,8 +133,25 @@ public class NewSessionFragment extends Fragment implements IEndSessionPagerFLis
         }
         EndSessionPagerFragment frag = EndSessionPagerFragment.newInstance(this);
         fragms.add(frag);
-        mPagerAdapter = new SessionPagerAdapter(getActivity().getSupportFragmentManager(),fragms);
+        mPagerAdapter = new SessionPagerAdapter( getActivity().getSupportFragmentManager(), fragms, 0);
         mPager.setAdapter(mPagerAdapter);
+        mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            int endPage = mPagerAdapter.getCount()-1;
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+            @Override
+            public void onPageSelected(int position) {
+                if(position==endPage) {
+                    getEndSessionDialog().show();
+                }
+            }
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
     private List<Integer> getAlbums(int session) {
         List<Integer> albums;
@@ -137,14 +171,11 @@ public class NewSessionFragment extends Fragment implements IEndSessionPagerFLis
         mPager = (ViewPager) v.findViewById(R.id.new_session_viewpager);
         mToolbar = (Toolbar) v.findViewById(R.id.new_session_toolbar);
     }
-
     private void loadViewPager()  {
         ArrayList<SessionPagerFragment> frags = new ArrayList<>();
         frags.add(NewSessionPagerFragment.newInstance());
         mPagerAdapter = new SessionPagerAdapter(getActivity().getSupportFragmentManager(),frags);
-        mPager.setAdapter(mPagerAdapter);
     }
-
     private void createToolbar() {
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.setSupportActionBar(mToolbar);
@@ -155,53 +186,57 @@ public class NewSessionFragment extends Fragment implements IEndSessionPagerFLis
 
     //Interfaces
     @Override
-    public String getSessionName() {
-        return mSession.getName();
-    }
-    @Override
-    public String getSessionDate() {
-        return mSession.getDate();
+    public Session getSession() {
+        SessionDA sessionData = new SessionDA(getContext());
+        sessionData.open();
+        Session currSession = sessionData.get(mSession);
+        sessionData.close();
+        return currSession;
     }
     @Override
     public int getSessionDuration() {
         return mPagerAdapter.getDuration();
     }
+    @Override
+    public void viewPreviousPage() {
+        mPager.setCurrentItem(mPager.getCurrentItem()-1);
+    }
 
     //Tasks
     private class Initializer extends AsyncTask<View, Void, Void> {
-
         @Override
         protected Void doInBackground(View... params) {
             loadView(params[0]);
             loadViewPager();
             return null;
         }
-
         @Override
         protected void onPostExecute(Void aVoid) {
             createToolbar();
+            mPager.setAdapter(mPagerAdapter);
         }
     }
     private class SaveSession extends AsyncTask<NewSessionPagerFragment, Void, Integer> {
-
+        private String mErrorMessage="";
         @Override
         protected Integer doInBackground(NewSessionPagerFragment... fragms) {
             NewSessionPagerFragment fragm = fragms[0];
-            if(fragm.validate()) {
+            mErrorMessage = fragm.validate();
+            if(mErrorMessage.equals("")) {
                 MainApplication app = (MainApplication) getContext().getApplicationContext();
                 List<Integer> albums = fragm.getAlbums();
                 return createSession(new Session(fragm.getName(),fragm.getDate(),app.getCurrSession().getAuthIdentity()),albums);
+            }else{
+                return -1;
             }
-            return -1;
         }
 
         @Override
         protected void onPostExecute(Integer sessionId) {
             if(sessionId==-1){
-                getSaveSessionFailureDialog().show();
+                getSaveSessionFailureDialog(mErrorMessage).show();
             }else{
-                mSession = new Session();
-                mSession.setId(sessionId);
+                mSession = sessionId;
                 getStartSessionDialog().show();
             }
         }
@@ -227,14 +262,36 @@ public class NewSessionFragment extends Fragment implements IEndSessionPagerFLis
                 .create();
         return dialog;
     }
-    private AlertDialog getSaveSessionFailureDialog() {
+    private AlertDialog getSaveSessionFailureDialog(String errorMessage) {
+        if(errorMessage.equals("")) {
+            errorMessage="Er was een fout bij het opslaan van de sessie.";
+        }
         AlertDialog dialog =new AlertDialog.Builder(getContext())
                 //set message, title, and icon
-                .setTitle("Opslaan Sessie")
-                .setMessage("Er was een fout bij het opslaan")
+                .setTitle("Fout : opslaan sessie")
+                .setMessage(errorMessage)
                 .setPositiveButton("Doorgaan", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         dialog.dismiss();
+                    }
+                })
+                .create();
+        return dialog;
+    }
+    private AlertDialog getEndSessionDialog() {
+        AlertDialog dialog =new AlertDialog.Builder(getContext())
+                //set message, title, and icon
+                .setTitle("Einde sessie")
+                .setMessage("Wil je de sessie beëindigen?")
+                .setPositiveButton("Beëindigen", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton("Blijven", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        viewPreviousPage();
                     }
                 })
                 .create();

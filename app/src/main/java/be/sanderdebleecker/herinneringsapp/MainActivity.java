@@ -36,6 +36,8 @@ import be.sanderdebleecker.herinneringsapp.Interfaces.IMemoriesFListener;
 import be.sanderdebleecker.herinneringsapp.Interfaces.IQueryableFragment;
 import be.sanderdebleecker.herinneringsapp.Models.NavItem;
 
+//TODO feedback when something is created after redirection
+
 public class MainActivity extends AppCompatActivity implements IMemoriesFListener,IAlbumsFListener {
     public static final String EXTRA_ID_MEMORY = "EXTRA_ID_MEMORY";
     public static final String EXTRA_ID_ALBUM = "EXTRA_ID_ALBUM";

@@ -85,10 +85,18 @@ public class NewSessionPagerFragment extends SessionPagerFragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter.add(mAlbums);
     }
-    public boolean validate() {
-        boolean hasContent = mAdapter.getSelectedAlbums().size()>0;
+    public String validate() {
         boolean hasTitle = txtName.getText().toString().trim().length()>0;
-        return hasContent & hasTitle;
+        boolean hasContent = mAdapter.getSelectedAlbums().size()>0;
+        if(!hasTitle) {
+            return getString(R.string.ErrorNamelessSession);
+        }else {
+            if(!hasContent) {
+                return getString(R.string.ErrorContentlessSession);
+            }else{
+                return "";
+            }
+        }
     }
 
     //Get

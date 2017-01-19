@@ -47,6 +47,9 @@ import be.sanderdebleecker.herinneringsapp.Helpers.StorageHelper;
 import be.sanderdebleecker.herinneringsapp.Interfaces.INewMemoryFListener;
 import be.sanderdebleecker.herinneringsapp.Models.MediaItem;
 
+//TODO use local dateformat
+//TODO define used db dateformat
+//TODO convert between local and db format between queries
 
 public class GenericMemoryFragment extends Fragment {
     //CONST

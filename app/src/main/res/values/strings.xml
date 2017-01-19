@@ -43,5 +43,7 @@
     <string name="audioRecording">"audio-opname "</string>
     <string name="audioSaved">audio opgeslaan</string>
     <string name="actionDisallowed">actie niet toegestaan</string>
+    <string name="ErrorNamelessSession">Geef een naam in voor de sessie.</string>
+    <string name="ErrorContentlessSession">Selecteer tenminste 1 album</string>
 
 </resources>

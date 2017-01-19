@@ -2,32 +2,74 @@
 <android.support.percent.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="15dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/end_session_txtvName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="name of session"
+        android:textSize="32sp"
+        android:textAlignment="center"
+        android:text="Name of session"
+        android:layout_marginBottom="20dp"
+        />
+    <!--Duration-->
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/end_session_txtvLabelDuration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="19sp"
+        android:layout_below="@+id/end_session_txtvName"
+        android:text="Duration : "
+        android:layout_marginBottom="10dp"
         />
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/end_session_txtvDuration"
-        android:layout_width="match_parent"
+        android:layout_toEndOf="@+id/end_session_txtvLabelDuration"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="19sp"
         android:layout_below="@+id/end_session_txtvName"
         android:text="1 min 50"
+        android:layout_marginBottom="10dp"
+        />
+    <!--Date-->
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/end_session_txtvLabelDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="19sp"
+        android:layout_below="@+id/end_session_txtvDuration"
+        android:text="Date : "
+        android:layout_marginBottom="15dp"
         />
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/end_session_txtvDate"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="19sp"
+        android:layout_toEndOf="@id/end_session_txtvLabelDate"
         android:layout_below="@+id/end_session_txtvDuration"
         android:text="25/12/2016"
+        android:layout_marginBottom="15dp"
+        />
+    <!--Notes-->
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/end_session_txtvNotes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="19sp"
+        android:layout_below="@+id/end_session_txtvDate"
+        android:text="Notities over sessie :"
+        android:layout_marginBottom="10dp"
         />
     <android.support.v7.widget.AppCompatEditText
         android:id="@+id/end_session_etxtNotes"
-        android:layout_below="@+id/end_session_txtvDate"
+        android:layout_below="@+id/end_session_txtvNotes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="#888888"
+        android:padding="15dp"
         android:text="Your notes can come here, this field can contain multiple lines of text"
         />
 

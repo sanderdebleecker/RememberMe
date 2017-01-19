@@ -147,7 +147,7 @@ public class DummyDA extends BaseRepository {
         cv.put(DbHelper.SessionColumns.SessionDate.toString(),newSession.getDate());
         cv.put(DbHelper.SessionColumns.SessionDuration.toString(),newSession.getDuration());
         cv.put(DbHelper.SessionColumns.SessionCount.toString(),newSession.getCount());
-        cv.put(DbHelper.SessionColumns.SessionIsFinished.toString(),(newSession.getSessionIsFinished() ? 1 : 0));
+        cv.put(DbHelper.SessionColumns.SessionIsFinished.toString(),(newSession.isFinished() ? 1 : 0));
         cv.put(DbHelper.SessionColumns.SessionAuthor.toString(),newSession.getAuthor());
         try{
             result = (int) db.insert(dbh.TBL_SESSIONS,null,cv);

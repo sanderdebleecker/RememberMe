@@ -28,9 +28,16 @@ public class SessionDA extends SessionRepository {
         db.endTransaction();
         return sessionId;
     }
+    public boolean update(Session session) {
+        if(session==null) { return false; }
+        return updateSession(session);
+    }
     public List<Integer> getAlbums(int sessionId) {
         return getAlbumIds(sessionId);
     }
 
 
+    public Session get(int mSession) {
+        return getSession(mSession);
+    }
 }
