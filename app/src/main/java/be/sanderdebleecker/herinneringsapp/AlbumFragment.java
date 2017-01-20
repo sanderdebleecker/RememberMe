@@ -2,6 +2,7 @@ package be.sanderdebleecker.herinneringsapp;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
@@ -10,6 +11,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -26,9 +28,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import be.sanderdebleecker.herinneringsapp.Core.Adapters.SelectableMemoryAdapter;
+import be.sanderdebleecker.herinneringsapp.Core.Implementation.GUI.DividerItemDecoration;
+import be.sanderdebleecker.herinneringsapp.Core.Implementation.GUI.RecyclerTouchListener;
 import be.sanderdebleecker.herinneringsapp.Core.MainApplication;
 import be.sanderdebleecker.herinneringsapp.Data.AlbumDA;
 import be.sanderdebleecker.herinneringsapp.Data.MemoryDA;
+import be.sanderdebleecker.herinneringsapp.Interfaces.IClickListener;
 import be.sanderdebleecker.herinneringsapp.Interfaces.INewAlbumFListener;
 import be.sanderdebleecker.herinneringsapp.Models.Album;
 import be.sanderdebleecker.herinneringsapp.Models.Memory;
@@ -71,7 +76,7 @@ public class AlbumFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_album, container, false);
-        init(v);
+        new Initializer().execute(v);
         if(albumId!=-1)
             loadAlbum();
         toggleLock();
@@ -134,14 +139,7 @@ public class AlbumFragment extends Fragment {
             mListener = null;
     }
     //lf m
-    private void init(View v) {
-        loadView(v);
-        createToolbar();
-        addEvents();
-        addActions();
-        getMemories();
-        loadList();
-    }
+
     private void loadView(View v) {
         recycAlbums = (RecyclerView) v.findViewById(R.id.album_recyclerview);
         etxtName = (TextInputEditText) v.findViewById(R.id.album_etxtName);
@@ -307,8 +305,35 @@ public class AlbumFragment extends Fragment {
         }
         return filteredModelList;
     }
-    //TASKS
 
+    //TASKS
+    private class Initializer extends AsyncTask<View, Void, Void> {
+        @Override
+        protected Void doInBackground(View... params) {
+            loadView(params[0]);
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            new MemoryLoader().execute();
+        }
+    }
+    private class MemoryLoader extends AsyncTask<Void,Void,Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            getMemories();
+            loadList();
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            createToolbar();
+            addEvents();
+            addActions();
+
+        }
+    }
 
 
 }
