@@ -32,7 +32,7 @@ public class SessionAlbumAdapter extends RecyclerView.Adapter<SessionAlbumAdapte
         }
     };
     private float mUnitSize = 0;
-    private int mColumns;
+    private int mColumns = 3;
     //CTOR
     public SessionAlbumAdapter(Context context) {
         this.mContext = context;

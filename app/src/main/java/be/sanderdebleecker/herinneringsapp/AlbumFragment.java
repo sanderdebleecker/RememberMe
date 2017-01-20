@@ -307,5 +307,8 @@ public class AlbumFragment extends Fragment {
         }
         return filteredModelList;
     }
+    //TASKS
+
+
 
 }

@@ -19,6 +19,7 @@ import be.sanderdebleecker.herinneringsapp.Models.Memory;
 import be.sanderdebleecker.herinneringsapp.R;
 
 //TODO DATETIME ZONES WONT BE INCORPERATED
+//TODO Heterogeneous  views
 
 public class TimelineMemoryAdapter extends RecyclerView.Adapter<TimelineMemoryAdapter.MyViewHolder>{
     private static final int IMG_WIDTH_PERCENT = 20;

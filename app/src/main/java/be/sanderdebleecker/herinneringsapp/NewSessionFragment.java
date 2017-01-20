@@ -139,7 +139,6 @@ public class NewSessionFragment extends Fragment implements IEndSessionPagerFLis
             int endPage = mPagerAdapter.getCount()-1;
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
             }
             @Override
             public void onPageSelected(int position) {
@@ -149,7 +148,6 @@ public class NewSessionFragment extends Fragment implements IEndSessionPagerFLis
             }
             @Override
             public void onPageScrollStateChanged(int state) {
-
             }
         });
     }
@@ -187,9 +185,10 @@ public class NewSessionFragment extends Fragment implements IEndSessionPagerFLis
     //Interfaces
     @Override
     public Session getSession() {
+        MainApplication app = (MainApplication) getContext().getApplicationContext();
         SessionDA sessionData = new SessionDA(getContext());
         sessionData.open();
-        Session currSession = sessionData.get(mSession);
+        Session currSession = sessionData.get(mSession,app.getCurrSession().getAuthIdentity());
         sessionData.close();
         return currSession;
     }

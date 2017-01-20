@@ -7,6 +7,7 @@ import java.util.List;
 import be.sanderdebleecker.herinneringsapp.Data.Repositories.SessionRepository;
 import be.sanderdebleecker.herinneringsapp.Models.Memory;
 import be.sanderdebleecker.herinneringsapp.Models.Session;
+import be.sanderdebleecker.herinneringsapp.Models.View.SessionVM;
 
 public class SessionDA extends SessionRepository {
 
@@ -37,7 +38,10 @@ public class SessionDA extends SessionRepository {
     }
 
 
-    public Session get(int mSession) {
-        return getSession(mSession);
+    public Session get(int mSession,int identity) {
+        return getSession(mSession,identity);
+    }
+    public List<SessionVM> get(int identity) {
+        return getSessions(identity);
     }
 }

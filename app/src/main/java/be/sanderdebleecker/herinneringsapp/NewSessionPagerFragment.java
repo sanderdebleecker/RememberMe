@@ -48,7 +48,6 @@ public class NewSessionPagerFragment extends SessionPagerFragment {
     private void loadView(View v) {
         mRecyclerView = (RecyclerView) v.findViewById(R.id.new_session_recyclerview);
         btnDate = (Button) v.findViewById(R.id.new_session_btnDate);
-        btnDate.setText(new SimpleDateFormat(DATEFORMAT, Locale.ENGLISH).format(mCalendar.getTime()));
         txtName =  (EditText) v.findViewById(R.id.new_session_txtName);
     }
     private void addCalendarEvent() {
@@ -121,6 +120,7 @@ public class NewSessionPagerFragment extends SessionPagerFragment {
 
         @Override
         protected void onPostExecute(Void aVoid) {
+            btnDate.setText(new SimpleDateFormat(DATEFORMAT, Locale.ENGLISH).format(mCalendar.getTime()));
             loadListLayout();
         }
     }

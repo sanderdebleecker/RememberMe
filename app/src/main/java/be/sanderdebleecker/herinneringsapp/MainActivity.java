@@ -37,7 +37,9 @@ import be.sanderdebleecker.herinneringsapp.Interfaces.IQueryableFragment;
 import be.sanderdebleecker.herinneringsapp.Models.NavItem;
 
 //TODO feedback when something is created after redirection
-
+//TODO make mainactivities fragments implement
+//TODO fix identity
+//TODO uuid , lastmod impl
 public class MainActivity extends AppCompatActivity implements IMemoriesFListener,IAlbumsFListener {
     public static final String EXTRA_ID_MEMORY = "EXTRA_ID_MEMORY";
     public static final String EXTRA_ID_ALBUM = "EXTRA_ID_ALBUM";
@@ -166,7 +168,23 @@ public class MainActivity extends AppCompatActivity implements IMemoriesFListene
         startActivity(intent);
     }
     private void loadSessionsFragment() {
-
+        FragmentManager fm = getSupportFragmentManager();
+        Fragment f = fm.findFragmentById(R.id.main_content);
+        if(f!=null) {
+            if(f instanceof SessionsFragment) {
+                return;
+            }else{
+                FragmentTransaction trans = fm.beginTransaction();
+                SessionsFragment fragm = SessionsFragment.newInstance();
+                trans.replace(R.id.main_content, fragm);
+                trans.commit();
+            }
+        }else{
+            FragmentTransaction trans = fm.beginTransaction();
+            SessionsFragment fragm = SessionsFragment.newInstance();
+            trans.add(R.id.main_content, fragm);
+            trans.commit();
+        }
     }
     private void loadFollowersFragment() {
         FragmentManager fm = getSupportFragmentManager();
@@ -262,6 +280,7 @@ public class MainActivity extends AppCompatActivity implements IMemoriesFListene
         searchView.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
+
                 mQueryableFragment.cancelQueryFragment();
                 return false;
             }
@@ -373,8 +392,12 @@ public class MainActivity extends AppCompatActivity implements IMemoriesFListene
             case Followers:
                 loadFollowersFragment();
                 break;
+            case Sessions:
+                loadSessionsFragment();
+                break;
             case NewSession:
                 loadNewSessionFragment();
+                break;
             default:
                 break;
         }
