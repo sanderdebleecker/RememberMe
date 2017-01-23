@@ -171,11 +171,10 @@ public class NewAlbumFragment extends Fragment {
     }
     private static List<SelectableMemory> filter(List<SelectableMemory> mems, String query) {
         final String lowerCaseQuery = query.toLowerCase();
-
         final List<SelectableMemory> filteredModelList = new ArrayList<>();
         for (SelectableMemory mem : mems) {
             final String text = mem.getTitle().toLowerCase();
-            if (text.contains(lowerCaseQuery)) {
+            if(text.contains(lowerCaseQuery)) {
                 filteredModelList.add(mem);
             }
         }
