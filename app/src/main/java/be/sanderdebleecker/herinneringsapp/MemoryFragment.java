@@ -72,9 +72,7 @@ public class MemoryFragment extends GenericMemoryFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v=  inflater.inflate(R.layout.fragment_memory, container, false);
-        loadView(v);
-        init();
-        loadMemory();
+        new Initializer().execute(v);
         return v;
     }
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -194,28 +192,6 @@ public class MemoryFragment extends GenericMemoryFragment {
         getActivity().invalidateOptionsMenu();
     }
     //CYCLE SUBMETHODS
-    protected void init() {
-        AsyncTask asyncInit = new AsyncTask() {
-            @Override
-            protected Object doInBackground(Object[] params) {
-                mMediaItem = new MediaItem();
-                initMedia();
-                // checkGPSSettings(); GUI interaction ?
-                addEvents();
-                createToolbar();
-                createBottomSheet();
-                return "Executed";
-            }
-
-            @Override
-            protected void onPostExecute(Object o) {
-                inflateBottomsheet(R.layout.bottomsheet_media);
-                toggleLock();
-            }
-        };
-        asyncInit.execute(); // can specify < Pars, Progress, Result > pars to solve warning
-        addActions();
-    }
     private void loadView(View v) {
         coordinatorLayoutNewMemoryF = (CoordinatorLayout) v.findViewById(R.id.memory_coordinatorLayout);
         mToolbar = (Toolbar) v.findViewById(R.id.memory_toolbarAdd);
@@ -228,7 +204,6 @@ public class MemoryFragment extends GenericMemoryFragment {
         txtvMedia = (TextView) v.findViewById(R.id.memory_txtvMedia);
         fabEdit = (FloatingActionButton) v.findViewById(R.id.fabEdit);
         fabDelete= (FloatingActionButton) v.findViewById(R.id.fabDelete);
-        btnDate.setText(new SimpleDateFormat(DATEFORMAT, Locale.ENGLISH).format(new Date()));
     }
     protected void addEvents() {
         imgvMedia.setOnClickListener(new View.OnClickListener() {
@@ -303,13 +278,13 @@ public class MemoryFragment extends GenericMemoryFragment {
         memoryDA.open();
         mMemory = memoryDA.get(memoryId);
         memoryDA.close();
-
+    }
+    private void showMemory() {
         etxtTitle.setText(mMemory.getTitle());
         etxtDescription.setText(mMemory.getDescription());
         btnDate.setText(mMemory.getDate());
         btnLocation.setText(mMemory.getLocation().getName());
         mMediaItem = new MediaItem(mMemory.getType(), mMemory.getPath());
-
         StorageHelper.loadMedia(getContext(),imgvMedia,new MediaItem(MediaItem.Type.valueOf(mMemory.getType()),mMemory.getPath()));
     }
     //GUI METHODS
@@ -330,11 +305,7 @@ public class MemoryFragment extends GenericMemoryFragment {
         });
         mBottomsheetBehavior.setPeekHeight(0);
     }
-    protected void inflateBottomsheet(int resource) {
-        mBottomsheet.removeAllViews();
-        LayoutInflater inflater = LayoutInflater.from(getActivity());
-        loadMediaView(inflater.inflate(resource, mBottomsheet));
-    }
+
     protected void openBottomSheet() {
         mBottomsheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
@@ -375,7 +346,7 @@ public class MemoryFragment extends GenericMemoryFragment {
         setHasOptionsMenu(true);
     }
 
-    // Misc
+    //Dialogs
     private AlertDialog GetDeleteMemoryDialog() {
         AlertDialog dialog =new AlertDialog.Builder(getContext())
                 //set message, title, and icon
@@ -400,8 +371,7 @@ public class MemoryFragment extends GenericMemoryFragment {
                 .create();
         return dialog;
     }
-    private AlertDialog GetDeleteFromTimelineDialog()
-    {
+    private AlertDialog GetDeleteFromTimelineDialog() {
         AlertDialog dialog =new AlertDialog.Builder(getContext())
                 //set message, title, and icon
                 .setTitle("Tijdlijn")
@@ -455,4 +425,38 @@ public class MemoryFragment extends GenericMemoryFragment {
                 .create();
         return dialog;
     }
+
+    //Tasks
+    public class Initializer extends AsyncTask<View,Void,Void> {
+        @Override
+        protected Void doInBackground(View... params) {
+            loadView(params[0]);
+            initMedia();
+            createBottomSheet();
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            new MemoryLoaderTask().execute();
+            inflateBottomsheet(R.layout.bottomsheet_media);
+            btnDate.setText(new SimpleDateFormat(DATEFORMAT, Locale.ENGLISH).format(new Date()));
+            createToolbar();
+            addEvents();
+            toggleLock();
+            addActions();
+        }
+    }
+    public class MemoryLoaderTask extends AsyncTask<Void,Void,Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            loadMemory();
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            showMemory();
+        }
+    }
+
+
 }

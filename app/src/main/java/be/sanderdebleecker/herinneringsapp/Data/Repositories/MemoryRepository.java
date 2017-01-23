@@ -18,7 +18,7 @@ import be.sanderdebleecker.herinneringsapp.Models.Memory;
 * low-level memory data-access
 * returns cursors
 * */
-
+//TODO : check creation of memory with location and retention of it through getMappedC()
 public class MemoryRepository extends BaseRepository {
     public MemoryRepository(Context context) {
         super(context);

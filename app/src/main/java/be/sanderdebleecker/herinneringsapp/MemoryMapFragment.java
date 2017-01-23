@@ -1,6 +1,7 @@
 package be.sanderdebleecker.herinneringsapp;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
@@ -33,11 +34,18 @@ public class MemoryMapFragment extends Fragment implements OnMapReadyCallback,IQ
     private static final LatLng DEFAULT_MAP_ORIGIN = new LatLng(50.70f,4.40f);
     private static final float DEFAULT_MAP_ZOOM = 7.00f;
     private BottomSheetBehavior mBottomsheetBehavior;
-    private Bundle bundleMap;
-    private MapView mapvMemories;
     private ViewGroup mBottomsheet;
-    private Marker mCurrMarker;
     private HashMap<Marker,Integer> mMarkers = new HashMap<>();
+    private Marker mCurrMarker;
+    private MapView mapvMemories;
+    private Bundle bundleMap;
+    private TextView txtvTitle;
+    private TextView txtvCreatorDate;
+    private TextView txtvDescr;
+    private TextView txtvLoc;
+    private ImageView imgvMedia;
+
+    private boolean performingMarkerLoad=false;
     //CTORS
     public MemoryMapFragment() {
     }
@@ -46,13 +54,28 @@ public class MemoryMapFragment extends Fragment implements OnMapReadyCallback,IQ
         return fragment;
     }
 
-    //LIFECYCLE
+    //Lifecycle
     public void onAttach(Context context) {
         super.onAttach(context);
+    }
+    public void onDetach() {
+        super.onDetach();
     }
     public void onStart() {
         super.onStart();
         mapvMemories.onStart();
+    }
+    public void onStop() {
+        super.onStop();
+        mapvMemories.onStop();
+    }
+    public void onResume() {
+        super.onResume();
+        mapvMemories.onResume();
+    }
+    public void onPause() {
+        mapvMemories.onPause();
+        super.onPause();
     }
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,28 +86,14 @@ public class MemoryMapFragment extends Fragment implements OnMapReadyCallback,IQ
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v =  inflater.inflate(R.layout.fragment_memory_map, container, false);
         loadView(v);
-        init();
-
+        initMap();
+        initBottomsheet();
+        loadBottomsheet();
         return v;
-    }
-    public void onResume() {
-        super.onResume();
-        mapvMemories.onResume();
-    }
-    public void onPause() {
-        mapvMemories.onPause();
-        super.onPause();
-    }
-    public void onStop() {
-        super.onStop();
-        mapvMemories.onStop();
     }
     public void onDestroy() {
         mapvMemories.onDestroy();
         super.onDestroy();
-    }
-    public void onDetach() {
-        super.onDetach();
     }
     public void onLowMemory() {
         super.onLowMemory();
@@ -93,9 +102,9 @@ public class MemoryMapFragment extends Fragment implements OnMapReadyCallback,IQ
         }
     }
     //METHODS
-    private void init() {
-        initMap();
-        initBottomsheet();
+    private void loadView(View v) {
+        mBottomsheet = (ViewGroup) v.findViewById(R.id.memory_map_bottomsheet);
+        mapvMemories = (MapView) v.findViewById(R.id.memory_map_mapvMemories);
     }
     private void initMap() {
         mapvMemories.onCreate(bundleMap);
@@ -112,37 +121,26 @@ public class MemoryMapFragment extends Fragment implements OnMapReadyCallback,IQ
     private void openBottomsheet() {
         mBottomsheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
-    private void loadView(View v) {
-        mBottomsheet = (ViewGroup) v.findViewById(R.id.memory_map_bottomsheet);
-        mapvMemories = (MapView) v.findViewById(R.id.memory_map_mapvMemories);
+    private void loadBottomsheet() {
+        txtvTitle = (TextView) mBottomsheet.findViewById(R.id.bottomsheet_memory_txtvTile);
+        txtvCreatorDate = (TextView) mBottomsheet.findViewById(R.id.bottomsheet_memory_txtvCreatorDate);
+        txtvDescr = (TextView) mBottomsheet.findViewById(R.id.bottomsheet_memory_txtvDescription);
+        txtvLoc = (TextView) mBottomsheet.findViewById(R.id.bottomsheet_memory_txtvLocation);
+        imgvMedia = (ImageView) mBottomsheet.findViewById(R.id.bottomsheet_memory_imgvMemory);
     }
-    //MAP METHODS
+    //Map
     @Override
     public void onMapReady(GoogleMap map) {
-        loadMarkers(map);
+        new CreateMarkersTask().execute(map);
         map.moveCamera(CameraUpdateFactory.newLatLng(DEFAULT_MAP_ORIGIN));
         map.moveCamera(CameraUpdateFactory.zoomTo(DEFAULT_MAP_ZOOM));
-
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             public boolean onMarkerClick(Marker marker) {
-                if(mCurrMarker!=null && marker.getTitle().equals(mCurrMarker.getTitle()) ) {
-                    int id = mMarkers.get(marker);
-                    MemoryDA memoryDA = new MemoryDA(getContext());
-                    memoryDA.open();
-                    Memory m = memoryDA.get(id);
-                    memoryDA.close();
-                    loadMemory(m);
-                    openBottomsheet();
-                    mCurrMarker=null;
-                }else{
-                    mCurrMarker = marker;
-                    mCurrMarker.showInfoWindow();
-                }
-                return true;
+                return selectMarker(marker);
             }
         });
     }
-    private void loadMarkers(GoogleMap map) {
+    private void createMarkers(GoogleMap map) {
         MemoryDA memoryDA = new MemoryDA(getContext());
         memoryDA.open();
         ArrayList<MappedMemory> memories = memoryDA.getMapped();
@@ -152,24 +150,70 @@ public class MemoryMapFragment extends Fragment implements OnMapReadyCallback,IQ
             mMarkers.put(m,memory.getId());
         }
     }
+    private boolean selectMarker(Marker marker) {
+        boolean doubleClicked = mCurrMarker!=null && marker.getTitle().equals(mCurrMarker.getTitle());
+        if(doubleClicked) {
+            //when you click twice on the marker
+            int id = mMarkers.get(marker);
+            new LoadMarkerTask().execute(id);
+        }else{
+            //when you click once
+            mCurrMarker = marker;
+            mCurrMarker.showInfoWindow();
+        }
+        return true;
+    }
+    private Memory loadMarker(int id) {
+        MemoryDA memoryDA = new MemoryDA(getContext());
+        memoryDA.open();
+        Memory m = memoryDA.get(id);
+        memoryDA.close();
+        openBottomsheet();
+        mCurrMarker=null;
+        return m;
+    }
     private void loadMemory(Memory mem) {
-        TextView txtvTitle = (TextView) mBottomsheet.findViewById(R.id.bottomsheet_memory_txtvTile);
-        TextView txtvCreatorDate = (TextView) mBottomsheet.findViewById(R.id.bottomsheet_memory_txtvCreatorDate);
-        TextView txtvDescr = (TextView) mBottomsheet.findViewById(R.id.bottomsheet_memory_txtvDescription);
-        TextView txtvLoc = (TextView) mBottomsheet.findViewById(R.id.bottomsheet_memory_txtvLocation);
-        ImageView imgvMedia = (ImageView) mBottomsheet.findViewById(R.id.bottomsheet_memory_imgvMemory);
-
         txtvTitle.setText(mem.getTitle());
         txtvCreatorDate.setText(mem.getCreator()+ " - " + mem.getDate());
         txtvDescr.setText(mem.getDescription());
         txtvLoc.setText(mem.getLocation().getName());
-
         StorageHelper.loadMedia(getContext(),imgvMedia,new MediaItem(mem.getType(),mem.getPath()));
     }
+    //Interface
     public void queryFragment(String filter) {
 
     }
     public void cancelQueryFragment() {
 
+    }
+    //Tasks
+    public class CreateMarkersTask extends AsyncTask<GoogleMap,Void,Void> {
+        @Override
+        protected Void doInBackground(GoogleMap... params) {
+            createMarkers(params[0]);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+        }
+    }
+    public class LoadMarkerTask extends AsyncTask<Integer,Void,Memory> {
+        @Override
+        protected Memory doInBackground(Integer... params) {
+            if(!performingMarkerLoad) {
+                performingMarkerLoad=true;
+                return loadMarker(params[0]);
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Memory memory) {
+            performingMarkerLoad=false;
+            if(memory!=null) {
+                loadMemory(memory);
+            }
+        }
     }
 }

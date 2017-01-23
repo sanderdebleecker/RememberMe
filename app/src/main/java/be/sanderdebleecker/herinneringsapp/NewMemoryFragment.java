@@ -49,29 +49,23 @@ import static android.app.Activity.RESULT_OK;
 public class NewMemoryFragment extends GenericMemoryFragment {
     private String username;
 
-    //CTOR
+    //Ctor
     public NewMemoryFragment() {
     }
     public static NewMemoryFragment newInstance( ) {
         NewMemoryFragment frag = new NewMemoryFragment();
         return frag;
     }
-    //LIFECYCLE
-
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+    //Lifecycle
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         getActivity().getMenuInflater().inflate(R.menu.menu_add,menu);
     }
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v=  inflater.inflate(R.layout.fragment_new_memory, container, false);
-        loadUser();
         new Initializer().execute(v);
         return v;
     }
-
-    //LIFECYCLE EVENTS
+    //Lifecycle events
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == RESULT_OK) {
@@ -145,11 +139,7 @@ public class NewMemoryFragment extends GenericMemoryFragment {
         }
         return super.onOptionsItemSelected(item);
     }
-    //CYCLE SUBMETHODS
-    private void loadUser() {
-        MainApplication app = (MainApplication) getContext().getApplicationContext();
-        username = app.getCurrSessionValue();
-    }
+    //Lifecycle methods
     private void loadView(View v) {
         coordinatorLayoutNewMemoryF = (CoordinatorLayout) v.findViewById(R.id.coordinatorLayoutNewMemoryF);
         mToolbar = (Toolbar) v.findViewById(R.id.new_memory_toolbar);
@@ -161,6 +151,10 @@ public class NewMemoryFragment extends GenericMemoryFragment {
         btnLocation = (Button) v.findViewById(R.id.btnLocation);
         txtvMedia = (TextView) v.findViewById(R.id.txtvMedia);
 
+    }
+    private void loadUser() {
+        MainApplication app = (MainApplication) getContext().getApplicationContext();
+        username = app.getCurrSessionValue();
     }
     //MEDIA METHODS
 
@@ -174,7 +168,6 @@ public class NewMemoryFragment extends GenericMemoryFragment {
                 if (newState == BottomSheetBehavior.STATE_DRAGGING && recorder.isRecording()) {
                     mBottomsheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                 }
-
             }
             @Override
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
@@ -183,11 +176,7 @@ public class NewMemoryFragment extends GenericMemoryFragment {
         });
         mBottomsheetBehavior.setPeekHeight(0);
     }
-    protected void inflateBottomsheet(int resource) {
-        mBottomsheet.removeAllViews();
-        LayoutInflater inflater = LayoutInflater.from(getActivity());
-        loadMediaView(inflater.inflate(resource, mBottomsheet));
-    }
+
     protected void openBottomSheet() {
         mBottomsheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
@@ -210,22 +199,21 @@ public class NewMemoryFragment extends GenericMemoryFragment {
     }
     //Tasks
     private class Initializer extends AsyncTask<View, Void,Void> {
-
         @Override
         protected Void doInBackground(View... views) {
+            loadUser();
             loadView(views[0]);
-            mMediaItem = new MediaItem();
             initMedia();
-            addEvents();
-            createBottomSheet();
             return null;
         }
-
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            inflateBottomsheet(R.layout.bottomsheet_media);
             btnDate.setText(new SimpleDateFormat(DATEFORMAT, Locale.ENGLISH).format(new Date()));
             createToolbar();
+            createBottomSheet();
+            addEvents();
         }
     }
 }

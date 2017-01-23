@@ -184,6 +184,7 @@ public class GenericMemoryFragment extends Fragment {
                 btnDate.setText(new SimpleDateFormat(DATEFORMAT, Locale.ENGLISH).format(mCalendar.getTime()));
             }
         };
+        mMediaItem = new MediaItem();
         recorder = new Recorder();
         mStorageHelper = new StorageHelper();
     }
