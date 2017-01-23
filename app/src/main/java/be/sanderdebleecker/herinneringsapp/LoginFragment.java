@@ -22,7 +22,7 @@ import be.sanderdebleecker.herinneringsapp.Interfaces.ILoginFListener;
 import be.sanderdebleecker.herinneringsapp.Models.View.UserVM;
 
 public class LoginFragment extends Fragment {
-    boolean performingLogin=false;
+    private boolean performingLogin=false;
     private ILoginFListener listener;
     private TextView btnNewAccount;
     private Button btnLogin;
