@@ -38,6 +38,7 @@ import be.sanderdebleecker.herinneringsapp.Interfaces.INewAlbumFListener;
 import be.sanderdebleecker.herinneringsapp.Models.Album;
 import be.sanderdebleecker.herinneringsapp.Models.Memory;
 import be.sanderdebleecker.herinneringsapp.Models.SelectableMemory;
+import be.sanderdebleecker.herinneringsapp.Models.View.AlbumVM;
 
 public class AlbumFragment extends Fragment {
     private static final int COLUMNS = 3;
@@ -61,7 +62,6 @@ public class AlbumFragment extends Fragment {
         frag.albumId = albumId;
         return frag;
     }
-
     //lf
     @Override
     public void onAttach(Context context) {
@@ -77,9 +77,6 @@ public class AlbumFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_album, container, false);
         new Initializer().execute(v);
-        if(albumId!=-1)
-            loadAlbum();
-        toggleLock();
         return v;
     }
 
@@ -204,13 +201,14 @@ public class AlbumFragment extends Fragment {
             }
         });
     }
-    private void loadList() {
-        //Set adapter
-        mAdapter = new SelectableMemoryAdapter(getContext(),COLUMNS);
+    private void loadAdapter() {
         recycAlbums.setAdapter(mAdapter);
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(),COLUMNS);
         recycAlbums.setLayoutManager(mLayoutManager);
-        recycAlbums.setItemAnimator(new DefaultItemAnimator());
+    }
+    private void loadList() {
+        //Set adapter
+        mAdapter = new SelectableMemoryAdapter(getContext(),COLUMNS);
         //Load
         mAdapter.add(mMemories);
     }
@@ -223,16 +221,16 @@ public class AlbumFragment extends Fragment {
         memoriesData.close();
     }
 
-    private void loadAlbum() {
+    private AlbumVM loadAlbum() {
+        AlbumVM viewmodel = new AlbumVM();
         mAdapter.setLockedSelection(true);
         //DbService db = new DbService(getContext());
         AlbumDA albumsData = new AlbumDA(getContext());
         albumsData.open();
-        Album a = albumsData.get(albumId);
-        List<Integer> selectedMems = albumsData.getSelectedMemories(albumId);
+        viewmodel.setAlbum(albumsData.get(albumId));
+        viewmodel.setSelectedMemories(albumsData.getSelectedMemories(albumId));
         albumsData.close();
-        etxtName.setText(a.getName());
-        mAdapter.filterSelected(selectedMems);
+        return viewmodel;
     }
     private boolean validateAlbum() {
         boolean hasName = etxtName.getText().toString().trim().length()>0;
@@ -268,8 +266,22 @@ public class AlbumFragment extends Fragment {
         loadAlbum();
         getActivity().invalidateOptionsMenu();
     }
-    private AlertDialog GetDeleteAlbumDialog()
-    {
+
+    private static List<SelectableMemory> filter(List<SelectableMemory> mems, String query) {
+        final String lowerCaseQuery = query.toLowerCase();
+
+        final List<SelectableMemory> filteredModelList = new ArrayList<>();
+        for (SelectableMemory mem : mems) {
+            final String text = mem.getTitle().toLowerCase();
+            if (text.contains(lowerCaseQuery)) {
+                filteredModelList.add(mem);
+            }
+        }
+        return filteredModelList;
+    }
+
+    //DIALOGS
+    private AlertDialog GetDeleteAlbumDialog() {
         AlertDialog dialog =new AlertDialog.Builder(getContext())
                 //set message, title, and icon
                 .setTitle("AMAlbum dialoog")
@@ -293,19 +305,6 @@ public class AlbumFragment extends Fragment {
                 .create();
         return dialog;
     }
-    private static List<SelectableMemory> filter(List<SelectableMemory> mems, String query) {
-        final String lowerCaseQuery = query.toLowerCase();
-
-        final List<SelectableMemory> filteredModelList = new ArrayList<>();
-        for (SelectableMemory mem : mems) {
-            final String text = mem.getTitle().toLowerCase();
-            if (text.contains(lowerCaseQuery)) {
-                filteredModelList.add(mem);
-            }
-        }
-        return filteredModelList;
-    }
-
     //TASKS
     private class Initializer extends AsyncTask<View, Void, Void> {
         @Override
@@ -331,9 +330,30 @@ public class AlbumFragment extends Fragment {
             createToolbar();
             addEvents();
             addActions();
+            loadAdapter();
 
+            if(albumId!=-1)
+                new AlbumLoader().execute();
+        }
+    }
+    private class AlbumLoader extends AsyncTask<Void,Void,AlbumVM> {
+        @Override
+        protected AlbumVM doInBackground(Void... params) {
+            return loadAlbum();
+        }
+
+        @Override
+        protected void onPostExecute(AlbumVM result) {
+            super.onPostExecute(result);
+            toggleLock();
+            etxtName.setText(result.getAlbum().getName());
+            mAdapter.filterSelected(result.getSelectedMemories());
         }
     }
 
 
-}
+
+
+
+
+    }
