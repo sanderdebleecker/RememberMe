@@ -1,6 +1,7 @@
 package be.sanderdebleecker.herinneringsapp;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
@@ -40,6 +41,7 @@ public class NewAlbumFragment extends Fragment {
     private String username;
     private List<SelectableMemory> mMemories;
     private INewAlbumFListener mListener;
+    private boolean performingQuery = false;
 
     //C
     public static NewAlbumFragment newInstance() {
@@ -58,20 +60,18 @@ public class NewAlbumFragment extends Fragment {
             throw new ClassCastException("Activity must impl INewAlbumFListener");
         }
     }
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_new_album, container, false);
-        init(v);
-        return v;
-    }
-
     @Override
     public void onDetach() {
         super.onDetach();
         if(mListener!=null) {
             mListener=null;
         }
+    }
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.fragment_new_album, container, false);
+        new Initializer().execute(v);
+        return v;
     }
 
     //LC E
@@ -85,35 +85,29 @@ public class NewAlbumFragment extends Fragment {
                 mListener.cancel();
                 break;
             case R.id.action_add:
-                if(validateAlbum() && username!="") {
-                    AlbumDA albumDA = new AlbumDA(getContext());
-                    Album newAlbum = new Album();
-                    List<Integer> selMems = mAdapter.getSelectedMemories();
-                    Memory thumbnail = new Memory();
-                    thumbnail.setId(selMems.get(0));
-                    newAlbum.setName(etxtName.getText().toString().trim());
-                    newAlbum.setAuthor(username);
-                    newAlbum.setThumbnail(thumbnail);
-
-                    albumDA.open();
-                    boolean success = albumDA.insert(newAlbum,selMems);
-                    albumDA.close();
-
-
-
-
-                    if(success) {
-                        mListener.albumSaved();
-                    }else{
-                        Toast.makeText(getContext(),"AMAlbum kon niet worden aangemaakt!",Toast.LENGTH_LONG).show();
-                    }
-
-                }else{
-
+                if(validateAlbum() && username!="" && !performingQuery) {
+                    performingQuery=true;
+                    new AddAlbumTask().execute();
                 }
         }
         return super.onOptionsItemSelected(item);
     }
+
+    private boolean insertAlbum() {
+        AlbumDA albumDA = new AlbumDA(getContext());
+        Album newAlbum = new Album();
+        List<Integer> selMems = mAdapter.getSelectedMemories();
+        Memory thumbnail = new Memory();
+        thumbnail.setId(selMems.get(0));
+        newAlbum.setName(etxtName.getText().toString().trim());
+        newAlbum.setAuthor(username);
+        newAlbum.setThumbnail(thumbnail);
+        albumDA.open();
+        boolean success = albumDA.insert(newAlbum,selMems);
+        albumDA.close();
+        return success;
+    }
+
     private boolean validateAlbum() {
         boolean hasName = etxtName.getText().toString().trim().length()>0;
         if(!hasName) {
@@ -126,12 +120,6 @@ public class NewAlbumFragment extends Fragment {
         return hasName && hasSelectedMemories;
     }
     //M
-    private void init(View v) {
-        loadView(v);
-        loadList();
-        createToolbar();
-        addEvents();
-    }
     private void loadView(View v) {
         recycAlbums = (RecyclerView) v.findViewById(R.id.new_album_recyclerview);
         etxtName = (TextInputEditText) v.findViewById(R.id.new_album_etxtName);
@@ -139,21 +127,19 @@ public class NewAlbumFragment extends Fragment {
         mToolbar = (Toolbar) v.findViewById(R.id.new_album_toolbar);
     }
     private void loadList() {
-        //Collect data
         MainApplication app = (MainApplication) getContext().getApplicationContext();
         username = app.getCurrSessionValue();
         MemoryDA memoryDA = new MemoryDA(getContext());
         memoryDA.open();
         mMemories = memoryDA.getSelectabl(app.getCurrSession().getAuthIdentity());
         memoryDA.close();
-        //Set adapter
         mAdapter = new SelectableMemoryAdapter(getContext(),COLUMNS);
+        mAdapter.add(mMemories);
+    }
+    private void loadAdapter() {
         recycAlbums.setAdapter(mAdapter);
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(),COLUMNS);
         recycAlbums.setLayoutManager(mLayoutManager);
-        recycAlbums.setItemAnimator(new DefaultItemAnimator());
-        //Load
-        mAdapter.add(mMemories);
     }
     protected void createToolbar() {
         AppCompatActivity activity = (AppCompatActivity) getActivity();
@@ -172,8 +158,10 @@ public class NewAlbumFragment extends Fragment {
             }
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                final List<SelectableMemory> filteredMemories = filter(mMemories,s.toString());
-                mAdapter.replaceAll(filteredMemories);
+                if(!performingQuery) {
+                    performingQuery=true;
+                    new FilterTask().execute(s.toString());
+                }
             }
             @Override
             public void afterTextChanged(Editable s) {
@@ -193,6 +181,46 @@ public class NewAlbumFragment extends Fragment {
         }
         return filteredModelList;
     }
-
-
+    //TASKS
+    public class Initializer extends AsyncTask<View,Void,Void> {
+        @Override
+        protected Void doInBackground(View... params) {
+            loadView(params[0]);
+            loadList();
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            loadAdapter();
+            createToolbar();
+            addEvents();
+        }
+    }
+    public class AddAlbumTask extends AsyncTask<View,Void,Boolean> {
+        @Override
+        protected Boolean doInBackground(View... params) {
+            return insertAlbum();
+        }
+        @Override
+        protected void onPostExecute(Boolean result) {
+            performingQuery=false;
+            boolean success = insertAlbum();
+            if(success) {
+                mListener.albumSaved();
+            }else{
+                Toast.makeText(getContext(),"AMAlbum kon niet worden aangemaakt!",Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+    public class FilterTask extends AsyncTask<String,Void,List<SelectableMemory>> {
+        @Override
+        protected List<SelectableMemory> doInBackground(String... params) {
+            return filter(mMemories,params[0]);
+        }
+        @Override
+        protected void onPostExecute(List<SelectableMemory> selectableMemories) {
+            performingQuery=false;
+            mAdapter.replaceAll(selectableMemories);
+        }
+    }
 }
