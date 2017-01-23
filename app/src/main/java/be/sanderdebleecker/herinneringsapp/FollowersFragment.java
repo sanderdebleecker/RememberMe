@@ -1,6 +1,7 @@
 package be.sanderdebleecker.herinneringsapp;
 
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -37,7 +38,7 @@ public class FollowersFragment extends Fragment implements IQueryableFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_followers, container, false);
         setHasOptionsMenu(true);
-        init(v);
+        new Initializer().execute(v);
         return v;
     }
     @Override
@@ -47,10 +48,6 @@ public class FollowersFragment extends Fragment implements IQueryableFragment {
         sortItem.setVisible(false);
     }
     //LF M
-    public void init(View v) {
-        loadView(v);
-        loadList();
-    }
     private void loadView(View v) {
         recycFollowers = (RecyclerView) v.findViewById(R.id.recyc_followers);
     }
@@ -60,12 +57,13 @@ public class FollowersFragment extends Fragment implements IQueryableFragment {
         //mTrusts = db.getTrustList(app.getCurrSessionValue());
         //db.close();
         mAdapter = new FollowerAdapter(getContext(), mTrusts);
+    }
+    private void loadAdapter() {
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         recycFollowers.setLayoutManager(mLayoutManager);
         recycFollowers.setItemAnimator(new DefaultItemAnimator());
         recycFollowers.setAdapter(mAdapter);
     }
-
     @Override
     public void queryFragment(String filter) {
 
@@ -74,5 +72,18 @@ public class FollowersFragment extends Fragment implements IQueryableFragment {
     public void cancelQueryFragment() {
 
     }
+    //tasks
+    private class Initializer extends AsyncTask<View,Void,Void> {
+        @Override
+        protected Void doInBackground(View... params) {
+            loadView(params[0]);
+            loadList();
+            return null;
+        }
 
+        @Override
+        protected void onPostExecute(Void result) {
+            loadAdapter();
+        }
+    }
 }

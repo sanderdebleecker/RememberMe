@@ -37,14 +37,56 @@ public class UsersFragment extends Fragment {
         UsersFragment fragment = new UsersFragment();
         return fragment;
     }
-    //LIFECYCLE
+    //lf
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            mListener = (IUserFListener) context;
+        } catch(ClassCastException ex) {
+            throw new ClassCastException(context.getPackageName()+" : Must implement IUserFListener.");
+        }
+    }
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener =null;
+    }
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View v = inflater.inflate(R.layout.fragment_users, container, false);
+        new Initializer().execute(v);
+        return v;
+    }
+    //lf m
+    private void loadView(View v) {
+        recycUsers = (RecyclerView) v.findViewById(R.id.recyc_users);
+        btnOtherAccount = (TextView) v.findViewById(R.id.btnOtherAccount);
+        btnNewAccount = (Button) v.findViewById(R.id.btnNewAccount);
+    }
+    private void addEvents() {
+        btnOtherAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onBackToLogin();
+            }
+        });
+        btnNewAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onBackToRegister();
+            }
+        });
     }
     private void loadList(){
+        UserDA usersData = new UserDA(getContext());
+        usersData.open();
+        userVMs = usersData.getAll();
+        usersData.close();
         adapter = new UserAdapter(userVMs);
-        //was applicationcontext
+    }
+    private void loadAdapter() {
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         recycUsers.setLayoutManager(mLayoutManager);
         recycUsers.setItemAnimator(new DefaultItemAnimator());
@@ -61,68 +103,21 @@ public class UsersFragment extends Fragment {
 
             }
         }));
-
-    }
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_users, container, false);
-        recycUsers = (RecyclerView) v.findViewById(R.id.recyc_users);
-        btnOtherAccount = (TextView) v.findViewById(R.id.btnOtherAccount);
-        btnNewAccount = (Button) v.findViewById(R.id.btnNewAccount);
-        // loadView(v);
-        addEvents();
-        new LoadListTask().execute();
-        return v;
     }
 
-    private void addEvents() {
-        btnOtherAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.onBackToLogin();
-            }
-        });
-        btnNewAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.onBackToRegister();
-            }
-        });
-    }
-     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        try {
-            mListener = (IUserFListener) context;
-        } catch(ClassCastException ex) {
-            throw new ClassCastException(context.getPackageName()+" : Must implement IUserFListener.");
-        }
-    }
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener =null;
-    }
-
-    //ASYNC
-    public class LoadListTask extends AsyncTask<Void, Void, Void> {
-
-        public LoadListTask() {
-        }
+    //Tasks
+    public class Initializer extends AsyncTask<View, Void, Void> {
         @Override
-        protected Void doInBackground(Void... arg0) {
-            UserDA usersData = new UserDA(getContext());
-            usersData.open();
-            userVMs = usersData.getAll();
-            usersData.close();
+        protected Void doInBackground(View... params) {
+            loadView(params[0]);
+            loadList();
             return null;
         }
-
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            loadList();
+            loadAdapter();
+            addEvents();
         }
     }
 

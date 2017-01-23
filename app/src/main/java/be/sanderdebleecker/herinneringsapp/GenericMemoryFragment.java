@@ -77,61 +77,8 @@ public class GenericMemoryFragment extends Fragment {
     protected MediaItem mMediaItem;
     protected DatePickerDialog.OnDateSetListener date;
 
-    //Media Methods
 
-    protected void confirmAudioSave() {
-        mBottomsheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        Snackbar snack = Snackbar.make(getActivity().findViewById(R.id.linearlayoutNewMemoryFContent),"Nieuw opname :",Snackbar.LENGTH_LONG).setAction("Opslaan", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getActivity(),getString(R.string.audioSaved),Toast.LENGTH_LONG).show();
-                mStorageHelper.saveAudio();
-                File audioFile = mStorageHelper.getFile();
-                mMediaItem = new MediaItem(MediaItem.Type.AUDIO,audioFile.getPath());
-                imgvMedia.setImageDrawable(ContextCompat.getDrawable(getContext(),R.drawable.ic_mic_black_24dp));
-                txtvMedia.setText(String.format("%s%s", getString(R.string.audioRecording), recorder.getDurationString()));
-                //set thumbnail here
-            }
-        });
-        snack.getView().addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
-            public void onViewAttachedToWindow(View v) {
-            }
-            public void onViewDetachedFromWindow(View v) {
-                //will cancel audio unless saved
-                mStorageHelper.cancelAudio();
-            }
-        });
-        snack.show();
-    }
-    protected void openCamera() {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        //imageFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),  "Pic_"+System.currentTimeMillis()+".jpg");
-        //intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(imageFile));
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, mStorageHelper.newImage());
-        startActivityForResult(intent, TAKE_PICTURE_REQUEST);
-    }
-    protected void handleCameraResult() {
-        if (mStorageHelper.hasFile()) {
-            File imageFile;
-            try {
-                imageFile = mStorageHelper.getFile();
-                Picasso.with(getActivity()).load(imageFile).into(imgvMedia);
-                //File f = new File()
-                mMediaItem.setPath(imageFile.getPath());
-                mMediaItem.setType(MediaItem.Type.IMAGE);
-            } catch (Exception ex) {
-                Toast.makeText(getActivity(), "Foto werdt niet aan gallerij toegevoegd", Toast.LENGTH_LONG).show();
-            }
-        } else {
-            Toast.makeText(getActivity(), "Foto werdt niet opgeslaan", Toast.LENGTH_LONG).show();
-        }
-    }
-    protected void browseGallery() {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(intent, GALLERY_PICKER_REQUEST);
-    }
-
-    //Subcycle
+    //lifecycle
     public void onAttach(Context context) {
         super.onAttach(context);
         try{
@@ -140,7 +87,11 @@ public class GenericMemoryFragment extends Fragment {
             throw new ClassCastException(getActivity().getPackageName()+" must impl INewMemoryFListener");
         }
     }
-
+    public void onDetach() {
+        super.onDetach();
+        mListener =null;
+    }
+    //lifecycle events
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -150,20 +101,7 @@ public class GenericMemoryFragment extends Fragment {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
-
-    protected void initMedia() {
-        date = new DatePickerDialog.OnDateSetListener() {
-            public void onDateSet(DatePicker view, int year, int monthOfYear,
-                                  int dayOfMonth) {
-                mCalendar.set(Calendar.YEAR, year);
-                mCalendar.set(Calendar.MONTH, monthOfYear);
-                mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                btnDate.setText(new SimpleDateFormat(DATEFORMAT, Locale.ENGLISH).format(mCalendar.getTime()));
-            }
-        };
-        recorder = new Recorder();
-        mStorageHelper = new StorageHelper();
-    }
+    //lifecycle methods
     protected void addEvents() {
         imgvMedia.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -235,11 +173,71 @@ public class GenericMemoryFragment extends Fragment {
             }
         });
     }
-    public void onDetach() {
-        super.onDetach();
-        mListener =null;
+    //Media Methods
+    protected void initMedia() {
+        date = new DatePickerDialog.OnDateSetListener() {
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                  int dayOfMonth) {
+                mCalendar.set(Calendar.YEAR, year);
+                mCalendar.set(Calendar.MONTH, monthOfYear);
+                mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                btnDate.setText(new SimpleDateFormat(DATEFORMAT, Locale.ENGLISH).format(mCalendar.getTime()));
+            }
+        };
+        recorder = new Recorder();
+        mStorageHelper = new StorageHelper();
     }
-
+    protected void confirmAudioSave() {
+        mBottomsheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        Snackbar snack = Snackbar.make(getActivity().findViewById(R.id.linearlayoutNewMemoryFContent),"Nieuw opname :",Snackbar.LENGTH_LONG).setAction("Opslaan", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getActivity(),getString(R.string.audioSaved),Toast.LENGTH_LONG).show();
+                mStorageHelper.saveAudio();
+                File audioFile = mStorageHelper.getFile();
+                mMediaItem = new MediaItem(MediaItem.Type.AUDIO,audioFile.getPath());
+                imgvMedia.setImageDrawable(ContextCompat.getDrawable(getContext(),R.drawable.ic_mic_black_24dp));
+                txtvMedia.setText(String.format("%s%s", getString(R.string.audioRecording), recorder.getDurationString()));
+                //set thumbnail here
+            }
+        });
+        snack.getView().addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+            public void onViewAttachedToWindow(View v) {
+            }
+            public void onViewDetachedFromWindow(View v) {
+                //will cancel audio unless saved
+                mStorageHelper.cancelAudio();
+            }
+        });
+        snack.show();
+    }
+    protected void openCamera() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        //imageFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),  "Pic_"+System.currentTimeMillis()+".jpg");
+        //intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(imageFile));
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, mStorageHelper.newImage());
+        startActivityForResult(intent, TAKE_PICTURE_REQUEST);
+    }
+    protected void handleCameraResult() {
+        if (mStorageHelper.hasFile()) {
+            File imageFile;
+            try {
+                imageFile = mStorageHelper.getFile();
+                Picasso.with(getActivity()).load(imageFile).into(imgvMedia);
+                //File f = new File()
+                mMediaItem.setPath(imageFile.getPath());
+                mMediaItem.setType(MediaItem.Type.IMAGE);
+            } catch (Exception ex) {
+                Toast.makeText(getActivity(), "Foto werdt niet aan gallerij toegevoegd", Toast.LENGTH_LONG).show();
+            }
+        } else {
+            Toast.makeText(getActivity(), "Foto werdt niet opgeslaan", Toast.LENGTH_LONG).show();
+        }
+    }
+    protected void browseGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, GALLERY_PICKER_REQUEST);
+    }
     //GUI
     protected void createBottomSheet() {
         View bottomSheet = coordinatorLayoutNewMemoryF.findViewById(R.id.bottomsheet);
@@ -262,7 +260,6 @@ public class GenericMemoryFragment extends Fragment {
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         loadMediaView(inflater.inflate(resource, mBottomsheet));
     }
-
     protected void openBottomSheet() {
         mBottomsheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
