@@ -1,10 +1,12 @@
 package be.sanderdebleecker.herinneringsapp;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 
 import be.sanderdebleecker.herinneringsapp.Core.MainApplication;
 import be.sanderdebleecker.herinneringsapp.Data.DummyDA;
@@ -20,6 +22,9 @@ public class LoginActivity extends AppCompatActivity implements ILoginFListener,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        new Initializer().execute();
+    }
+    private void load() {
         MainApplication app = (MainApplication) getApplicationContext();
         UserDA usersData = new UserDA(this);
         usersData.open();
@@ -46,14 +51,13 @@ public class LoginActivity extends AppCompatActivity implements ILoginFListener,
             }
         }
     }
-
     //CONTROLLER
     public void start() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish();
     }
-    //NAV
+    //Fragments
     public void loadRegisterF() {
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction trans = fm.beginTransaction();
@@ -64,15 +68,15 @@ public class LoginActivity extends AppCompatActivity implements ILoginFListener,
         FragmentTransaction trans = fm.beginTransaction();
         trans.replace(R.id.activity_login,LoginFragment.newInstance()).commit();
     }
-    //INTERFACES
+    //Interfaces
     @Override
     public void toRegister() {
         loadRegisterF();
     }
     @Override
-    public void login(String user, int id) {
+    public void login(ClientSession loginSession) {
         MainApplication app = (MainApplication) getApplicationContext();
-        app.setCurrSession(new ClientSession(user,id));
+        app.setCurrSession(loginSession);
         start();
     }
     @Override
@@ -97,4 +101,16 @@ public class LoginActivity extends AppCompatActivity implements ILoginFListener,
     public void onBackToRegister() {
         loadRegisterF();
     }
+    //Tasks
+    private class Initializer extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            load();
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+        }
+    }
+
 }

@@ -1,7 +1,6 @@
 package be.sanderdebleecker.herinneringsapp.Helpers.Security;
 
 public class ClientSession {
-    public static final String EXTRA_CLIENT_SESSION = "be.quindo.herinneringsapp.loginactivity.clientsession";
     private String authUsername;
     private int authIdentity;
     private Modes mode;
