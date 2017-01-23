@@ -24,26 +24,27 @@ public class LoginActivity extends AppCompatActivity implements ILoginFListener,
         setContentView(R.layout.activity_login);
         new Initializer().execute();
     }
-    private void load() {
-        MainApplication app = (MainApplication) getApplicationContext();
+    private int load() {
         UserDA usersData = new UserDA(this);
         usersData.open();
         int userCount = usersData.count();
+        usersData.close();
+        return userCount;
+    }
+    private void onLoaded(int userCount) {
+        MainApplication app = (MainApplication) getApplicationContext();
         if(userCount==0) {
-            DummyDA dummyData = new DummyDA(this);
+            new DummyDA(this);
         }
         if(app.getCurrSession()!=null) {
-            usersData.close();
             start();
         } else{
             if(userCount>0) {
-                usersData.close();
                 FragmentManager fm = getSupportFragmentManager();
                 FragmentTransaction trans = fm.beginTransaction();
                 trans.add(R.id.activity_login,UsersFragment.newInstance());
                 trans.commit();
             }else{
-                usersData.close();
                 FragmentManager fm = getSupportFragmentManager();
                 FragmentTransaction trans = fm.beginTransaction();
                 trans.add(R.id.activity_login,LoginFragment.newInstance());
@@ -51,7 +52,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginFListener,
             }
         }
     }
-    //CONTROLLER
+    //Controller
     public void start() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
@@ -102,14 +103,14 @@ public class LoginActivity extends AppCompatActivity implements ILoginFListener,
         loadRegisterF();
     }
     //Tasks
-    private class Initializer extends AsyncTask<Void, Void, Void> {
+    private class Initializer extends AsyncTask<Void, Void, Integer> {
         @Override
-        protected Void doInBackground(Void... params) {
-            load();
-            return null;
+        protected Integer doInBackground(Void... params) {
+            return load();
         }
         @Override
-        protected void onPostExecute(Void aVoid) {
+        protected void onPostExecute(Integer result) {
+            onLoaded(result);
         }
     }
 

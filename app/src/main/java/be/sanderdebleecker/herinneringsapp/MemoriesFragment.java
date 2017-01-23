@@ -27,7 +27,7 @@ public class MemoriesFragment extends Fragment implements IQueryableFragment {
     private FloatingActionButton fabAdd;
     private String username;
 
-    //CTOR
+    //ctor
     public MemoriesFragment() {
 
     }
@@ -35,11 +35,7 @@ public class MemoriesFragment extends Fragment implements IQueryableFragment {
         MemoriesFragment fragment = new MemoriesFragment();
         return fragment;
     }
-
-    //LIFECYCLE
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+    //Lifecycle
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -55,7 +51,6 @@ public class MemoriesFragment extends Fragment implements IQueryableFragment {
         });
         return v;
     }
-
     public void onResume() {
         super.onResume();
         MainApplication app = (MainApplication) getContext().getApplicationContext();
@@ -64,7 +59,6 @@ public class MemoriesFragment extends Fragment implements IQueryableFragment {
         adapter.loadMemories(memoriesData.getAll(app.getCurrSession().getAuthIdentity()));
         memoriesData.close();
     }
-
     public void onAttach(Context context) {
         super.onAttach(context);
         try {

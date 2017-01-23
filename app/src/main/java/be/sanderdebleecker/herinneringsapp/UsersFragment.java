@@ -115,7 +115,6 @@ public class UsersFragment extends Fragment {
         }
         @Override
         protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
             loadAdapter();
             addEvents();
         }
