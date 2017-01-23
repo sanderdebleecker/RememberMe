@@ -6,7 +6,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
 
 import be.sanderdebleecker.herinneringsapp.Core.MainApplication;
 import be.sanderdebleecker.herinneringsapp.Data.DummyDA;
@@ -31,7 +30,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginFListener,
         usersData.close();
         return userCount;
     }
-    private void onLoaded(int userCount) {
+    private void onLoad(int userCount) {
         MainApplication app = (MainApplication) getApplicationContext();
         if(userCount==0) {
             new DummyDA(this);
@@ -110,7 +109,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginFListener,
         }
         @Override
         protected void onPostExecute(Integer result) {
-            onLoaded(result);
+            onLoad(result);
         }
     }
 
