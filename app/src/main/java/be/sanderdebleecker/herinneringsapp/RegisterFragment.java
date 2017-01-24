@@ -2,6 +2,7 @@ package be.sanderdebleecker.herinneringsapp;
 
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
@@ -32,13 +33,14 @@ public class RegisterFragment extends Fragment {
     private LinearLayoutCompat mPagerIndicator;
     private RegisterPagerAdapter mPagerAdapter;
 
+    //Ctor
     public RegisterFragment() {
 
     }
     public static Fragment newInstance() {
         return new RegisterFragment();
     }
-
+    //Lifecycle
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -48,18 +50,26 @@ public class RegisterFragment extends Fragment {
             throw new ClassCastException(getActivity().toString()+" must impl OnRegisterFListener");
         }
     }
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listener=null;
+    }
     public void loadView(View v) {
         btnCancel = (Button) v.findViewById(R.id.btnCancel);
         btnRegister = (Button) v.findViewById(R.id.btnRegister);
         mPager = (ViewPager) v.findViewById(R.id.register_pager);
         mPagerIndicator = (LinearLayoutCompat) v.findViewById(R.id.register_pager_indicator);
     }
-    private void loadViewPager() {
+    private void loadViewPagerAdapter() {
         ArrayList<RegisterPagerFragment> fragments = new ArrayList<>();
         fragments.add(RegisterPagerFragment.newInstance(RegisterPagerFragment.Pages.Account));
         fragments.add(RegisterPagerFragment.newInstance(RegisterPagerFragment.Pages.Security));
         fragments.add(RegisterPagerFragment.newInstance(RegisterPagerFragment.Pages.Details));
         mPagerAdapter = new RegisterPagerAdapter(getActivity().getSupportFragmentManager(),fragments);
+    }
+
+    private void loadViewPager() {
         mPager.setAdapter(mPagerAdapter);
         mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -78,6 +88,7 @@ public class RegisterFragment extends Fragment {
         });
         updateViewPagerIndicator(0);
     }
+
     private void updateViewPagerIndicator(int currPage) {
         mPagerIndicator.removeAllViews();
         DotsScrollBar.createDotScrollBar(getContext(), mPagerIndicator, currPage, mPagerAdapter.getCount());
@@ -102,8 +113,11 @@ public class RegisterFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_register, container, false);
-        loadView(v);
-        loadViewPager();
+        new Initializer().execute(v);
+
+        return v;
+    }
+    private void addEvents() {
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -134,11 +148,20 @@ public class RegisterFragment extends Fragment {
                 }
             }
         });
-        return v;
     }
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        listener=null;
+    //Tasks
+    private class Initializer extends AsyncTask<View, Void, Void> {
+        protected Void doInBackground(View... params) {
+            loadView(params[0]);
+            loadViewPagerAdapter();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            addEvents();
+            loadViewPager();
+        }
     }
+
 }

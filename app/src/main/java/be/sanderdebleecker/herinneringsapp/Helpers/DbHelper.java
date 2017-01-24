@@ -94,11 +94,6 @@ public class DbHelper extends SQLiteOpenHelper {
         AMAlbum,
         AMMemory,
     }
-    private enum CollectionColumns {
-        CollectionId,
-        CollectionMemory,
-        CollectionAlbum
-    }
     public enum SessionColumns {
         SessionId,
         SessionName,
@@ -154,7 +149,6 @@ public class DbHelper extends SQLiteOpenHelper {
         createTblAlbums(db);
         createTblSessions(db);
         createTblTrustees(db);
-        createTblCollections(db);
         createTblResources(db);
         createTblTimeline(db);
         createTblAlbumsMemories(db);
@@ -274,15 +268,6 @@ public class DbHelper extends SQLiteOpenHelper {
                 AlbumsMemoriesColumns.AMMemory + " INTEGER, "+
                 "FOREIGN KEY("+ AlbumsMemoriesColumns.AMAlbum +") REFERENCES "+TBL_ALBUMS+"("+AlbumColumns.AlbumId +"), "+
                 "FOREIGN KEY("+ AlbumsMemoriesColumns.AMMemory +") REFERENCES "+TBL_MEMORIES+"("+ MemoryColumns.MemoryId +")"+
-                ")" );
-    }
-    private void createTblCollections(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE "+ TBL_COLLECTIONS +" ( "+
-                CollectionColumns.CollectionId +" INTEGER PRIMARY KEY AUTOINCREMENT, "+
-                CollectionColumns.CollectionMemory + " INTEGER, "+
-                CollectionColumns.CollectionAlbum + " INTEGER, "+
-                "FOREIGN KEY("+ CollectionColumns.CollectionMemory +") REFERENCES "+TBL_MEMORIES+"("+ MemoryColumns.MemoryId +"), "+
-                "FOREIGN KEY("+ CollectionColumns.CollectionAlbum +") REFERENCES "+TBL_ALBUMS+"("+ AlbumColumns.AlbumId +")"+
                 ")" );
     }
     private void createTblSessions(SQLiteDatabase db)  {
