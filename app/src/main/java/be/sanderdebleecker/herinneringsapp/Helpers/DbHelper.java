@@ -17,7 +17,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DbHelper extends SQLiteOpenHelper {
     private static DbHelper mInstance = null;
-    private static final int DB_VERSION = 7;
+    private static final int DB_VERSION = 8;
     private static final String DB_NAME="HerinneringsApp.db";
     public final String TBL_USERS="tbl_users";
     public final String TBL_MEMORIES="tbl_memories";
@@ -212,7 +212,7 @@ public class DbHelper extends SQLiteOpenHelper {
                 UserColumns.UserFirstName + " VARCHAR(100), "+
                 UserColumns.UserLastName + " VARCHAR(100), "+
                 UserColumns.UserName+ " VARCHAR(100), "+
-                UserColumns.UserPassword + " VARCHAR(30), "+
+                UserColumns.UserPassword + " VARCHAR(32), "+
                 UserColumns.UserQuestion1 +" VARCHAR(100), "+
                 UserColumns.UserQuestion2 +" VARCHAR(100), "+
                 UserColumns.UserAnswer1 +" VARCHAR(100), "+
