@@ -58,6 +58,7 @@ public class GenericMemoryFragment extends Fragment {
     protected static final int PLACE_PICKER_REQUEST = 2;
     protected static final int GALLERY_PICKER_REQUEST = 3;
     protected final String DATEFORMAT = "yyyy-MM-dd";
+    protected boolean performingQuery=false;
     //GUI & NAV
     protected INewMemoryFListener mListener;
     protected CoordinatorLayout coordinatorLayoutNewMemoryF;
@@ -76,7 +77,6 @@ public class GenericMemoryFragment extends Fragment {
     protected Place mPlace;
     protected MediaItem mMediaItem;
     protected DatePickerDialog.OnDateSetListener date;
-
 
     //lifecycle
     public void onAttach(Context context) {
@@ -123,7 +123,6 @@ public class GenericMemoryFragment extends Fragment {
         });
         btnDate.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
                 new DatePickerDialog(getActivity(), date, mCalendar
                         .get(Calendar.YEAR), mCalendar.get(Calendar.MONTH),
                         mCalendar.get(Calendar.DAY_OF_MONTH)).show();

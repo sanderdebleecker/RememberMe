@@ -53,6 +53,7 @@ public class AlbumFragment extends Fragment {
     private SelectableMemoryAdapter mAdapter;
     private List<SelectableMemory> mMemories;
     private boolean editable;
+    private boolean performingQuery = false;
 
     //c
     public AlbumFragment() {
@@ -104,29 +105,30 @@ public class AlbumFragment extends Fragment {
                 }
                 break;
             case R.id.action_add:
-                if(validateAlbum()) {
-                    List<Integer> selectedMemories = mAdapter.getSelectedMemories();
-                    Album a = new Album();
-                    a.setName(etxtName.getText().toString());
-                    a.setId(albumId);
-                    Memory thumbnail = new Memory();
-                    thumbnail.setId(selectedMemories.get(0));
-                    a.setThumbnail(thumbnail);
-                    AlbumDA albumsData = new AlbumDA(getContext());
-                    albumsData.open();
-                    if(albumsData.update(a,selectedMemories)){
-                        albumsData.close();
-                        mListener.albumSaved();
-                    }else{
-                        Toast.makeText(getContext(),"",Toast.LENGTH_SHORT).show();
-                        albumsData.close();
-                    }
+                if(validateAlbum() && !performingQuery) {
+                    new UpdateAlbumTask().execute();
                 }
                 break;
             default:
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private boolean updateAlbum() {
+        List<Integer> selectedMemories = mAdapter.getSelectedMemories();
+        Album a = new Album();
+        a.setName(etxtName.getText().toString());
+        a.setId(albumId);
+        Memory thumbnail = new Memory();
+        thumbnail.setId(selectedMemories.get(0));
+        a.setThumbnail(thumbnail);
+        AlbumDA albumsData = new AlbumDA(getContext());
+        albumsData.open();
+        boolean success = albumsData.update(a,selectedMemories);
+        albumsData.close();
+        return success;
+
     }
 
     @Override
@@ -350,7 +352,21 @@ public class AlbumFragment extends Fragment {
             mAdapter.filterSelected(result.getSelectedMemories());
         }
     }
+    private class UpdateAlbumTask extends AsyncTask<Void,Void,Boolean> {
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            return updateAlbum();
+        }
 
+        @Override
+        protected void onPostExecute(Boolean success) {
+            if(success) {
+                mListener.albumSaved();
+            }else{
+                Toast.makeText(getContext(),"Kon album niet wijzigen",Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 
 
 

@@ -29,10 +29,6 @@ public class EndSessionPagerFragment extends SessionPagerFragment {
     }
     //lc
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-    }
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_end_session_pager, container, false);
         new Initializer().execute(v);

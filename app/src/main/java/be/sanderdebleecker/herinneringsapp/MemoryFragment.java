@@ -107,38 +107,11 @@ public class MemoryFragment extends GenericMemoryFragment {
             case R.id.action_add:
                 //Confirm
                 boolean hasTitle = !etxtTitle.getText().toString().trim().equals("");
-                if(hasTitle) {
-                    MainApplication app = (MainApplication) getContext().getApplicationContext();
-                    Memory m = new Memory();
+                if(hasTitle && !performingQuery) {
+                    performingQuery=true;
                     //Assemble Memory From Fields
-                    m.setCreator(app.getCurrSession().getAuthIdentity());
-                    m.setTitle(etxtTitle.getText().toString().trim());
-                    m.setDescription(etxtDescription.getText().toString().trim());
-                    m.setDate(new SimpleDateFormat(DATEFORMAT, Locale.ENGLISH).format(mCalendar.getTime()));
-                    m.setId(memoryId);
-                    m.setPath(mMediaItem.getPath());
-                    m.setType(mMediaItem.getType().toString());
-                    //Open DB
-                    MemoryDA memoryDA = new MemoryDA(getContext());
-                    memoryDA.open();
-                    if(mPlace !=null) { //OPTIONAL
-                        LatLng point = mPlace.getLatLng();
-                        m.setLocation(new Location(point.longitude,point.latitude, mPlace.getName().toString()));
-                        if(memoryDA.update(m)){
-                            Toast.makeText(getContext(),"Herinnering gewijzigd",Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(getContext(),"Fout bij het wijzigen",Toast.LENGTH_SHORT).show();
-                        }
-                    }else{
-                        if(memoryDA.update(m)) {
-                            Toast.makeText(getContext(),"Herinnering gewijzigd",Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(getContext(),"Fout bij het wijzigen",Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                    memoryDA.close();
-                    reload();
-
+                    Memory m = getMemory();
+                    new UpdateMemoryTask().execute(m);
                 } else {
                     Toast.makeText(getContext(),"Geef een titel in!",Toast.LENGTH_SHORT).show();
                 }
@@ -152,9 +125,33 @@ public class MemoryFragment extends GenericMemoryFragment {
                     dialog.show();
                 }
                 break;
-
         }
         return super.onOptionsItemSelected(item);
+    }
+    private Memory getMemory() {
+        Memory m = new Memory();
+        m.setTitle(etxtTitle.getText().toString().trim());
+        m.setDescription(etxtDescription.getText().toString().trim());
+        m.setDate(new SimpleDateFormat(DATEFORMAT, Locale.ENGLISH).format(mCalendar.getTime()));
+        return m;
+    }
+    private Boolean updateMemory(Memory m) {
+        if(m==null) return false;
+        MainApplication app = (MainApplication) getContext().getApplicationContext();
+        m.setCreator(app.getCurrSession().getAuthIdentity());
+        m.setId(memoryId);
+        m.setPath(mMediaItem.getPath());
+        m.setType(mMediaItem.getType().toString());
+        //Open DB
+        MemoryDA memoryDA = new MemoryDA(getContext());
+        memoryDA.open();
+        if(mPlace !=null) { //OPTIONAL
+            LatLng point = mPlace.getLatLng();
+            m.setLocation(new Location(point.longitude,point.latitude, mPlace.getName().toString()));
+        }
+        boolean success = memoryDA.update(m);
+        memoryDA.close();
+        return success;
     }
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -305,7 +302,6 @@ public class MemoryFragment extends GenericMemoryFragment {
         });
         mBottomsheetBehavior.setPeekHeight(0);
     }
-
     protected void openBottomSheet() {
         mBottomsheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
@@ -455,6 +451,22 @@ public class MemoryFragment extends GenericMemoryFragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             showMemory();
+        }
+    }
+    public class UpdateMemoryTask extends AsyncTask<Memory,Void,Boolean> {
+        @Override
+        protected Boolean doInBackground(Memory... params) {
+            return updateMemory(params[0]);
+        }
+        @Override
+        protected void onPostExecute(Boolean success) {
+            performingQuery=false;
+            if(success) {
+                Toast.makeText(getContext(),"Herinnering gewijzigd",Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getContext(),"Fout bij het wijzigen",Toast.LENGTH_SHORT).show();
+            }
+            reload();
         }
     }
 

@@ -102,42 +102,44 @@ public class NewMemoryFragment extends GenericMemoryFragment {
                 mListener.cancel();
                 break;
             case R.id.action_add:
-                boolean hasTitle = !etxtTitle.getText().toString().trim().equals("");
-                if(hasTitle && username!="") {
-                    MainApplication app = (MainApplication) getContext().getApplicationContext();
-                    Memory m = new Memory();
-                    //Assemble Memory
-                    m.setCreator(app.getCurrSession().getAuthIdentity());
-                    m.setTitle(etxtTitle.getText().toString());
-                    m.setDescription( etxtDescription.getText().toString());
-                    m.setDate(new SimpleDateFormat(DATEFORMAT, Locale.ENGLISH).format(mCalendar.getTime()));
-                    m.setPath(mMediaItem.getPath());
-                    m.setType(mMediaItem.getType().toString());
-                    MemoryDA memoriesData = new MemoryDA(getContext());
-                    memoriesData.open();
-                    if(mPlace !=null) { //OPTIONAL
-                        LatLng point = mPlace.getLatLng();
-                        m.setLocation(new Location(point.longitude,point.latitude, mPlace.getName().toString()));
-                        if(memoriesData.insertMemory(m)){
-                            memoriesData.close();
-                            mListener.memorySaved();
-                        }else{
-                            memoriesData.close();
-                            Toast.makeText(getContext(),"Herinnering niet opgeslaan!",Toast.LENGTH_LONG).show();
-                        }
-                    }else{
-                        if(memoriesData.insertMemory(m)) {
-                            memoriesData.close();
-                            mListener.memorySaved();
-                        }else{
-                            memoriesData.close();
-                            Toast.makeText(getContext(),"De herinnering kon niet worden opgeslaan!",Toast.LENGTH_LONG).show();
-                        }
-                    }
+                if(validateMemory() && !performingQuery) {
+                    performingQuery=true;
+                    Memory m = getMemory();
+                    new InsertMemoryTask().execute(m);
                 }
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+    private Memory getMemory() {
+        Memory m = new Memory();
+        m.setTitle(etxtTitle.getText().toString());
+        m.setDescription( etxtDescription.getText().toString());
+        m.setDate(new SimpleDateFormat(DATEFORMAT, Locale.ENGLISH).format(mCalendar.getTime()));
+        return m;
+    }
+    private boolean insertMemory(Memory m) {
+        if(m==null) return false;
+        MainApplication app = (MainApplication) getContext().getApplicationContext();
+        //Assemble Memory
+        m.setCreator(app.getCurrSession().getAuthIdentity());
+        m.setPath(mMediaItem.getPath());
+        m.setType(mMediaItem.getType().toString());
+        MemoryDA memoriesData = new MemoryDA(getContext());
+        memoriesData.open();
+        if(mPlace !=null) { //OPTIONAL
+            LatLng point = mPlace.getLatLng();
+            m.setLocation(new Location(point.longitude, point.latitude, mPlace.getName().toString()));
+        }
+        boolean success = memoriesData.insertMemory(m);
+        memoriesData.close();
+        return success;
+    }
+
+    private boolean validateMemory() {
+        boolean hasTitle = !etxtTitle.getText().toString().trim().equals("");
+        boolean hasUser = !username.equals("");
+        return (hasTitle && hasUser );
     }
     //Lifecycle methods
     private void loadView(View v) {
@@ -214,6 +216,21 @@ public class NewMemoryFragment extends GenericMemoryFragment {
             createToolbar();
             createBottomSheet();
             addEvents();
+        }
+    }
+    private class InsertMemoryTask extends AsyncTask<Memory, Void,Boolean> {
+        @Override
+        protected Boolean doInBackground(Memory... params) {
+            return insertMemory(params[0]);
+        }
+        @Override
+        protected void onPostExecute(Boolean success) {
+            performingQuery=false;
+            if(success) {
+                mListener.memorySaved();
+            }else{
+                Toast.makeText(getContext(),"Herinnering niet opgeslaan!",Toast.LENGTH_LONG).show();
+            }
         }
     }
 }

@@ -35,11 +35,6 @@ public class AlbumsFragment extends Fragment {
     public static AlbumsFragment newInstance() {
             return new AlbumsFragment();
     }
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-        }
-    }
     //lc
     public void onAttach(Context context) {
         super.onAttach(context);
