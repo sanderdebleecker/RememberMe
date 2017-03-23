@@ -52,6 +52,12 @@ public class UsersFragment extends Fragment {
         super.onDetach();
         mListener =null;
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        // keep empty : bug support lib , API LVL 11
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment

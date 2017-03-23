@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import be.sanderdebleecker.herinneringsapp.Data.Repositories.BaseRepository;
-import be.sanderdebleecker.herinneringsapp.Helpers.DbHelper;
+import be.sanderdebleecker.herinneringsapp.Helpers.MemoriesDbHelper;
 import be.sanderdebleecker.herinneringsapp.Helpers.Security.Crypto;
 import be.sanderdebleecker.herinneringsapp.Models.Album;
 import be.sanderdebleecker.herinneringsapp.Models.Location;
@@ -46,14 +46,14 @@ public class DummyDA extends BaseRepository {
     private int insertUser(User newUser) {
         //SQLiteStatement stmt = db.compileStatement("INSERT INTO "+dbh.TBL_USERS+" VALUES(NULL,?,?,?,?,?,?,?,?)");
         ContentValues values = new ContentValues();
-        values.put(DbHelper.UserColumns.UserFirstName.toString(), newUser.getFirstName());
-        values.put(DbHelper.UserColumns.UserLastName.toString(), newUser.getLastName());
-        values.put(DbHelper.UserColumns.UserPassword.toString(), Crypto.md5(newUser.getPassword()));
-        values.put(DbHelper.UserColumns.UserQuestion1.toString(), newUser.getQ1());
-        values.put(DbHelper.UserColumns.UserQuestion2.toString(), newUser.getQ2());
-        values.put(DbHelper.UserColumns.UserAnswer1.toString(), newUser.getA1());
-        values.put(DbHelper.UserColumns.UserAnswer2.toString(), newUser.getA2());
-        values.put(DbHelper.UserColumns.UserName.toString(), newUser.getUsername());
+        values.put(MemoriesDbHelper.UserColumns.UserFirstName.toString(), newUser.getFirstName());
+        values.put(MemoriesDbHelper.UserColumns.UserLastName.toString(), newUser.getLastName());
+        values.put(MemoriesDbHelper.UserColumns.UserPassword.toString(), Crypto.md5(newUser.getPassword()));
+        values.put(MemoriesDbHelper.UserColumns.UserQuestion1.toString(), newUser.getQ1());
+        values.put(MemoriesDbHelper.UserColumns.UserQuestion2.toString(), newUser.getQ2());
+        values.put(MemoriesDbHelper.UserColumns.UserAnswer1.toString(), newUser.getA1());
+        values.put(MemoriesDbHelper.UserColumns.UserAnswer2.toString(), newUser.getA2());
+        values.put(MemoriesDbHelper.UserColumns.UserName.toString(), newUser.getUsername());
         int id = -1;
         try{
             id = (int) db.insert(dbh.TBL_USERS,"",values);
@@ -69,6 +69,7 @@ public class DummyDA extends BaseRepository {
         }
     }
     private boolean insertMemory(Memory newMemory) {
+        if(newMemory==null) return false;
         SQLiteStatement stmt = db.compileStatement("INSERT INTO "+dbh.TBL_MEMORIES+" VALUES(NULL,?,?,?,NULL,NULL,NULL,?,?,?)");
         stmt.bindString(1, newMemory.getTitle());
         stmt.bindString(2, newMemory.getDescription());
@@ -104,9 +105,9 @@ public class DummyDA extends BaseRepository {
         int id = -1;
         try{
             ContentValues cv = new ContentValues();
-            cv.put(DbHelper.AlbumColumns.AlbumTitle.toString(), newAlbum.getName());
-            cv.put(DbHelper.AlbumColumns.AlbumCreator.toString(), newAlbum.getAuthorId());
-            cv.put(DbHelper.AlbumColumns.AlbumThumbnail.toString(), newAlbum.getThumbnail().getId());
+            cv.put(MemoriesDbHelper.AlbumColumns.AlbumTitle.toString(), newAlbum.getName());
+            cv.put(MemoriesDbHelper.AlbumColumns.AlbumCreator.toString(), newAlbum.getAuthorId());
+            cv.put(MemoriesDbHelper.AlbumColumns.AlbumThumbnail.toString(), newAlbum.getThumbnail().getId());
             //execute
             id = (int) db.insert(dbh.TBL_ALBUMS,null,cv);
         }catch(Exception e) {
@@ -143,12 +144,12 @@ public class DummyDA extends BaseRepository {
     private int insertSession(Session newSession) {
         int result;
         ContentValues cv = new ContentValues();
-        cv.put(DbHelper.SessionColumns.SessionName.toString(),newSession.getName());
-        cv.put(DbHelper.SessionColumns.SessionDate.toString(),newSession.getDate());
-        cv.put(DbHelper.SessionColumns.SessionDuration.toString(),newSession.getDuration());
-        cv.put(DbHelper.SessionColumns.SessionCount.toString(),newSession.getCount());
-        cv.put(DbHelper.SessionColumns.SessionIsFinished.toString(),(newSession.isFinished() ? 1 : 0));
-        cv.put(DbHelper.SessionColumns.SessionAuthor.toString(),newSession.getAuthor());
+        cv.put(MemoriesDbHelper.SessionColumns.SessionName.toString(),newSession.getName());
+        cv.put(MemoriesDbHelper.SessionColumns.SessionDate.toString(),newSession.getDate());
+        cv.put(MemoriesDbHelper.SessionColumns.SessionDuration.toString(),newSession.getDuration());
+        cv.put(MemoriesDbHelper.SessionColumns.SessionCount.toString(),newSession.getCount());
+        cv.put(MemoriesDbHelper.SessionColumns.SessionIsFinished.toString(),(newSession.isFinished() ? 1 : 0));
+        cv.put(MemoriesDbHelper.SessionColumns.SessionAuthor.toString(),newSession.getAuthor());
         try{
             result = (int) db.insert(dbh.TBL_SESSIONS,null,cv);
         }catch(Exception e) {

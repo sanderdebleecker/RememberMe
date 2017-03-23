@@ -4,7 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 
-import be.sanderdebleecker.herinneringsapp.Helpers.DbHelper;
+import be.sanderdebleecker.herinneringsapp.Helpers.MemoriesDbHelper;
 
 public class TrustRepository extends BaseRepository {
     public TrustRepository(Context context) {
@@ -15,7 +15,7 @@ public class TrustRepository extends BaseRepository {
     public Cursor getAllC(int id) {
         Cursor res = null;
         try{
-            String selection = DbHelper.TrustColumns.TrustSource +"=? OR "+ DbHelper.TrustColumns.TrustDestination+"=?";
+            String selection = MemoriesDbHelper.TrustColumns.TrustSource +"=? OR "+ MemoriesDbHelper.TrustColumns.TrustDestination+"=?";
             String[] selectionArgs = new String[]{""+id};
             res = db.query(dbh.TBL_TRUSTS, null, selection, selectionArgs, null, null, null);
         }catch(SQLiteException ex) {

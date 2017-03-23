@@ -9,10 +9,9 @@ import android.database.sqlite.SQLiteStatement;
 import java.util.ArrayList;
 import java.util.List;
 
-import be.sanderdebleecker.herinneringsapp.Helpers.DbHelper;
+import be.sanderdebleecker.herinneringsapp.Helpers.MemoriesDbHelper;
 import be.sanderdebleecker.herinneringsapp.Models.Session;
 import be.sanderdebleecker.herinneringsapp.Models.View.SessionVM;
-import be.sanderdebleecker.herinneringsapp.Models.View.UserVM;
 
 public class SessionRepository extends BaseRepository {
     public SessionRepository(Context context) {
@@ -22,13 +21,13 @@ public class SessionRepository extends BaseRepository {
     protected int insertSession(Session newSession) {
         int result=-1;
         ContentValues cv = new ContentValues();
-        cv.put(DbHelper.SessionColumns.SessionName.toString(),newSession.getName());
-        cv.put(DbHelper.SessionColumns.SessionDate.toString(),newSession.getDate());
-        cv.put(DbHelper.SessionColumns.SessionNotes.toString(),newSession.getNotes());
-        cv.put(DbHelper.SessionColumns.SessionDuration.toString(),newSession.getDuration());
-        cv.put(DbHelper.SessionColumns.SessionCount.toString(),newSession.getCount());
-        cv.put(DbHelper.SessionColumns.SessionIsFinished.toString(), (newSession.isFinished() ? 1 : 0));
-        cv.put(DbHelper.SessionColumns.SessionAuthor.toString(),newSession.getAuthor());
+        cv.put(MemoriesDbHelper.SessionColumns.SessionName.toString(),newSession.getName());
+        cv.put(MemoriesDbHelper.SessionColumns.SessionDate.toString(),newSession.getDate());
+        cv.put(MemoriesDbHelper.SessionColumns.SessionNotes.toString(),newSession.getNotes());
+        cv.put(MemoriesDbHelper.SessionColumns.SessionDuration.toString(),newSession.getDuration());
+        cv.put(MemoriesDbHelper.SessionColumns.SessionCount.toString(),newSession.getCount());
+        cv.put(MemoriesDbHelper.SessionColumns.SessionIsFinished.toString(), (newSession.isFinished() ? 1 : 0));
+        cv.put(MemoriesDbHelper.SessionColumns.SessionAuthor.toString(),newSession.getAuthor());
         try{
             result = (int) db.insert(dbh.TBL_SESSIONS,null,cv);
         } catch(SQLException e) {
@@ -64,16 +63,18 @@ public class SessionRepository extends BaseRepository {
     protected List<Integer> getAlbumIds(int session) {
         List<Integer> albums = new ArrayList<>();
         Cursor cursor = null;
-        String sql = "SELECT "+ DbHelper.ResourceColumns.ResourceAlbum +
+        String sql = "SELECT "+ MemoriesDbHelper.ResourceColumns.ResourceAlbum +
                 " FROM "+dbh.TBL_RESOURCES+
-                " WHERE "+ DbHelper.ResourceColumns.ResourceSession +"=?";
+                " WHERE "+ MemoriesDbHelper.ResourceColumns.ResourceSession +"=?";
         try{
             cursor =  db.rawQuery(sql,new String[]{ ""+session });
             while(cursor.moveToNext()) {
-                albums.add(cursor.getInt(cursor.getColumnIndex(DbHelper.ResourceColumns.ResourceAlbum.toString())));
+                albums.add(cursor.getInt(cursor.getColumnIndex(MemoriesDbHelper.ResourceColumns.ResourceAlbum.toString())));
             }
         } catch(Exception e){
             System.out.println(e.getMessage());
+        } finally {
+            cursor.close();
         }
         return albums;
     }
@@ -84,8 +85,8 @@ public class SessionRepository extends BaseRepository {
         Cursor cursor;
         String sql = "SELECT *"+
                 " FROM " + dbh.TBL_SESSIONS+
-                " WHERE " + DbHelper.SessionColumns.SessionId +"=?"+
-                " AND " + DbHelper.SessionColumns.SessionAuthor + "=?" ;
+                " WHERE " + MemoriesDbHelper.SessionColumns.SessionId +"=?"+
+                " AND " + MemoriesDbHelper.SessionColumns.SessionAuthor + "=?" ;
         try{
             cursor =  db.rawQuery(sql,new String[]{ ""+id,""+identity });
             while(cursor.moveToNext()) {
@@ -99,15 +100,15 @@ public class SessionRepository extends BaseRepository {
     protected List<SessionVM> getSessions(int identity) {
         List<SessionVM> sessions = new ArrayList<>();
         Cursor cursor;
-        String sql = " SELECT s."+ DbHelper.SessionColumns.SessionId +
-                ", s." + DbHelper.SessionColumns.SessionName +
-                ", u." + DbHelper.UserColumns.UserName +
-                ", s." + DbHelper.SessionColumns.SessionDuration +
-                ", s." + DbHelper.SessionColumns.SessionDate +
+        String sql = " SELECT s."+ MemoriesDbHelper.SessionColumns.SessionId +
+                ", s." + MemoriesDbHelper.SessionColumns.SessionName +
+                ", u." + MemoriesDbHelper.UserColumns.UserName +
+                ", s." + MemoriesDbHelper.SessionColumns.SessionDuration +
+                ", s." + MemoriesDbHelper.SessionColumns.SessionDate +
                 " FROM " + dbh.TBL_SESSIONS + " s"+
                 " LEFT OUTER JOIN " + dbh.TBL_USERS + " u"+
-                " ON s."+ DbHelper.SessionColumns.SessionAuthor+" = u."+DbHelper.UserColumns.UserId+
-                " WHERE " + DbHelper.SessionColumns.SessionAuthor + "=?";
+                " ON s."+ MemoriesDbHelper.SessionColumns.SessionAuthor+" = u."+ MemoriesDbHelper.UserColumns.UserId+
+                " WHERE " + MemoriesDbHelper.SessionColumns.SessionAuthor + "=?";
         try{
             cursor =  db.rawQuery(sql,new String[]{ ""+identity });
             while(cursor.moveToNext()) {
@@ -122,15 +123,15 @@ public class SessionRepository extends BaseRepository {
     protected boolean updateSession(Session session) {
         int rowsAffected = -1;
         ContentValues cv = new ContentValues();
-        cv.put(DbHelper.SessionColumns.SessionId.toString(),session.getId());
-        cv.put(DbHelper.SessionColumns.SessionName.toString(),session.getName());
-        cv.put(DbHelper.SessionColumns.SessionDate.toString(),session.getDate());
-        cv.put(DbHelper.SessionColumns.SessionNotes.toString(),session.getNotes());
-        cv.put(DbHelper.SessionColumns.SessionDuration.toString(),session.getDuration());
-        cv.put(DbHelper.SessionColumns.SessionCount.toString(),session.getCount());
-        cv.put(DbHelper.SessionColumns.SessionIsFinished.toString(),session.isFinished());
-        cv.put(DbHelper.SessionColumns.SessionAuthor.toString(),session.getAuthor());
-        String where = String.format("%s=?",DbHelper.SessionColumns.SessionId.toString());
+        cv.put(MemoriesDbHelper.SessionColumns.SessionId.toString(),session.getId());
+        cv.put(MemoriesDbHelper.SessionColumns.SessionName.toString(),session.getName());
+        cv.put(MemoriesDbHelper.SessionColumns.SessionDate.toString(),session.getDate());
+        cv.put(MemoriesDbHelper.SessionColumns.SessionNotes.toString(),session.getNotes());
+        cv.put(MemoriesDbHelper.SessionColumns.SessionDuration.toString(),session.getDuration());
+        cv.put(MemoriesDbHelper.SessionColumns.SessionCount.toString(),session.getCount());
+        cv.put(MemoriesDbHelper.SessionColumns.SessionIsFinished.toString(),session.isFinished());
+        cv.put(MemoriesDbHelper.SessionColumns.SessionAuthor.toString(),session.getAuthor());
+        String where = String.format("%s=?", MemoriesDbHelper.SessionColumns.SessionId.toString());
         String[] args = new String[] { ""+session.getId() };
         try{
             rowsAffected = db.update(dbh.TBL_SESSIONS,cv,where,args);
@@ -142,23 +143,23 @@ public class SessionRepository extends BaseRepository {
 
     private Session from(Cursor c) {
         Session session = new Session();
-        session.setId(c.getInt(c.getColumnIndex(DbHelper.SessionColumns.SessionId.toString())));
-        session.setName(c.getString(c.getColumnIndex(DbHelper.SessionColumns.SessionName.toString())));
-        session.setDate(c.getString(c.getColumnIndex(DbHelper.SessionColumns.SessionDate.toString())));
-        session.setNotes(c.getString(c.getColumnIndex(DbHelper.SessionColumns.SessionNotes.toString())));
-        session.setDuration(c.getInt(c.getColumnIndex(DbHelper.SessionColumns.SessionDuration.toString())));
-        session.setCount(c.getInt(c.getColumnIndex(DbHelper.SessionColumns.SessionCount.toString())));
-        session.setAuthor(c.getInt(c.getColumnIndex(DbHelper.SessionColumns.SessionAuthor.toString())));
-        session.setFinished(c.getInt(c.getColumnIndex(DbHelper.SessionColumns.SessionIsFinished.toString()))==1);
+        session.setId(c.getInt(c.getColumnIndex(MemoriesDbHelper.SessionColumns.SessionId.toString())));
+        session.setName(c.getString(c.getColumnIndex(MemoriesDbHelper.SessionColumns.SessionName.toString())));
+        session.setDate(c.getString(c.getColumnIndex(MemoriesDbHelper.SessionColumns.SessionDate.toString())));
+        session.setNotes(c.getString(c.getColumnIndex(MemoriesDbHelper.SessionColumns.SessionNotes.toString())));
+        session.setDuration(c.getInt(c.getColumnIndex(MemoriesDbHelper.SessionColumns.SessionDuration.toString())));
+        session.setCount(c.getInt(c.getColumnIndex(MemoriesDbHelper.SessionColumns.SessionCount.toString())));
+        session.setAuthor(c.getInt(c.getColumnIndex(MemoriesDbHelper.SessionColumns.SessionAuthor.toString())));
+        session.setFinished(c.getInt(c.getColumnIndex(MemoriesDbHelper.SessionColumns.SessionIsFinished.toString()))==1);
         return session;
     }
     private SessionVM viewModelFrom(Cursor c) {
         SessionVM session = new SessionVM();
-        session.setId(c.getInt(c.getColumnIndex(DbHelper.SessionColumns.SessionId.toString())));
-        session.setName(c.getString(c.getColumnIndex(DbHelper.SessionColumns.SessionName.toString())));
-        session.setDate(c.getString(c.getColumnIndex(DbHelper.SessionColumns.SessionDate.toString())));
-        session.setDuration(c.getInt(c.getColumnIndex(DbHelper.SessionColumns.SessionDuration.toString())));
-        session.setAuthor(c.getString(c.getColumnIndex(DbHelper.UserColumns.UserName.toString())));
+        session.setId(c.getInt(c.getColumnIndex(MemoriesDbHelper.SessionColumns.SessionId.toString())));
+        session.setName(c.getString(c.getColumnIndex(MemoriesDbHelper.SessionColumns.SessionName.toString())));
+        session.setDate(c.getString(c.getColumnIndex(MemoriesDbHelper.SessionColumns.SessionDate.toString())));
+        session.setDuration(c.getInt(c.getColumnIndex(MemoriesDbHelper.SessionColumns.SessionDuration.toString())));
+        session.setAuthor(c.getString(c.getColumnIndex(MemoriesDbHelper.UserColumns.UserName.toString())));
         return session;
     }
 

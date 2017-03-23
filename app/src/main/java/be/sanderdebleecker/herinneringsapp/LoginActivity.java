@@ -2,6 +2,7 @@ package be.sanderdebleecker.herinneringsapp;
 
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.PersistableBundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -23,6 +24,9 @@ public class LoginActivity extends AppCompatActivity implements ILoginFListener,
         setContentView(R.layout.activity_login);
         new Initializer().execute();
     }
+
+
+
     private int load() {
         UserDA usersData = new UserDA(this);
         usersData.open();

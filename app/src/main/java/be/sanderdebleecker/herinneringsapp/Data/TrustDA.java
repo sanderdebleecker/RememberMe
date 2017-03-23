@@ -6,7 +6,7 @@ import android.database.Cursor;
 import java.util.ArrayList;
 
 import be.sanderdebleecker.herinneringsapp.Data.Repositories.TrustRepository;
-import be.sanderdebleecker.herinneringsapp.Helpers.DbHelper;
+import be.sanderdebleecker.herinneringsapp.Helpers.MemoriesDbHelper;
 import be.sanderdebleecker.herinneringsapp.Models.Trust;
 
 public class TrustDA extends TrustRepository {
@@ -28,10 +28,10 @@ public class TrustDA extends TrustRepository {
     public Trust from(Cursor cursor) {
         Trust t = new Trust();
         t.setA(new Trust.Party(
-                cursor.getInt(cursor.getColumnIndex(DbHelper.TrustColumns.TrustSource.toString()))
+                cursor.getInt(cursor.getColumnIndex(MemoriesDbHelper.TrustColumns.TrustSource.toString()))
         ));
         t.setB(new Trust.Party(
-                cursor.getInt(cursor.getColumnIndex(DbHelper.TrustColumns.TrustDestination.toString()))
+                cursor.getInt(cursor.getColumnIndex(MemoriesDbHelper.TrustColumns.TrustDestination.toString()))
         ));
         return t;
     }

@@ -57,6 +57,7 @@ public class GenericMemoryFragment extends Fragment {
     protected static final int TAKE_PICTURE_REQUEST = 1;
     protected static final int PLACE_PICKER_REQUEST = 2;
     protected static final int GALLERY_PICKER_REQUEST = 3;
+    protected static final int MIN_LENGTH = 3;
     protected final String DATEFORMAT = "yyyy-MM-dd";
     protected boolean performingQuery=false;
     //GUI & NAV

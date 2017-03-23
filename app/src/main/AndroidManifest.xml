@@ -65,6 +65,10 @@
             android:value="AIzaSyAB-motU8X3GqY5vcwrK-xPD2SvEYNLRLE" />
 
         <activity android:name="be.sanderdebleecker.herinneringsapp.SessionActivity"></activity>
+        <!-- BACKGROUND TASKS -->
+        <service
+            android:name=".Background.SyncService"
+            android:exported="false"/>
     </application>
 
 </manifest>

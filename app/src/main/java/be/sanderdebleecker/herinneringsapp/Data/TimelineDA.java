@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteStatement;
 import java.util.ArrayList;
 
 import be.sanderdebleecker.herinneringsapp.Data.Repositories.TimelineRepository;
-import be.sanderdebleecker.herinneringsapp.Helpers.DbHelper;
+import be.sanderdebleecker.herinneringsapp.Helpers.MemoriesDbHelper;
 import be.sanderdebleecker.herinneringsapp.Models.Location;
 import be.sanderdebleecker.herinneringsapp.Models.Memory;
 
@@ -37,7 +37,7 @@ public class TimelineDA extends TimelineRepository {
         }
     }
     public boolean delete(int memoryId, int userId) {
-        SQLiteStatement stmt = db.compileStatement("DELETE FROM "+dbh.TBL_TIMELINE+" WHERE "+ DbHelper.TimelineColumns.TimelineMemory +"=? AND "+ DbHelper.TimelineColumns.TimelineUser +"=?");
+        SQLiteStatement stmt = db.compileStatement("DELETE FROM "+dbh.TBL_TIMELINE+" WHERE "+ MemoriesDbHelper.TimelineColumns.TimelineMemory +"=? AND "+ MemoriesDbHelper.TimelineColumns.TimelineUser +"=?");
         stmt.bindLong(1, memoryId);
         stmt.bindLong(1, userId);
         try{
@@ -60,17 +60,17 @@ public class TimelineDA extends TimelineRepository {
 
     private Memory from(Cursor cursor) {
         Memory mem = new Memory();
-        mem.setId(cursor.getInt(cursor.getColumnIndex(DbHelper.MemoryColumns.MemoryId.toString())));
-        mem.setTitle(cursor.getString(cursor.getColumnIndex(DbHelper.MemoryColumns.MemoryTitle.toString())));
-        mem.setDescription(cursor.getString(cursor.getColumnIndex(DbHelper.MemoryColumns.MemoryDescription.toString())));
-        mem.setDate(cursor.getString(cursor.getColumnIndex(DbHelper.MemoryColumns.MemoryDateTime.toString())));
-        mem.setCreator(cursor.getInt(cursor.getColumnIndex(DbHelper.MemoryColumns.MemoryCreator.toString())));
-        mem.setPath(cursor.getString(cursor.getColumnIndex(DbHelper.MemoryColumns.MemoryPath.toString())));
-        mem.setType(cursor.getString(cursor.getColumnIndex(DbHelper.MemoryColumns.MemoryType.toString())));
+        mem.setId(cursor.getInt(cursor.getColumnIndex(MemoriesDbHelper.MemoryColumns.MemoryId.toString())));
+        mem.setTitle(cursor.getString(cursor.getColumnIndex(MemoriesDbHelper.MemoryColumns.MemoryTitle.toString())));
+        mem.setDescription(cursor.getString(cursor.getColumnIndex(MemoriesDbHelper.MemoryColumns.MemoryDescription.toString())));
+        mem.setDate(cursor.getString(cursor.getColumnIndex(MemoriesDbHelper.MemoryColumns.MemoryDateTime.toString())));
+        mem.setCreator(cursor.getInt(cursor.getColumnIndex(MemoriesDbHelper.MemoryColumns.MemoryCreator.toString())));
+        mem.setPath(cursor.getString(cursor.getColumnIndex(MemoriesDbHelper.MemoryColumns.MemoryPath.toString())));
+        mem.setType(cursor.getString(cursor.getColumnIndex(MemoriesDbHelper.MemoryColumns.MemoryType.toString())));
         Location loc = new Location(
-                cursor.getDouble(cursor.getColumnIndex(DbHelper.MemoryColumns.MemoryLocationLat.toString())),
-                cursor.getDouble(cursor .getColumnIndex(DbHelper.MemoryColumns.MemoryLocationLong.toString())),
-                cursor.getString(cursor.getColumnIndex(DbHelper.MemoryColumns.MemoryLocationName.toString()))
+                cursor.getDouble(cursor.getColumnIndex(MemoriesDbHelper.MemoryColumns.MemoryLocationLat.toString())),
+                cursor.getDouble(cursor .getColumnIndex(MemoriesDbHelper.MemoryColumns.MemoryLocationLong.toString())),
+                cursor.getString(cursor.getColumnIndex(MemoriesDbHelper.MemoryColumns.MemoryLocationName.toString()))
         );
         mem.setLocation(loc);
         return mem;

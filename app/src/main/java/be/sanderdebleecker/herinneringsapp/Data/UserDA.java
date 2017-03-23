@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import be.sanderdebleecker.herinneringsapp.Data.Repositories.UserRepository;
-import be.sanderdebleecker.herinneringsapp.Helpers.DbHelper;
+import be.sanderdebleecker.herinneringsapp.Helpers.MemoriesDbHelper;
 import be.sanderdebleecker.herinneringsapp.Helpers.Security.Crypto;
 import be.sanderdebleecker.herinneringsapp.Models.User;
 import be.sanderdebleecker.herinneringsapp.Models.View.UserVM;
@@ -20,8 +20,8 @@ public class UserDA extends UserRepository {
 
     public boolean exists(String user) {
         Cursor res = db.query(dbh.TBL_USERS,
-                new String[]{DbHelper.UserColumns.UserId.toString()},
-                DbHelper.UserColumns.UserName+"=?",
+                new String[]{MemoriesDbHelper.UserColumns.UserId.toString()},
+                MemoriesDbHelper.UserColumns.UserName+"=?",
                 new String[]{user},
                 null,null,null,null);
         int count = res.getCount();
@@ -32,21 +32,21 @@ public class UserDA extends UserRepository {
 
     public int exists(String user, String pass) {
         Cursor res = db.query(dbh.TBL_USERS,
-                new String[] {DbHelper.UserColumns.UserId.toString()},
-                DbHelper.UserColumns.UserName.toString()+"=? AND "+ DbHelper.UserColumns.UserPassword.toString()+"=?",
+                new String[] {MemoriesDbHelper.UserColumns.UserId.toString()},
+                MemoriesDbHelper.UserColumns.UserName.toString()+"=? AND "+ MemoriesDbHelper.UserColumns.UserPassword.toString()+"=?",
                 new String[]{user, Crypto.md5(pass)},
                 null,null,null,null);
-        return (res.moveToNext()) ? res.getInt(res.getColumnIndex(DbHelper.UserColumns.UserId.toString())) : -1;
+        return (res.moveToNext()) ? res.getInt(res.getColumnIndex(MemoriesDbHelper.UserColumns.UserId.toString())) : -1;
     }
     public int getId(String username) {
         try{
             Cursor cursor = db.query(dbh.TBL_USERS,
-                    new String[]{DbHelper.UserColumns.UserId.toString()},
-                    DbHelper.UserColumns.UserName+"=?",
+                    new String[]{MemoriesDbHelper.UserColumns.UserId.toString()},
+                    MemoriesDbHelper.UserColumns.UserName+"=?",
                     new String[]{username},
                     null,null,null,null);
             cursor.moveToNext();
-            int id = cursor.getInt(cursor.getColumnIndex(DbHelper.UserColumns.UserId.toString()));
+            int id = cursor.getInt(cursor.getColumnIndex(MemoriesDbHelper.UserColumns.UserId.toString()));
             cursor.close();
             return id;
         }catch (Exception e) {
@@ -71,8 +71,8 @@ public class UserDA extends UserRepository {
 
     public UserVM partiallyFrom(Cursor c) {
         UserVM user = new UserVM();
-        user.setId(c.getInt(c.getColumnIndex(DbHelper.UserColumns.UserId.toString())));
-        user.setUsername(c.getString(c.getColumnIndex(DbHelper.UserColumns.UserName.toString())));
+        user.setId(c.getInt(c.getColumnIndex(MemoriesDbHelper.UserColumns.UserId.toString())));
+        user.setUsername(c.getString(c.getColumnIndex(MemoriesDbHelper.UserColumns.UserName.toString())));
         return user;
     }
 

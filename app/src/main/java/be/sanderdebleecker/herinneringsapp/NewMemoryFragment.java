@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -43,7 +44,6 @@ import be.sanderdebleecker.herinneringsapp.Models.Memory;
 
 import static android.app.Activity.RESULT_OK;
 
-//TODO feedback empty title => "Titel is leeg"
 //TODO catch online library exceptions
 
 public class NewMemoryFragment extends GenericMemoryFragment {
@@ -106,6 +106,8 @@ public class NewMemoryFragment extends GenericMemoryFragment {
                     performingQuery=true;
                     Memory m = getMemory();
                     new InsertMemoryTask().execute(m);
+                } else {
+                    Toast.makeText(getActivity(),"Kan herinnering niet opslaan.",Toast.LENGTH_LONG).show();
                 }
                 break;
         }
@@ -137,7 +139,11 @@ public class NewMemoryFragment extends GenericMemoryFragment {
     }
 
     private boolean validateMemory() {
-        boolean hasTitle = !etxtTitle.getText().toString().trim().equals("");
+        boolean hasTitle=true;
+        if(etxtTitle.getText().toString().trim().equals("")){
+            hasTitle=false;
+            etxtTitle.setError("Titel vereist");
+        }
         boolean hasUser = !username.equals("");
         return (hasTitle && hasUser );
     }

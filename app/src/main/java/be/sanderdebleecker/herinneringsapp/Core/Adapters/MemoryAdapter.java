@@ -7,9 +7,13 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TableRow;
+import android.widget.TextView;
+
+import com.google.android.gms.vision.text.Text;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -47,12 +51,14 @@ public class MemoryAdapter extends RecyclerView.Adapter<MemoryAdapter.MyViewHold
     public class MyViewHolder extends RecyclerView.ViewHolder {
         //public TextView txtvMemoryTitle;
         public ImageView imgvMemory;
-        public LinearLayout container;
+        public TextView txtvMemoryTitle;
+        public FrameLayout container;
         MyViewHolder(View v) {
             super(v);
             //txtvMemoryTitle = (TextView) v.findViewById(R.getResId.txtvMemoryTitle);
             imgvMemory = (ImageView) v.findViewById(R.id.imgvMemoryImage);
-            container = (LinearLayout) v.findViewById(R.id.rowMemory);
+            txtvMemoryTitle = (TextView) v.findViewById(R.id.txtvMemoryTitle);
+            container = (FrameLayout) v.findViewById(R.id.rowMemory);
         }
     }
 
@@ -84,7 +90,7 @@ public class MemoryAdapter extends RecyclerView.Adapter<MemoryAdapter.MyViewHold
         String title = m.getTitle();
         String type = m.getType();
         String path = m.getPath();
-        //holder.txtvMemoryTitle.setText(title);
+        holder.txtvMemoryTitle.setText(title);
         TableRow.LayoutParams params = new TableRow.LayoutParams((int) unitSize, (int) unitSize); // (width, height)
         holder.container.setLayoutParams(params);
         loadThumbnail(holder.imgvMemory,type,path);

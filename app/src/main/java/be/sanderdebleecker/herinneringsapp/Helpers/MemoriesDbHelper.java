@@ -15,10 +15,10 @@ import android.database.sqlite.SQLiteOpenHelper;
 * Creation and structure of the app's database
  */
 
-public class DbHelper extends SQLiteOpenHelper {
-    private static DbHelper mInstance = null;
+public class MemoriesDbHelper extends SQLiteOpenHelper {
+    private static MemoriesDbHelper mInstance = null;
     private static final int DB_VERSION = 8;
-    private static final String DB_NAME="HerinneringsApp.db";
+    private static final String DB_NAME="Memories.db";
     public final String TBL_USERS="tbl_users";
     public final String TBL_MEMORIES="tbl_memories";
     public final String TBL_ALBUMS_MEMORIES="tbl_albums_memories";
@@ -133,12 +133,12 @@ public class DbHelper extends SQLiteOpenHelper {
         GWQ;
     }
 
-    private DbHelper(Context context) {
+    private MemoriesDbHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
     }
-    public static synchronized DbHelper getInstance(Context context) {
+    public static synchronized MemoriesDbHelper getInstance(Context context) {
         if(mInstance==null){
-            mInstance = new DbHelper(context.getApplicationContext());
+            mInstance = new MemoriesDbHelper(context.getApplicationContext());
         }
         return mInstance;
     }

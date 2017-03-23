@@ -5,15 +5,14 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
 import be.sanderdebleecker.herinneringsapp.Helpers.MemoriesDbHelper;
-/*
-* Logic that every repository will have
-* */
-public class BaseRepository {
-    protected SQLiteDatabase db;
-    protected MemoriesDbHelper dbh;
+import be.sanderdebleecker.herinneringsapp.Helpers.SyncDbHelper;
 
-    public BaseRepository(Context context) {
-        dbh = MemoriesDbHelper.getInstance(context);
+public class SyncBaseRepository {
+    protected SQLiteDatabase db;
+    protected SyncDbHelper dbh;
+
+    public SyncBaseRepository(Context context) {
+        dbh = SyncDbHelper.getInstance(context);
     }
 
     public void open() throws SQLException {
