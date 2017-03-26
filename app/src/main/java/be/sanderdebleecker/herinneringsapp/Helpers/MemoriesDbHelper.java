@@ -5,12 +5,8 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-
-//TODO REMEMBERME is not checked , every use is remembered even if never logged in !!!
-
 //TODO deletememoryfromttimeline() must take user as argument once multi-user
 
-//TODO CHANGE RESOURCES TO SESSIONSALBUMS FOR CLARITY SAKE
 /*
 * Creation and structure of the app's database
  */
@@ -23,21 +19,20 @@ public class MemoriesDbHelper extends SQLiteOpenHelper {
     public final String TBL_MEMORIES="tbl_memories";
     public final String TBL_ALBUMS_MEMORIES="tbl_albums_memories";
     public final String TBL_SESSIONS_TESTS="tbl_sessions_tests";
+    public final String TBL_SESSIONS_ALBUMS ="tbl_sessions_albums";
     public final String TBL_TIMELINE="tbl_timeline";
     public final String TBL_TRUSTS="tbl_trustees";
-    public final String TBL_COLLECTIONS="tbl_collections";
     public final String TBL_ALBUMS="tbl_albums";
     public final String TBL_SESSIONS="tbl_sessions";
-    public final String TBL_RESOURCES ="tbl_resources";
     public final String TBL_GWQTEST = "tbl_gwqtest";
 
     public enum TimelineColumns {
-        TimelineId,
+        TimelineUuid,
         TimelineMemory,
         TimelineUser;
     }
     public enum UserColumns {
-        UserId,
+        UserUuid,
         UserFirstName,
         UserLastName,
         UserName,
@@ -46,17 +41,9 @@ public class MemoriesDbHelper extends SQLiteOpenHelper {
         UserQuestion2,
         UserAnswer1,
         UserAnswer2;
-        static String[] getColumns() {
-            Object[] users = values();
-            String[] res = new String[users.length];
-            for (int i = 0; i < users.length; i++) {
-                res[i] = users[i].toString();
-            }
-            return res;
-        }
     }
     public enum MemoryColumns {
-        MemoryId,
+        MemoryUuid,
         MemoryTitle,
         MemoryDescription,
         MemoryDateTime,
@@ -66,28 +53,12 @@ public class MemoriesDbHelper extends SQLiteOpenHelper {
         MemoryCreator,
         MemoryPath,
         MemoryType;
-        public static String[] getColumns() {
-            Object[] memories = values();
-            String[] res = new String[memories.length];
-            for (int i = 0; i < memories.length; i++) {
-                res[i] = memories[i].toString();
-            }
-            return res;
-        }
     }
     public enum AlbumColumns {
-        AlbumId,
+        AlbumUuid,
         AlbumTitle,
         AlbumCreator,
         AlbumThumbnail;
-        static String[] getColumns() {
-            Object[] albums = values();
-            String[] res = new String[albums.length];
-            for (int i = 0; i < albums.length; i++) {
-                res[i] = albums[i].toString();
-            }
-            return res;
-        }
     }
     public enum AlbumsMemoriesColumns {
         AMId,
@@ -95,7 +66,7 @@ public class MemoriesDbHelper extends SQLiteOpenHelper {
         AMMemory,
     }
     public enum SessionColumns {
-        SessionId,
+        SessionUuid,
         SessionName,
         SessionDate,
         SessionNotes,
@@ -104,13 +75,13 @@ public class MemoriesDbHelper extends SQLiteOpenHelper {
         SessionIsFinished,
         SessionAuthor,
     }
-    public enum ResourceColumns {
-        ResourceId,
-        ResourceSession,
-        ResourceAlbum,
+    public enum SessionsAlbumsColumns {
+        SAId,
+        SASession,
+        SAAlbum,
         }
     public enum TrustColumns {
-        TrustId,
+        TrustUuid,
         TrustSource,
         TrustDestination,
     }
@@ -149,7 +120,7 @@ public class MemoriesDbHelper extends SQLiteOpenHelper {
         createTblAlbums(db);
         createTblSessions(db);
         createTblTrustees(db);
-        createTblResources(db);
+        createTblSessionsAlbums(db);
         createTblTimeline(db);
         createTblAlbumsMemories(db);
         createTblSessionsTests(db);
@@ -168,8 +139,7 @@ public class MemoriesDbHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS "+TBL_MEMORIES);
         db.execSQL("DROP TABLE IF EXISTS "+TBL_ALBUMS);
         db.execSQL("DROP TABLE IF EXISTS "+TBL_SESSIONS);
-        db.execSQL("DROP TABLE IF EXISTS "+TBL_COLLECTIONS);
-        db.execSQL("DROP TABLE IF EXISTS "+TBL_RESOURCES);
+        db.execSQL("DROP TABLE IF EXISTS "+TBL_SESSIONS_ALBUMS);
         db.execSQL("DROP TABLE IF EXISTS "+TBL_TRUSTS);
         db.execSQL("DROP TABLE IF EXISTS "+TBL_ALBUMS_MEMORIES);
         db.execSQL("DROP TABLE IF EXISTS "+TBL_SESSIONS_TESTS);
@@ -182,17 +152,103 @@ public class MemoriesDbHelper extends SQLiteOpenHelper {
             onCreate(db);
         }catch(SQLException ex) {
             ex.printStackTrace();
-            //TBL already exists...
+            //TBL already getIdentifier...
         }
     }
 
+    private void createTblUsers(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE "+TBL_USERS+" ( "+
+                UserColumns.UserUuid +" BLOB PRIMARY KEY, "+
+                UserColumns.UserFirstName + " VARCHAR(100), "+
+                UserColumns.UserLastName + " VARCHAR(100), "+
+                UserColumns.UserName+ " VARCHAR(100), "+
+                UserColumns.UserPassword + " VARCHAR(32), "+
+                UserColumns.UserQuestion1 +" VARCHAR(100), "+
+                UserColumns.UserQuestion2 +" VARCHAR(100), "+
+                UserColumns.UserAnswer1 +" VARCHAR(100), "+
+                UserColumns.UserAnswer2 +" VARCHAR(100) "+
+                ")" );
+    }
+    private void createTblTrustees(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE "+ TBL_TRUSTS +" ( "+
+                TrustColumns.TrustUuid +" BLOB PRIMARY KEY, "+
+                TrustColumns.TrustSource + " BLOB, "+
+                TrustColumns.TrustDestination + " BLOB"+
+                ")" );
+    }
+    private void createTblMemories(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE "+TBL_MEMORIES+" ( "+
+                MemoryColumns.MemoryUuid +" BLOB PRIMARY KEY, "+
+                MemoryColumns.MemoryTitle + " VARCHAR(100), "+
+                MemoryColumns.MemoryDescription + " VARCHAR(600), "+
+                MemoryColumns.MemoryDateTime + " VARCHAR(50), "+
+                MemoryColumns.MemoryLocationLat + " DOUBLE, "+
+                MemoryColumns.MemoryLocationLong + " DOUBLE, "+
+                MemoryColumns.MemoryLocationName + " VARCHAR(100), "+
+                MemoryColumns.MemoryCreator + " BLOB, "+
+                MemoryColumns.MemoryPath + " VARCHAR(500), "+
+                MemoryColumns.MemoryType + " VARCHAR(50), "+
+                "FOREIGN KEY("+ MemoryColumns.MemoryCreator +") REFERENCES "+TBL_USERS+"("+ UserColumns.UserUuid +")"+
+                ")" );
+    }
+    private void createTblTimeline(SQLiteDatabase db ) {
+        db.execSQL("CREATE TABLE "+TBL_TIMELINE+" ( "+
+                TimelineColumns.TimelineUuid +" BLOB PRIMARY KEY, "+
+                TimelineColumns.TimelineMemory +" BLOB, "+
+                TimelineColumns.TimelineUser +" BLOB, "+
+                "FOREIGN KEY("+ TimelineColumns.TimelineMemory +") REFERENCES "+TBL_MEMORIES+"("+ MemoryColumns.MemoryUuid +"), "+
+                "FOREIGN KEY("+ TimelineColumns.TimelineUser +") REFERENCES "+TBL_USERS+"("+ UserColumns.UserUuid +") "+
+                "UNIQUE ("+TimelineColumns.TimelineMemory +", "+TimelineColumns.TimelineUser +")"+
+                ")" );
+    }
+    private void createTblAlbums(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE "+ TBL_ALBUMS +" ( "+
+                AlbumColumns.AlbumUuid +" BLOB PRIMARY KEY, "+
+                AlbumColumns.AlbumTitle + " VARCHAR(100), "+
+                AlbumColumns.AlbumCreator + " BLOB, "+
+                AlbumColumns.AlbumThumbnail + " BLOB, "+
+                "FOREIGN KEY("+ AlbumColumns.AlbumCreator +") REFERENCES "+TBL_USERS+"("+ UserColumns.UserUuid +"), "+
+                "FOREIGN KEY("+ AlbumColumns.AlbumThumbnail +") REFERENCES "+TBL_MEMORIES+"("+ MemoryColumns.MemoryUuid +")"+
+                ")" );
+    }
+    private void createTblSessions(SQLiteDatabase db)  {
+        db.execSQL("CREATE TABLE "+ TBL_SESSIONS + " ( "+
+                SessionColumns.SessionUuid +" BLOB PRIMARY KEY, "+
+                SessionColumns.SessionName+ " VARCHAR(100), "+
+                SessionColumns.SessionDate +" INTEGER, "+
+                SessionColumns.SessionNotes+" VARCHAR(500), "+
+                SessionColumns.SessionDuration +" INTEGER, "+
+                SessionColumns.SessionCount +" INTEGER, "+
+                SessionColumns.SessionIsFinished +" INTEGER, "+
+                SessionColumns.SessionAuthor + " BLOB, "+
+                "FOREIGN KEY("+ SessionColumns.SessionAuthor +") REFERENCES "+TBL_USERS+"("+ UserColumns.UserUuid +")"+
+                ")" );
+    }
+    private void createTblAlbumsMemories(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE "+ TBL_ALBUMS_MEMORIES +" ( "+
+                AlbumsMemoriesColumns.AMId +" BLOB PRIMARY KEY, "+
+                AlbumsMemoriesColumns.AMAlbum + " BLOB, "+
+                AlbumsMemoriesColumns.AMMemory + " BLOB, "+
+                "FOREIGN KEY("+ AlbumsMemoriesColumns.AMAlbum +") REFERENCES "+TBL_ALBUMS+"("+AlbumColumns.AlbumUuid +"), "+
+                "FOREIGN KEY("+ AlbumsMemoriesColumns.AMMemory +") REFERENCES "+TBL_MEMORIES+"("+ MemoryColumns.MemoryUuid +")"+
+                ")" );
+    }
+    private void createTblSessionsAlbums(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE " + TBL_SESSIONS_ALBUMS + " ( " +
+                SessionsAlbumsColumns.SAId + " BLOB PRIMARY KEY, " +
+                SessionsAlbumsColumns.SASession + " BLOB, " +
+                SessionsAlbumsColumns.SAAlbum +" BLOB, "+
+                "FOREIGN KEY("+ SessionsAlbumsColumns.SASession +") REFERENCES "+TBL_SESSIONS+"("+ SessionColumns.SessionUuid +"), "+
+                "FOREIGN KEY("+ SessionsAlbumsColumns.SAAlbum +") REFERENCES "+TBL_ALBUMS+"("+ AlbumColumns.AlbumUuid +")"+
+                ")" );
+    }
     private void createTblSessionsTests(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE "+TBL_SESSIONS_TESTS+" ( "+
                 SessionsTestsColumns.STId +" INTEGER PRIMARY KEY AUTOINCREMENT, "+
-                SessionsTestsColumns.STSession + " INTEGER, "+
+                SessionsTestsColumns.STSession + " BLOB, "+
                 SessionsTestsColumns.STTest + " INTEGER, "+
                 SessionsTestsColumns.STTestType + " INTEGER, "+
-                "FOREIGN KEY("+ SessionsTestsColumns.STSession +") REFERENCES "+TBL_SESSIONS+"("+ SessionColumns.SessionId +") "+
+                "FOREIGN KEY("+ SessionsTestsColumns.STSession +") REFERENCES "+TBL_SESSIONS+"("+ SessionColumns.SessionUuid +") "+
                 ")" );
     }
     private void createTblGWQTest(SQLiteDatabase db) {
@@ -204,92 +260,6 @@ public class MemoriesDbHelper extends SQLiteOpenHelper {
                 GWQTestColumns.GWQSafety + " INTEGER, "+
                 GWQTestColumns.GWQSociableness + " INTEGER, "+
                 GWQTestColumns.GWQTalkativeness + " INTEGER"+
-                ")" );
-    }
-    private void createTblUsers(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE "+TBL_USERS+" ( "+
-                UserColumns.UserId +" INTEGER PRIMARY KEY AUTOINCREMENT, "+
-                UserColumns.UserFirstName + " VARCHAR(100), "+
-                UserColumns.UserLastName + " VARCHAR(100), "+
-                UserColumns.UserName+ " VARCHAR(100), "+
-                UserColumns.UserPassword + " VARCHAR(32), "+
-                UserColumns.UserQuestion1 +" VARCHAR(100), "+
-                UserColumns.UserQuestion2 +" VARCHAR(100), "+
-                UserColumns.UserAnswer1 +" VARCHAR(100), "+
-                UserColumns.UserAnswer2 +" VARCHAR(100) "+
-                ")" );
-    }
-    private void createTblTimeline(SQLiteDatabase db ) {
-        db.execSQL("CREATE TABLE "+TBL_TIMELINE+" ( "+
-                TimelineColumns.TimelineId +" INTEGER PRIMARY KEY AUTOINCREMENT, "+
-                TimelineColumns.TimelineMemory +" INTEGER, "+
-                TimelineColumns.TimelineUser +" INTEGER, "+
-                "FOREIGN KEY("+ TimelineColumns.TimelineMemory +") REFERENCES "+TBL_MEMORIES+"("+ MemoryColumns.MemoryId +"), "+
-                "FOREIGN KEY("+ TimelineColumns.TimelineUser +") REFERENCES "+TBL_USERS+"("+ UserColumns.UserId +") "+
-                "UNIQUE ("+TimelineColumns.TimelineMemory +", "+TimelineColumns.TimelineUser +")"+
-                ")" );
-    }
-    private void createTblMemories(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE "+TBL_MEMORIES+" ( "+
-                MemoryColumns.MemoryId +" INTEGER PRIMARY KEY AUTOINCREMENT, "+
-                MemoryColumns.MemoryTitle + " VARCHAR(100), "+
-                MemoryColumns.MemoryDescription + " VARCHAR(600), "+
-                MemoryColumns.MemoryDateTime + " VARCHAR(50), "+
-                MemoryColumns.MemoryLocationLat + " DOUBLE, "+
-                MemoryColumns.MemoryLocationLong + " DOUBLE, "+
-                MemoryColumns.MemoryLocationName + " VARCHAR(100), "+
-                MemoryColumns.MemoryCreator + " INTEGER, "+
-                MemoryColumns.MemoryPath + " VARCHAR(500), "+
-                MemoryColumns.MemoryType + " VARCHAR(50), "+
-                "FOREIGN KEY("+ MemoryColumns.MemoryCreator +") REFERENCES "+TBL_USERS+"("+ UserColumns.UserId +")"+
-                ")" );
-    }
-    private void createTblTrustees(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE "+ TBL_TRUSTS +" ( "+
-                TrustColumns.TrustId +" INTEGER PRIMARY KEY AUTOINCREMENT, "+
-                TrustColumns.TrustSource + " INTEGER, "+
-                TrustColumns.TrustDestination + " INTEGER"+
-                ")" );
-    }
-    private void createTblAlbums(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE "+ TBL_ALBUMS +" ( "+
-                AlbumColumns.AlbumId +" INTEGER PRIMARY KEY AUTOINCREMENT, "+
-                AlbumColumns.AlbumTitle + " VARCHAR(100), "+
-                AlbumColumns.AlbumCreator + " INTEGER, "+
-                AlbumColumns.AlbumThumbnail + " INTEGER, "+
-                "FOREIGN KEY("+ AlbumColumns.AlbumCreator +") REFERENCES "+TBL_USERS+"("+ UserColumns.UserId +"), "+
-                "FOREIGN KEY("+ AlbumColumns.AlbumThumbnail +") REFERENCES "+TBL_MEMORIES+"("+ MemoryColumns.MemoryId +")"+
-                ")" );
-    }
-    private void createTblAlbumsMemories(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE "+ TBL_ALBUMS_MEMORIES +" ( "+
-                AlbumsMemoriesColumns.AMId +" INTEGER PRIMARY KEY AUTOINCREMENT, "+
-                AlbumsMemoriesColumns.AMAlbum + " INTEGER, "+
-                AlbumsMemoriesColumns.AMMemory + " INTEGER, "+
-                "FOREIGN KEY("+ AlbumsMemoriesColumns.AMAlbum +") REFERENCES "+TBL_ALBUMS+"("+AlbumColumns.AlbumId +"), "+
-                "FOREIGN KEY("+ AlbumsMemoriesColumns.AMMemory +") REFERENCES "+TBL_MEMORIES+"("+ MemoryColumns.MemoryId +")"+
-                ")" );
-    }
-    private void createTblSessions(SQLiteDatabase db)  {
-        db.execSQL("CREATE TABLE "+ TBL_SESSIONS + " ( "+
-                SessionColumns.SessionId +" INTEGER PRIMARY KEY AUTOINCREMENT, "+
-                SessionColumns.SessionName+ " VARCHAR(100), "+
-                SessionColumns.SessionDate +" INTEGER, "+
-                SessionColumns.SessionNotes+" VARCHAR(500), "+
-                SessionColumns.SessionDuration +" INTEGER, "+
-                SessionColumns.SessionCount +" INTEGER, "+
-                SessionColumns.SessionIsFinished +" INTEGER, "+
-                SessionColumns.SessionAuthor + " INTEGER, "+
-                "FOREIGN KEY("+ SessionColumns.SessionAuthor +") REFERENCES "+TBL_USERS+"("+ UserColumns.UserId +")"+
-                ")" );
-    }
-    private void createTblResources(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE " + TBL_RESOURCES + " ( " +
-                ResourceColumns.ResourceId + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                ResourceColumns.ResourceSession + " INTEGER, " +
-                ResourceColumns.ResourceAlbum +" INTEGER, "+
-                "FOREIGN KEY("+ ResourceColumns.ResourceSession +") REFERENCES "+TBL_SESSIONS+"("+ SessionColumns.SessionId +"), "+
-                "FOREIGN KEY("+ ResourceColumns.ResourceAlbum +") REFERENCES "+TBL_ALBUMS+"("+ AlbumColumns.AlbumId +")"+
                 ")" );
     }
 

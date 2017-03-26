@@ -1,7 +1,6 @@
 package be.sanderdebleecker.herinneringsapp.Models;
 
-public class Memory {
-    private int id;
+public class Memory extends Entity {
     private String title;
     private String description;
     private String date;
@@ -10,12 +9,11 @@ public class Memory {
     private String type;
     private int creator;
 
-    //title,descr,date,mMediaItem.getType().toString(),mMediaItem.getPath(),location.getName(),location.getLng(),location.getLat(),author
     public Memory() {
 
     }
-    public Memory(int id,String title,String desc,String date,String type,String path,String location,Double lng,Double lat,int creator) {
-        this.id = id;
+    public Memory(String uuid,String title,String desc,String date,String type,String path,String location,Double lng,Double lat,int creator) {
+        this.setUuid(uuid);
         this.title = title;
         this.description = desc;
         this.date = date;
@@ -33,8 +31,8 @@ public class Memory {
         this.location = new Location(lng,lat,location);
         this.creator = creator;
     }
-    public Memory(int id,String title,String desc,String date,String type,String path,int creator) {
-        this.id = id;
+    public Memory(String id,String title,String desc,String date,String type,String path,int creator) {
+        this.setUuid(id);
         this.title = title;
         this.description = desc;
         this.date = date;
@@ -53,12 +51,6 @@ public class Memory {
 
 
     //GETSET
-    public int getId() {
-        return id;
-    }
-    public void setId(int id) {
-        this.id = id;
-    }
     public String getDescription() {
         return description;
     }

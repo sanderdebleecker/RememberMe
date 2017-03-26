@@ -14,7 +14,7 @@ public class SelectableMemory extends Memory {
         this.setType(m.getType());
         this.setPath(m.getPath());
         this.setCreator(m.getCreator());
-        this.setId(m.getId());
+        this.setUuid(m.getUuid());
     }
     public boolean isSelected() {
         return selected;

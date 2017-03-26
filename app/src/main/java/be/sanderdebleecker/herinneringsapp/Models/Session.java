@@ -2,8 +2,7 @@ package be.sanderdebleecker.herinneringsapp.Models;
 
 import java.util.List;
 
-public class Session {
-    private int id;
+public class Session extends Entity {
     private String name;
     private List<Album> albums;
     private String date;
@@ -23,12 +22,6 @@ public class Session {
         this.author = author;
     }
 
-    public int getId() {
-        return id;
-    }
-    public void setId(int id) {
-        this.id = id;
-    }
     public String getName() {
         return name;
     }

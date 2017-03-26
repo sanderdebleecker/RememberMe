@@ -13,6 +13,7 @@ public class SyncService extends IntentService {
         * What needs to happen?
         * 1. check if MemorySync Exists !=> create
         * 2. getEntries
+        * 3. ResolveEntries
          */
         System.out.println("Something");
     }

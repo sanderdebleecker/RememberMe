@@ -13,7 +13,6 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -22,7 +21,6 @@ import be.sanderdebleecker.herinneringsapp.Core.Adapters.SelectableAlbumAdapter;
 import be.sanderdebleecker.herinneringsapp.Core.MainApplication;
 import be.sanderdebleecker.herinneringsapp.Data.AlbumDA;
 import be.sanderdebleecker.herinneringsapp.Models.SelectableAlbum;
-import be.sanderdebleecker.herinneringsapp.Models.Session;
 
 public class NewSessionPagerFragment extends SessionPagerFragment {
     protected final String DATEFORMAT = "yyyy-MM-dd";
@@ -72,7 +70,7 @@ public class NewSessionPagerFragment extends SessionPagerFragment {
         MainApplication app = (MainApplication) getContext().getApplicationContext();
         AlbumDA albumSource = new AlbumDA(getContext());
         albumSource.open();
-        mAlbums = albumSource.getSelectabl(app.getCurrSession().getAuthIdentity());
+        mAlbums = albumSource.getSelectables(app.getCurrSession().getAuthIdentity());
         albumSource.close();
     }
     private void loadList() {

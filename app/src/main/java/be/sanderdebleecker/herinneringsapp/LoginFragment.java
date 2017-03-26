@@ -12,14 +12,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.List;
-
-import be.sanderdebleecker.herinneringsapp.Data.DummyDA;
 import be.sanderdebleecker.herinneringsapp.Data.UserDA;
 import be.sanderdebleecker.herinneringsapp.Helpers.Forms.Validator;
 import be.sanderdebleecker.herinneringsapp.Helpers.Security.ClientSession;
 import be.sanderdebleecker.herinneringsapp.Interfaces.ILoginFListener;
-import be.sanderdebleecker.herinneringsapp.Models.View.UserVM;
 
 public class LoginFragment extends Fragment {
     private boolean performingLogin=false;
@@ -93,7 +89,7 @@ public class LoginFragment extends Fragment {
     private ClientSession login(String username,String password) {
         UserDA usersData = new UserDA(getContext());
         usersData.open();
-        int userIdentity = usersData.exists(username,password);
+        int userIdentity = usersData.getIdentifier(username,password);
         usersData.close();
         return new ClientSession(username,userIdentity);
     }

@@ -1,7 +1,7 @@
 package be.sanderdebleecker.herinneringsapp.Data.Repositories;
 
 //TODO make update a transaction
-//Todo change getAllC
+//Todo change getAllAsCursor
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -11,28 +11,42 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteStatement;
 
 import java.util.List;
+import java.util.UUID;
 
 import be.sanderdebleecker.herinneringsapp.Helpers.MemoriesDbHelper;
 import be.sanderdebleecker.herinneringsapp.Models.Album;
 
+/**
+ * Sander De Bleecker
+ */
+
+/**
+ * Provides base methods to access TBL_ALBUMS in the local database
+ */
 public class AlbumRepository extends BaseRepository {
 
     protected AlbumRepository(Context context) {
         super(context);
     }
-    protected Cursor getAllC(int userId) {
+
+    /**
+     * Queries the local database for all albums
+     * @param userIdentifier String uuid of the user
+     * @return Cursor containing albums
+     */
+    protected Cursor getAllC(String userIdentifier) {
+        //TODO:joins query builder http://blog.cubeactive.com/android-creating-a-join-with-sqlite/
         Cursor res = null;
-        //Album Memories !!!!
-        String sql = "SELECT a."+ MemoriesDbHelper.AlbumColumns.AlbumId +","+
+        String sql = "SELECT a."+ MemoriesDbHelper.AlbumColumns.AlbumUuid +","+
                 " a."+ MemoriesDbHelper.AlbumColumns.AlbumTitle +","+
                 " a."+ MemoriesDbHelper.AlbumColumns.AlbumCreator +","+
                 " m."+ MemoriesDbHelper.MemoryColumns.MemoryPath +","+
                 " m."+ MemoriesDbHelper.MemoryColumns.MemoryType +""+
                 " FROM "+dbh.TBL_ALBUMS+" a"+
                 " LEFT OUTER JOIN "+dbh.TBL_MEMORIES+" m"+
-                " ON a."+ MemoriesDbHelper.AlbumColumns.AlbumThumbnail +"="+"m."+ MemoriesDbHelper.MemoryColumns.MemoryId;/* +
-                " WHERE"+
-                " a."+ DbHelper.AlbumColumns.AlbumCreator +"=?";*/
+                " ON a."+ MemoriesDbHelper.AlbumColumns.AlbumThumbnail +"="+"m."+ MemoriesDbHelper.MemoryColumns.MemoryUuid +
+                " WHERE" +
+                " a."+ MemoriesDbHelper.AlbumColumns.AlbumCreator +"=?";
         try{
             res =  db.rawQuery(sql,null);
         }catch(SQLiteException ex) {
@@ -42,6 +56,11 @@ public class AlbumRepository extends BaseRepository {
         }
         return res;
     }
+
+    /**
+     * Queries the local database for all albums
+     * @return Cursor containing albums
+     */
     public Cursor getAllCRaw() {
         Cursor res = null;
         String sql = "SELECT * FROM "+dbh.TBL_ALBUMS;
@@ -53,24 +72,28 @@ public class AlbumRepository extends BaseRepository {
         return res;
     }
 
-    //SPECIFIC
-    protected Cursor getC(int albumId) {
+    /**
+     * Queries the local database for an album
+     * @param albumIdentifier String uuid of the album
+     * @return Cursor containing the album
+     */
+    protected Cursor getC(String albumIdentifier) {
         Cursor res = null;
-        String sql = "SELECT a."+ MemoriesDbHelper.AlbumColumns.AlbumId +","+
+        String sql = "SELECT a."+ MemoriesDbHelper.AlbumColumns.AlbumUuid +","+
                 " a."+ MemoriesDbHelper.AlbumColumns.AlbumTitle +","+
                 " a."+ MemoriesDbHelper.AlbumColumns.AlbumCreator +","+
                 " a."+ MemoriesDbHelper.AlbumColumns.AlbumThumbnail +", "+
-                " m."+ MemoriesDbHelper.MemoryColumns.MemoryId +", "+
+                " m."+ MemoriesDbHelper.MemoryColumns.MemoryUuid +", "+
                 " m."+ MemoriesDbHelper.MemoryColumns.MemoryType +", "+
                 " m."+ MemoriesDbHelper.MemoryColumns.MemoryPath +", "+
                 " m."+ MemoriesDbHelper.MemoryColumns.MemoryTitle +""+
                 " FROM "+dbh.TBL_ALBUMS+" a"+
                 " LEFT OUTER JOIN "+dbh.TBL_MEMORIES+" m"+
-                " ON a."+ MemoriesDbHelper.AlbumColumns.AlbumThumbnail +"="+"m."+ MemoriesDbHelper.MemoryColumns.MemoryId +
+                " ON a."+ MemoriesDbHelper.AlbumColumns.AlbumThumbnail +"="+"m."+ MemoriesDbHelper.MemoryColumns.MemoryUuid +
                 " WHERE"+
-                " a."+ MemoriesDbHelper.AlbumColumns.AlbumId +"=?";
+                " a."+ MemoriesDbHelper.AlbumColumns.AlbumUuid +"=?";
         try{
-            res =  db.rawQuery(sql,new String[]{""+albumId});
+            res =  db.rawQuery(sql,new String[]{""+albumIdentifier});
         }catch(SQLiteException ex) {
             System.out.println(ex.getMessage());
         }catch(Exception e){
@@ -79,12 +102,16 @@ public class AlbumRepository extends BaseRepository {
         return res;
     }
 
-
-    public boolean updateAlbum(Album a) {
+    /**
+     * Updates an album in the local database
+     * @param album Album to be updated
+     * @return boolean success
+     */
+    public boolean updateAlbum(Album album) {
         SQLiteStatement stmt = db.compileStatement("UPDATE "+dbh.TBL_ALBUMS+" SET "+
-                MemoriesDbHelper.AlbumColumns.AlbumTitle +"=? WHERE "+ MemoriesDbHelper.AlbumColumns.AlbumId +"=?");
-        stmt.bindString(1, a.getName());
-        stmt.bindLong(2,a.getId());
+                MemoriesDbHelper.AlbumColumns.AlbumTitle +"=? WHERE "+ MemoriesDbHelper.AlbumColumns.AlbumUuid +"=?");
+        stmt.bindString(1, album.getName());
+        stmt.bindString(2,album.getUuid());
         try{
             stmt.execute();
             return true;
@@ -92,17 +119,24 @@ public class AlbumRepository extends BaseRepository {
             return false;
         }
     }
-    public boolean updateAlbumContents(int albumId, List<Integer> selectedMemories, List<Integer> prevSelectedMemories) {
-        //differences!!!
+
+    /**
+     * Associates newly selected memories with an album and disassociates differences
+     * @param albumIdentifier String uuid of the album
+     * @param selectedMemories Memories that are part of the album
+     * @param prevSelectedMemories Memories that were part of the album
+     * @return boolean success
+     */
+    public boolean updateAlbumContents(String albumIdentifier, List<String> selectedMemories, List<String> prevSelectedMemories) {
         try{
-            for(int m : selectedMemories) {
+            for(String m : selectedMemories) {
                 if(!prevSelectedMemories.contains(m)){
-                    insertAlbumMemory(albumId,m);
+                    insertAlbumMemory(albumIdentifier,m);
                 }
             }
-            for(int m : prevSelectedMemories) {
+            for(String m : prevSelectedMemories) {
                 if (!selectedMemories.contains(m)) {
-                    deleteAlbumMemory(albumId, m);
+                    deleteAlbumMemory(albumIdentifier, m);
                 }
             }
             return true;
@@ -111,13 +145,17 @@ public class AlbumRepository extends BaseRepository {
         }
     }
 
-    //OTHERS
-    public Cursor getSelectedMemoriesC(int albumId) {
+    /**
+     * Queries the local database for all album memories
+     * @param albumIdentifier String uuid of the album
+     * @return Cursor cursor containing memories
+     */
+    public Cursor getSelectedMemoriesC(String albumIdentifier) {
         Cursor res = null;
         String[] select = new String[]{MemoriesDbHelper.AlbumsMemoriesColumns.AMMemory.toString()};
         String where = MemoriesDbHelper.AlbumsMemoriesColumns.AMAlbum +"=?";
         try{
-            res = db.query(dbh.TBL_ALBUMS_MEMORIES, select, where, new String[]{ ""+albumId}, null, null,null);
+            res = db.query(dbh.TBL_ALBUMS_MEMORIES, select, where, new String[]{ albumIdentifier}, null, null,null);
         }catch(SQLiteException ex) {
             System.out.println(ex.getMessage());
         }catch(Exception e){
@@ -126,41 +164,65 @@ public class AlbumRepository extends BaseRepository {
         return res;
     }
 
-    protected int insertAlbum(Album newAlbum) {
-        int id = -1;
+    /**
+     * Inserts a new album into the local database
+     * @param album Album to be inserted
+     * @return String uuid of new album
+     */
+    protected String insertAlbum(Album album) {
+        String identifier = UUID.randomUUID().toString().replaceAll("-","");
         try{
             ContentValues cv = new ContentValues();
-            cv.put(MemoriesDbHelper.AlbumColumns.AlbumTitle.toString(), newAlbum.getName());
-            cv.put(MemoriesDbHelper.AlbumColumns.AlbumCreator.toString(), newAlbum.getAuthorId());
-            cv.put(MemoriesDbHelper.AlbumColumns.AlbumThumbnail.toString(), newAlbum.getThumbnail().getId());
+            cv.put(MemoriesDbHelper.AlbumColumns.AlbumUuid.toString(),identifier );
+            cv.put(MemoriesDbHelper.AlbumColumns.AlbumTitle.toString(), album.getName());
+            cv.put(MemoriesDbHelper.AlbumColumns.AlbumCreator.toString(), album.getAuthorId());
+            cv.put(MemoriesDbHelper.AlbumColumns.AlbumThumbnail.toString(), album.getThumbnail().getUuid());
             //execute
-            id = (int) db.insert(dbh.TBL_ALBUMS,null,cv);
+            db.insert(dbh.TBL_ALBUMS,null,cv);
         }catch(Exception e) {
             System.out.println(e.getMessage());
         }
-        return id;
+        return identifier;
     }
-    protected void insertAlbumMemory(int albumId, Integer mem) {
+
+    /**
+     * Associates an album with a memory in the local database
+     * @param albumIdentifier String uuid of the album
+     * @param mememoryIdentifier String uuid of the memory
+     */
+    protected void insertAlbumMemory(String albumIdentifier, String mememoryIdentifier) {
         SQLiteStatement stmt = db.compileStatement("INSERT INTO "+dbh.TBL_ALBUMS_MEMORIES+" VALUES(NULL,?,?)");
-        stmt.bindLong(1, albumId);
-        stmt.bindLong(2, mem);
-        stmt.execute();
-    }
-    protected void deleteAlbumMemory(int albumId, int m) {
-        SQLiteStatement stmt = db.compileStatement("DELETE FROM "+dbh.TBL_ALBUMS_MEMORIES+" WHERE "+ MemoriesDbHelper.AlbumsMemoriesColumns.AMAlbum +"=? AND "+ MemoriesDbHelper.AlbumsMemoriesColumns.AMMemory +"=?");
-        stmt.bindLong(1, albumId);
-        stmt.bindLong(2, m);
+        stmt.bindString(1, albumIdentifier);
+        stmt.bindString(2, mememoryIdentifier);
         stmt.execute();
     }
 
-    protected boolean insertAlbumMemories(int albumId,List<Integer> memories) {
+    /**
+     * Disassociates an album from a memory in the local database
+     * @param albumUuid String uuid of the album
+     * @param memoryUuid String uuid of the memory
+     */
+    protected void deleteAlbumMemory(String albumUuid, String memoryUuid) {
+        SQLiteStatement stmt = db.compileStatement("DELETE FROM "+dbh.TBL_ALBUMS_MEMORIES+" WHERE "+ MemoriesDbHelper.AlbumsMemoriesColumns.AMAlbum +"=? AND "+ MemoriesDbHelper.AlbumsMemoriesColumns.AMMemory +"=?");
+        stmt.bindString(1, albumUuid);
+        stmt.bindString(2, memoryUuid);
+        stmt.execute();
+    }
+
+    /**
+     * Associates an albnm with memories in the local database
+     * @param albumIdentifier String uuid of the album
+     * @param memories List<String> memories
+     * @return boolean success
+     */
+    protected boolean insertAlbumMemories(String albumIdentifier,List<String> memories) {
         boolean result = true;
         try{
-            if(albumId==-1) {
-                throw new SQLException("AMAlbum '"+albumId+"' does not exist yet, so no memories can be inserted (AlbumRepository.insertAlbumMemories)");
+            if(albumIdentifier.equals("")) {
+                throw new SQLException("AMAlbum '"+albumIdentifier+"' does not exist yet, so no memories can be inserted (AlbumRepository.insertAlbumMemories)");
             }
-            for(Integer mem : memories) {
-                insertAlbumMemory(albumId, mem);
+            for(String mem : memories) {
+                insertAlbumMemory(albumIdentifier, mem);
             }
         }catch(SQLException e) {
             e.printStackTrace();

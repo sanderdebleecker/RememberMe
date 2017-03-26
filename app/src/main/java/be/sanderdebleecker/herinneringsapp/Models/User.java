@@ -1,22 +1,11 @@
 package be.sanderdebleecker.herinneringsapp.Models;
 
-public class User {
-    private int id;
+public class User extends Entity {
     private String firstName;
     private String lastName;
     private String username;
     private String password;
     private String q1,q2,a1,a2;
-
-
-
-    //GETSET
-    public int getId() {
-        return id;
-    }
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getFirstName() {
         return firstName;

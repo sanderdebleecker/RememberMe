@@ -5,43 +5,40 @@ import android.content.Context;
 import java.util.List;
 
 import be.sanderdebleecker.herinneringsapp.Data.Repositories.SessionRepository;
-import be.sanderdebleecker.herinneringsapp.Models.Memory;
 import be.sanderdebleecker.herinneringsapp.Models.Session;
-import be.sanderdebleecker.herinneringsapp.Models.View.SessionVM;
 
+/**
+ * Sander De Bleecker
+ */
+
+/**
+ * Provides methods to access TBL_SESSIONS in the local database
+ */
 public class SessionDA extends SessionRepository {
 
     public SessionDA(Context context) {
         super(context);
     }
 
-    public int insert(Session newSession,List<Integer> albums) {
-        if(newSession==null) return -1;
+    /**
+     * Inserts a new session into the local database
+     * @param session Session to be inserted
+     * @param albums List<String> albums of the session
+     * @return
+     */
+    public String insert(Session session,List<String> albums) {
+        if(session==null) return "";
         db.beginTransaction();
-        int sessionId = insertSession(newSession);
-        if(sessionId>-1) {
-            if(insertSessionAlbums(sessionId,albums)){
+        String sessionIdentifier = insert(session);
+        if(!sessionIdentifier.equals("")) {
+            if(insertSessionAlbums(sessionIdentifier,albums)){
                 db.setTransactionSuccessful();
             }else{
-                return -1;
+                return"";
             }
         }
         db.endTransaction();
-        return sessionId;
-    }
-    public boolean update(Session session) {
-        if(session==null) { return false; }
-        return updateSession(session);
-    }
-    public List<Integer> getAlbums(int sessionId) {
-        return getAlbumIds(sessionId);
+        return sessionIdentifier;
     }
 
-
-    public Session get(int mSession,int identity) {
-        return getSession(mSession,identity);
-    }
-    public List<SessionVM> get(int identity) {
-        return getSessions(identity);
-    }
 }

@@ -46,7 +46,7 @@ public class SyncDbHelper extends SQLiteOpenHelper {
     }
     private void createTableEntity(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE "+TBL_ENTITY+" ( "+
-                EntityColumns.EUuid +" NONE, "+
+                EntityColumns.EUuid +" BLOB, "+
                 EntityColumns.EType + " INTEGER, "+
                 ")" );
     }

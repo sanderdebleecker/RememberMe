@@ -1,22 +1,16 @@
 package be.sanderdebleecker.herinneringsapp.Models;
 
-public class MappedMemory {
-    private int id;
+public class MappedMemory extends Entity {
+
     private String title;
     public Location location;
 
-    public MappedMemory(int id,String title,double lng,double lat) {
-        this.id = id;
+    public MappedMemory(String uuid,String title,double lng,double lat) {
+        this.setUuid(uuid);
         this.title = title;
         this.location = new Location(lng,lat,"");
     }
 
-    public int getId() {
-        return id;
-    }
-    public void setId(int id) {
-        this.id = id;
-    }
     public String getTitle() {
         return title;
     }

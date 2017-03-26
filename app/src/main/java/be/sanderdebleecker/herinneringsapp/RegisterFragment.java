@@ -132,7 +132,7 @@ public class RegisterFragment extends Fragment {
                     String username = Validator.getValue(etxtUsername);
                     UserDA usersData = new UserDA(getContext());
                     usersData.open();
-                    if(!usersData.exists(username)){
+                    if(!usersData.getIdentifier(username)){
                         int newUserId = regiserSuccess(usersData);
                         if(newUserId!=-1) {
                             usersData.close();

@@ -1,7 +1,8 @@
 package be.sanderdebleecker.herinneringsapp.Models.View;
 
-public class SessionVM {
-    int id;
+import be.sanderdebleecker.herinneringsapp.Models.Entity;
+
+public class SessionVM extends Entity {
     int duration;
     String name;
     String author;
@@ -42,11 +43,5 @@ public class SessionVM {
     }
     public void setDate(String date) {
         this.date = date;
-    }
-    public int getId() {
-        return id;
-    }
-    public void setId(int id) {
-        this.id = id;
     }
 }

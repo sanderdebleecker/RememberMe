@@ -1,9 +1,9 @@
 package be.sanderdebleecker.herinneringsapp.Models;
 
 public class SyncEntity {
-    //* Type of entity : 0 Memory, 1 Album, 2 Session, 3 User
+    //* Type of entity : 0 Memory, 1 Album, 2 Session, 3 User, 4 Timeline, 5 Trust
     public enum Types {
-        Memory,Album,Session,User
+        Memory,Album,Session,User,Timeline,Trust
     }
     public String uuid;
     public Types type;

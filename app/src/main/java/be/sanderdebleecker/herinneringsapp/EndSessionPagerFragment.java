@@ -42,7 +42,6 @@ public class EndSessionPagerFragment extends SessionPagerFragment {
         etxtNotes = (EditText) v.findViewById(R.id.end_session_etxtNotes);
     }
     private void loadSession() {
-        //TODO: handle empty memory
         mSession = mListener.getSession();
         mSession.setFinished(true);
         mSession.setDuration(mListener.getSessionDuration());

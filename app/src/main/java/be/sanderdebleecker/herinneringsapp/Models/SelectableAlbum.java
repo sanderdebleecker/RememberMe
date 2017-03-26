@@ -9,7 +9,7 @@ public class SelectableAlbum extends Album {
 
     }
     public SelectableAlbum(Album a) {
-        this.setId(a.getId());
+        this.setUuid(a.getUuid());
         this.setAuthor(a.getAuthor());
         this.setAuthorId(a.getAuthorId());
         this.setName(a.getName());

@@ -1,7 +1,8 @@
 package be.sanderdebleecker.herinneringsapp.Models.View;
 
-public class UserVM {
-    private int id;
+import be.sanderdebleecker.herinneringsapp.Models.Entity;
+
+public class UserVM extends Entity {
     private String username;
 
     public UserVM() {
@@ -16,10 +17,5 @@ public class UserVM {
     public void setUsername(String username) {
         this.username = username;
     }
-    public int getId() {
-        return id;
-    }
-    public void setId(int id) {
-        this.id = id;
-    }
+
 }

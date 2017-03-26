@@ -1,21 +1,14 @@
 package be.sanderdebleecker.herinneringsapp.Models;
 
 public class Trust {
-    public static class Party {
-        private int id;
+    public static class Party extends Entity {
         private String name;
-        public Party(int id) {
-            this.id = id;
+        public Party(String identifier) {
+            this.setUuid(identifier);
         }
-        public Party(int id,String name) {
-            this.id = id;
+        public Party(String identifier,String name) {
+            this.setUuid(identifier);
             this.name = name;
-        }
-        public int getId() {
-            return id;
-        }
-        public void setId(int id) {
-            this.id = id;
         }
         public String getName() {
             return name;

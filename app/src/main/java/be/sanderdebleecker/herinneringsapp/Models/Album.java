@@ -2,20 +2,13 @@ package be.sanderdebleecker.herinneringsapp.Models;
 
 import java.util.ArrayList;
 
-public class Album {
-    private int id;
+public class Album extends Entity {
     private String name;
     private String author;
     private int authorId;
     private Memory thumbnail;
     private ArrayList<Memory> memories;
 
-    public int getId() {
-        return id;
-    }
-    public void setId(int id) {
-        this.id = id;
-    }
     public String getName() {
         return name;
     }

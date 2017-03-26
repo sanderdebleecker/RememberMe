@@ -11,12 +11,16 @@ public class TrustRepository extends BaseRepository {
         super(context);
     }
 
-
-    public Cursor getAllC(int id) {
+    /**
+     * Queries the local database for all trusts from a user
+     * @param userIdentifier
+     * @return Cursor with trusts
+     */
+    public Cursor getAllC(String userIdentifier) {
         Cursor res = null;
         try{
             String selection = MemoriesDbHelper.TrustColumns.TrustSource +"=? OR "+ MemoriesDbHelper.TrustColumns.TrustDestination+"=?";
-            String[] selectionArgs = new String[]{""+id};
+            String[] selectionArgs = new String[]{""+userIdentifier};
             res = db.query(dbh.TBL_TRUSTS, null, selection, selectionArgs, null, null, null);
         }catch(SQLiteException ex) {
             System.out.println(ex.getMessage());
