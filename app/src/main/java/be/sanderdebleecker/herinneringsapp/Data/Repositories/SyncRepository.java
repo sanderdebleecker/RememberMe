@@ -3,14 +3,11 @@ package be.sanderdebleecker.herinneringsapp.Data.Repositories;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.database.SQLException;
-import android.database.sqlite.SQLiteDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import be.sanderdebleecker.herinneringsapp.Helpers.MemoriesDbHelper;
-import be.sanderdebleecker.herinneringsapp.Helpers.SyncDbHelper;
+import be.sanderdebleecker.herinneringsapp.Data.Databases.SyncDbHelper;
 import be.sanderdebleecker.herinneringsapp.Models.SyncEntity;
 
 public class SyncRepository extends SyncBaseRepository {

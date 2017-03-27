@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import be.sanderdebleecker.herinneringsapp.Data.Repositories.TrustRepository;
-import be.sanderdebleecker.herinneringsapp.Helpers.MemoriesDbHelper;
+import be.sanderdebleecker.herinneringsapp.Data.Databases.MemoriesDbHelper;
 import be.sanderdebleecker.herinneringsapp.Models.Trust;
 
 /**

@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 import be.sanderdebleecker.herinneringsapp.Data.Repositories.BaseRepository;
-import be.sanderdebleecker.herinneringsapp.Helpers.MemoriesDbHelper;
+import be.sanderdebleecker.herinneringsapp.Data.Databases.MemoriesDbHelper;
 import be.sanderdebleecker.herinneringsapp.Helpers.Security.Crypto;
 import be.sanderdebleecker.herinneringsapp.Models.Album;
 import be.sanderdebleecker.herinneringsapp.Models.Location;

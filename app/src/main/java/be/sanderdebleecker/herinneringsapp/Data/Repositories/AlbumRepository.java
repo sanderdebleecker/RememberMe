@@ -11,7 +11,7 @@ import android.database.sqlite.SQLiteStatement;
 import java.util.List;
 import java.util.UUID;
 
-import be.sanderdebleecker.herinneringsapp.Helpers.MemoriesDbHelper;
+import be.sanderdebleecker.herinneringsapp.Data.Databases.MemoriesDbHelper;
 import be.sanderdebleecker.herinneringsapp.Models.Album;
 
 /**

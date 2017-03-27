@@ -1,4 +1,4 @@
-package be.sanderdebleecker.herinneringsapp.Helpers;
+package be.sanderdebleecker.herinneringsapp.Data.Databases;
 
 import android.content.Context;
 import android.database.SQLException;
@@ -13,6 +13,8 @@ import android.database.sqlite.SQLiteOpenHelper;
  * is kept in this database.
  *
  * As soon as the server receives the changes the entries are removed
+ *
+ * DataAccess => SyncRepository
  */
 
 public class SyncDbHelper extends SQLiteOpenHelper {

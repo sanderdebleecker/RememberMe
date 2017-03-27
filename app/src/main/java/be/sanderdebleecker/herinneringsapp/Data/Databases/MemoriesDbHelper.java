@@ -1,14 +1,20 @@
-package be.sanderdebleecker.herinneringsapp.Helpers;
+package be.sanderdebleecker.herinneringsapp.Data.Databases;
 
 import android.content.Context;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-//TODO deletememoryfromttimeline() must take user as argument once multi-user
+/**
+ * Sander De Bleecker
+ */
 
-/*
-* Creation and structure of the app's database
+/**
+ * Local database for keeping all the app's data
+ * MemoriesDbHelper contains DbScheme & Versioning strategy logic
+ *
+ * DataAccess => DataAccess Model's & repositories
+ * Network Interference => SyncService
  */
 
 public class MemoriesDbHelper extends SQLiteOpenHelper {

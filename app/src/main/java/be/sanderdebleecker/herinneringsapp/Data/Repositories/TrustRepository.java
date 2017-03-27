@@ -4,7 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 
-import be.sanderdebleecker.herinneringsapp.Helpers.MemoriesDbHelper;
+import be.sanderdebleecker.herinneringsapp.Data.Databases.MemoriesDbHelper;
 
 public class TrustRepository extends BaseRepository {
     public TrustRepository(Context context) {

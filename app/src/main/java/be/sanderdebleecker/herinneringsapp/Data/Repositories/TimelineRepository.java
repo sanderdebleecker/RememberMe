@@ -5,7 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteQueryBuilder;
 
-import be.sanderdebleecker.herinneringsapp.Helpers.MemoriesDbHelper;
+import be.sanderdebleecker.herinneringsapp.Data.Databases.MemoriesDbHelper;
 
 public class TimelineRepository extends BaseRepository {
 

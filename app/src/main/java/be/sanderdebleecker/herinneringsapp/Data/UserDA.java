@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import be.sanderdebleecker.herinneringsapp.Data.Repositories.UserRepository;
-import be.sanderdebleecker.herinneringsapp.Helpers.MemoriesDbHelper;
+import be.sanderdebleecker.herinneringsapp.Data.Databases.MemoriesDbHelper;
 import be.sanderdebleecker.herinneringsapp.Helpers.Security.Crypto;
 import be.sanderdebleecker.herinneringsapp.Models.View.UserVM;
 

@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteException;
 
 import java.util.UUID;
 
-import be.sanderdebleecker.herinneringsapp.Helpers.MemoriesDbHelper;
+import be.sanderdebleecker.herinneringsapp.Data.Databases.MemoriesDbHelper;
 import be.sanderdebleecker.herinneringsapp.Helpers.Security.Crypto;
 import be.sanderdebleecker.herinneringsapp.Models.User;
 

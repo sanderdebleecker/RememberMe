@@ -4,8 +4,7 @@ import android.content.Context;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
-import be.sanderdebleecker.herinneringsapp.Helpers.MemoriesDbHelper;
-import be.sanderdebleecker.herinneringsapp.Helpers.SyncDbHelper;
+import be.sanderdebleecker.herinneringsapp.Data.Databases.SyncDbHelper;
 
 public class SyncBaseRepository {
     protected SQLiteDatabase db;

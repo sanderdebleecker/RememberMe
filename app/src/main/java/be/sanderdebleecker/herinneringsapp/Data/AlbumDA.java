@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import be.sanderdebleecker.herinneringsapp.Data.Repositories.AlbumRepository;
-import be.sanderdebleecker.herinneringsapp.Helpers.MemoriesDbHelper;
+import be.sanderdebleecker.herinneringsapp.Data.Databases.MemoriesDbHelper;
 import be.sanderdebleecker.herinneringsapp.Models.Album;
 import be.sanderdebleecker.herinneringsapp.Models.Memory;
 import be.sanderdebleecker.herinneringsapp.Models.SelectableAlbum;
