@@ -1,13 +1,11 @@
 package be.sanderdebleecker.herinneringsapp.Data.Repositories;
 
-//TODO make update a transaction
-//Todo change getAllAsCursor
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteException;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.database.sqlite.SQLiteStatement;
 
 import java.util.List;
@@ -35,20 +33,23 @@ public class AlbumRepository extends BaseRepository {
      * @return Cursor containing albums
      */
     protected Cursor getAllC(String userIdentifier) {
-        //TODO:joins query builder http://blog.cubeactive.com/android-creating-a-join-with-sqlite/
         Cursor res = null;
-        String sql = "SELECT a."+ MemoriesDbHelper.AlbumColumns.AlbumUuid +","+
-                " a."+ MemoriesDbHelper.AlbumColumns.AlbumTitle +","+
-                " a."+ MemoriesDbHelper.AlbumColumns.AlbumCreator +","+
-                " m."+ MemoriesDbHelper.MemoryColumns.MemoryPath +","+
-                " m."+ MemoriesDbHelper.MemoryColumns.MemoryType +""+
-                " FROM "+dbh.TBL_ALBUMS+" a"+
-                " LEFT OUTER JOIN "+dbh.TBL_MEMORIES+" m"+
-                " ON a."+ MemoriesDbHelper.AlbumColumns.AlbumThumbnail +"="+"m."+ MemoriesDbHelper.MemoryColumns.MemoryUuid +
-                " WHERE" +
-                " a."+ MemoriesDbHelper.AlbumColumns.AlbumCreator +"=?";
+        SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+
+        String[] projection = new String[] {
+            MemoriesDbHelper.AlbumColumns.AlbumUuid.toString(),
+                MemoriesDbHelper.AlbumColumns.AlbumUuid.toString(),
+                MemoriesDbHelper.AlbumColumns.AlbumTitle.toString(),
+                MemoriesDbHelper.AlbumColumns.AlbumCreator.toString(),
+                MemoriesDbHelper.MemoryColumns.MemoryPath.toString(),
+                MemoriesDbHelper.MemoryColumns.MemoryType.toString()
+        };
+        String leftOuterJoin = dbh.TBL_ALBUMS+" LEFT OUTER JOIN "+dbh.TBL_MEMORIES+
+                " ON a."+ MemoriesDbHelper.AlbumColumns.AlbumThumbnail +"="+"m."+ MemoriesDbHelper.MemoryColumns.MemoryUuid;
+        String selection = MemoriesDbHelper.AlbumColumns.AlbumCreator +"=?";
         try{
-            res =  db.rawQuery(sql,null);
+            qb.setTables(leftOuterJoin);
+            qb.query(db,projection,selection,new String[] { userIdentifier},null,null,null);
         }catch(SQLiteException ex) {
             System.out.println(ex.getMessage());
         }catch(Exception e){
@@ -79,21 +80,23 @@ public class AlbumRepository extends BaseRepository {
      */
     protected Cursor getC(String albumIdentifier) {
         Cursor res = null;
-        String sql = "SELECT a."+ MemoriesDbHelper.AlbumColumns.AlbumUuid +","+
-                " a."+ MemoriesDbHelper.AlbumColumns.AlbumTitle +","+
-                " a."+ MemoriesDbHelper.AlbumColumns.AlbumCreator +","+
-                " a."+ MemoriesDbHelper.AlbumColumns.AlbumThumbnail +", "+
-                " m."+ MemoriesDbHelper.MemoryColumns.MemoryUuid +", "+
-                " m."+ MemoriesDbHelper.MemoryColumns.MemoryType +", "+
-                " m."+ MemoriesDbHelper.MemoryColumns.MemoryPath +", "+
-                " m."+ MemoriesDbHelper.MemoryColumns.MemoryTitle +""+
-                " FROM "+dbh.TBL_ALBUMS+" a"+
-                " LEFT OUTER JOIN "+dbh.TBL_MEMORIES+" m"+
-                " ON a."+ MemoriesDbHelper.AlbumColumns.AlbumThumbnail +"="+"m."+ MemoriesDbHelper.MemoryColumns.MemoryUuid +
-                " WHERE"+
-                " a."+ MemoriesDbHelper.AlbumColumns.AlbumUuid +"=?";
+        SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+        String join = dbh.TBL_ALBUMS+" LEFT OUTER JOIN "+dbh.TBL_MEMORIES+
+                " ON "+ MemoriesDbHelper.AlbumColumns.AlbumThumbnail +"="+ MemoriesDbHelper.MemoryColumns.MemoryUuid;
+        String[] projection =  new String[] {
+                MemoriesDbHelper.AlbumColumns.AlbumUuid.toString(),
+                MemoriesDbHelper.AlbumColumns.AlbumTitle.toString(),
+                MemoriesDbHelper.AlbumColumns.AlbumCreator.toString(),
+                MemoriesDbHelper.AlbumColumns.AlbumThumbnail.toString(),
+                MemoriesDbHelper.MemoryColumns.MemoryUuid.toString(),
+                MemoriesDbHelper.MemoryColumns.MemoryType.toString(),
+                MemoriesDbHelper.MemoryColumns.MemoryPath.toString(),
+                MemoriesDbHelper.MemoryColumns.MemoryTitle.toString()
+        };
+        String selection = MemoriesDbHelper.AlbumColumns.AlbumUuid +"=?";
         try{
-            res =  db.rawQuery(sql,new String[]{""+albumIdentifier});
+            qb.setTables(join);
+            res =  qb.query(db,projection,selection,new String[]{""+albumIdentifier},null,null,null);
         }catch(SQLiteException ex) {
             System.out.println(ex.getMessage());
         }catch(Exception e){

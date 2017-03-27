@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteStatement;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 
 import be.sanderdebleecker.herinneringsapp.Data.Repositories.AlbumRepository;
 import be.sanderdebleecker.herinneringsapp.Helpers.MemoriesDbHelper;

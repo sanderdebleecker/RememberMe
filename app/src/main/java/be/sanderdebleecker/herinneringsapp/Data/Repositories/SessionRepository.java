@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.database.sqlite.SQLiteStatement;
 
 import java.util.ArrayList;
@@ -99,11 +100,10 @@ public class SessionRepository extends BaseRepository {
     public List<String> getAlbums(String sessionIdentifier) {
         List<String> albums = new ArrayList<>();
         Cursor cursor = null;
-        String sql = "SELECT "+ MemoriesDbHelper.SessionsAlbumsColumns.SAAlbum +
-                " FROM "+dbh.TBL_SESSIONS_ALBUMS+
-                " WHERE "+ MemoriesDbHelper.SessionsAlbumsColumns.SASession +"=?";
+        String[] columns = new String[] {MemoriesDbHelper.SessionsAlbumsColumns.SAAlbum.toString() };
+        String selection = MemoriesDbHelper.SessionsAlbumsColumns.SASession +"=?";
         try{
-            cursor =  db.rawQuery(sql,new String[]{ sessionIdentifier });
+            cursor =  db.query(dbh.TBL_SESSIONS_ALBUMS,columns,selection,new String[]{ sessionIdentifier },null,null,null);
             while(cursor.moveToNext()) {
                 albums.add(cursor.getString(cursor.getColumnIndex(MemoriesDbHelper.SessionsAlbumsColumns.SAAlbum.toString())));
             }
@@ -122,15 +122,22 @@ public class SessionRepository extends BaseRepository {
      * @return Session datamodel
      */
     public Session get(String sessionIdentifier,String userIdentifier) {
-        //TODO getauthorname from tblusers
         Session session = null;
         Cursor cursor;
-        String sql = "SELECT *"+
-                " FROM " + dbh.TBL_SESSIONS+
-                " WHERE " + MemoriesDbHelper.SessionColumns.SessionUuid +"=?"+
-                " AND " + MemoriesDbHelper.SessionColumns.SessionAuthor + "=?" ;
+
+        String[] columns = new String[] {MemoriesDbHelper.SessionColumns.SessionUuid.toString(),
+            MemoriesDbHelper.SessionColumns.SessionName.toString(),
+            MemoriesDbHelper.SessionColumns.SessionDate.toString(),
+            MemoriesDbHelper.SessionColumns.SessionCount.toString(),
+            MemoriesDbHelper.SessionColumns.SessionDuration.toString(),
+            MemoriesDbHelper.SessionColumns.SessionNotes.toString(),
+            MemoriesDbHelper.SessionColumns.SessionAuthor.toString(),
+            MemoriesDbHelper.SessionColumns.SessionIsFinished.toString()};
+        String selection = MemoriesDbHelper.SessionColumns.SessionUuid +"=?"+
+                " AND " + MemoriesDbHelper.SessionColumns.SessionAuthor + "=?";
         try{
-            cursor =  db.rawQuery(sql,new String[]{ sessionIdentifier, userIdentifier });
+            cursor =  db.query(dbh.TBL_SESSIONS,columns,selection,
+                    new String[]{ sessionIdentifier, userIdentifier },null,null,null);
             while(cursor.moveToNext()) {
                 session = from(cursor);
             }
@@ -147,18 +154,21 @@ public class SessionRepository extends BaseRepository {
      */
     protected List<SessionVM> get(String userIdentifier) {
         List<SessionVM> sessions = new ArrayList<>();
-        Cursor cursor;
-        String sql = " SELECT s."+ MemoriesDbHelper.SessionColumns.SessionUuid +
-                ", s." + MemoriesDbHelper.SessionColumns.SessionName +
-                ", u." + MemoriesDbHelper.UserColumns.UserName +
-                ", s." + MemoriesDbHelper.SessionColumns.SessionDuration +
-                ", s." + MemoriesDbHelper.SessionColumns.SessionDate +
-                " FROM " + dbh.TBL_SESSIONS + " s"+
-                " LEFT OUTER JOIN " + dbh.TBL_USERS + " u"+
-                " ON s."+ MemoriesDbHelper.SessionColumns.SessionAuthor+" = u."+ MemoriesDbHelper.UserColumns.UserUuid+
-                " WHERE " + MemoriesDbHelper.SessionColumns.SessionAuthor + "=?";
+        Cursor cursor = null;
+        SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+        String join = dbh.TBL_SESSIONS +" LEFT OUTER JOIN " + dbh.TBL_USERS +
+                " ON "+ MemoriesDbHelper.SessionColumns.SessionAuthor+" = "+ MemoriesDbHelper.UserColumns.UserUuid;
+        String[] projection = new String[] {
+                MemoriesDbHelper.SessionColumns.SessionUuid.toString(),
+                MemoriesDbHelper.SessionColumns.SessionName.toString(),
+                MemoriesDbHelper.UserColumns.UserName.toString(),
+                MemoriesDbHelper.SessionColumns.SessionDuration.toString(),
+                MemoriesDbHelper.SessionColumns.SessionDate.toString()
+        };
+        String selection = MemoriesDbHelper.SessionColumns.SessionAuthor + "=?";
         try{
-            cursor =  db.rawQuery(sql,new String[]{ userIdentifier });
+            qb.setTables(join);
+            cursor =  qb.query(db,projection,selection,new String[]{ userIdentifier },null,null,null);
             while(cursor.moveToNext()) {
                 sessions.add(viewModelFrom(cursor));
             }

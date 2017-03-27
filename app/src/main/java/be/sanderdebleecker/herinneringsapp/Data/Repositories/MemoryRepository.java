@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.MergeCursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteException;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.database.sqlite.SQLiteStatement;
 
 import java.util.List;
@@ -98,22 +99,31 @@ public class MemoryRepository extends BaseRepository {
      */
     public Cursor getAllCFromAlbums(List<String> albumIdentifiers) {
         if(albumIdentifiers.size()<1) return null;
-        MergeCursor res = null;
+        MergeCursor allAlbumMemoriesCursor = null;
         try{
             int size = albumIdentifiers.size();
-            Cursor[] rawQueries = new Cursor[size];
+            Cursor[] albumMemoriesCursor = new Cursor[size];
+            SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+            String join =  dbh.TBL_MEMORIES+" INNER JOIN "+ dbh.TBL_ALBUMS_MEMORIES+
+                    " ON "+ MemoriesDbHelper.MemoryColumns.MemoryUuid +"="+ MemoriesDbHelper.AlbumsMemoriesColumns.AMMemory;
+            String selection =  MemoriesDbHelper.AlbumsMemoriesColumns.AMAlbum +" = ?";
+            String projection[] = new String[] {
+                    MemoriesDbHelper.MemoryColumns.MemoryUuid.toString(),
+                    MemoriesDbHelper.MemoryColumns.MemoryTitle.toString(),
+                    MemoriesDbHelper.MemoryColumns.MemoryDateTime.toString(),
+                    MemoriesDbHelper.MemoryColumns.MemoryType.toString(),
+                    MemoriesDbHelper.MemoryColumns.MemoryPath.toString(),
+            };
             for(int i=0;i<size;i++) {
-                String sql = "SELECT * FROM "+ dbh.TBL_MEMORIES+" m INNER JOIN "+ dbh.TBL_ALBUMS_MEMORIES+" am"+
-                        " ON m."+ MemoriesDbHelper.MemoryColumns.MemoryUuid +"="+"am."+ MemoriesDbHelper.AlbumsMemoriesColumns.AMMemory +" WHERE "+
-                        " am."+ MemoriesDbHelper.AlbumsMemoriesColumns.AMAlbum +" = ?";
-                rawQueries[i] =  db.rawQuery(sql,new String[]{""+albumIdentifiers.get(i)});
+                qb.setTables(join);
+                albumMemoriesCursor[i] =  qb.query(db,projection,selection,new String[]{""+albumIdentifiers.get(i)},null,null,null);
             }
-            res = new MergeCursor(rawQueries);
+            allAlbumMemoriesCursor = new MergeCursor(albumMemoriesCursor);
         }catch(Exception e){
             System.out.println(e.getMessage());
             return null;
         }
-        return res;
+        return allAlbumMemoriesCursor;
     }
 
     /**
@@ -225,16 +235,25 @@ public class MemoryRepository extends BaseRepository {
     public Cursor getFilteredC(String username, String keyword) {
         Cursor res = null;
         keyword = "%"+keyword+"%";
-        String sql = "SELECT * FROM "+ dbh.TBL_MEMORIES+" m INNER JOIN "+ dbh.TBL_USERS+" u"+
-                " ON m."+ MemoriesDbHelper.MemoryColumns.MemoryCreator +"="+"u."+ MemoriesDbHelper.UserColumns.UserUuid +" WHERE"+
-                " ( m."+ MemoriesDbHelper.MemoryColumns.MemoryTitle +" LIKE ? OR"+
-                " m."+ MemoriesDbHelper.MemoryColumns.MemoryLocationName +" LIKE ? OR"+
-                " u."+ MemoriesDbHelper.UserColumns.UserFirstName +" LIKE ? OR"+
-                " u."+ MemoriesDbHelper.UserColumns.UserLastName +" LIKE ? OR"+
-                " u."+ MemoriesDbHelper.UserColumns.UserName+" LIKE ? ) AND"+
-                " u."+ MemoriesDbHelper.UserColumns.UserName+" LIKE ?";
+        SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+        String join = dbh.TBL_MEMORIES+" INNER JOIN "+ dbh.TBL_USERS+
+                " ON "+ MemoriesDbHelper.MemoryColumns.MemoryCreator +"="+MemoriesDbHelper.UserColumns.UserUuid;
+        qb.setTables(join);
+        String[] projection = new String[] {
+                MemoriesDbHelper.MemoryColumns.MemoryUuid.toString(),
+                MemoriesDbHelper.MemoryColumns.MemoryTitle.toString(),
+                MemoriesDbHelper.MemoryColumns.MemoryType.toString(),
+                MemoriesDbHelper.MemoryColumns.MemoryPath.toString(),
+                MemoriesDbHelper.MemoryColumns.MemoryDateTime.toString()
+        };
+        String selection = MemoriesDbHelper.MemoryColumns.MemoryTitle +" LIKE ? OR "+
+                MemoriesDbHelper.MemoryColumns.MemoryLocationName +" LIKE ? OR "+
+                MemoriesDbHelper.UserColumns.UserFirstName +" LIKE ? OR "+
+                MemoriesDbHelper.UserColumns.UserLastName +" LIKE ? OR "+
+                MemoriesDbHelper.UserColumns.UserName+" LIKE ? ) AND "+
+                MemoriesDbHelper.UserColumns.UserName+" LIKE ?";
         try{
-            res =  db.rawQuery(sql,new String[]{keyword,keyword,keyword,keyword,keyword,username});
+            res = qb.query(db,projection,selection,new String[]{keyword,keyword,keyword,keyword,keyword,username},null,null,null);
         }catch(SQLiteException ex) {
             System.out.println(ex.getMessage());
         }catch(Exception e){
@@ -244,7 +263,7 @@ public class MemoryRepository extends BaseRepository {
     }
 
     /**
-     * Quries the local database for memories with specified locations
+     * Queries the local database for memories with specified locations
      * @return Cursor memories
      */
     public Cursor getMappedC() {
