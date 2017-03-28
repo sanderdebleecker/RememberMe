@@ -50,7 +50,7 @@ public class SessionsFragment extends Fragment {
     }
     private void loadAdapter() {
         MainApplication app = (MainApplication) getContext().getApplicationContext();
-        int identity = app.getCurrSession().getAuthIdentity();
+        String identity = app.getCurrSession().getAuthIdentity();
         SessionDA sessionData = new SessionDA(getContext());
         sessionData.open();
         List<SessionVM> sessions = sessionData.get(identity);

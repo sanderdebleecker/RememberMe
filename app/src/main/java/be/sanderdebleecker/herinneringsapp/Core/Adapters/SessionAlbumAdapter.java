@@ -108,7 +108,7 @@ public class SessionAlbumAdapter extends RecyclerView.Adapter<SessionAlbumAdapte
             }
             @Override
             public boolean areItemsTheSame(SelectableAlbum item1, SelectableAlbum item2) {
-                return item1.getId() == item2.getId();
+                return item1.getUuid().equals(item2.getUuid());
             }
         });
     }

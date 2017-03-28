@@ -96,9 +96,9 @@ public class NewAlbumFragment extends Fragment {
     private boolean insertAlbum() {
         AlbumDA albumDA = new AlbumDA(getContext());
         Album newAlbum = new Album();
-        List<Integer> selMems = mAdapter.getSelectedMemories();
+        List<String> selMems = mAdapter.getSelectedMemories();
         Memory thumbnail = new Memory();
-        thumbnail.setId(selMems.get(0));
+        thumbnail.setUuid(selMems.get(0));
         newAlbum.setName(etxtName.getText().toString().trim());
         newAlbum.setAuthor(username);
         newAlbum.setThumbnail(thumbnail);

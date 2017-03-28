@@ -1,7 +1,7 @@
 package be.sanderdebleecker.herinneringsapp.Interfaces;
 
 public interface IAlbumsFListener {
-    void onAlbumSelect(int id);
+    void onAlbumSelect(String id);
     void onNewAlbum();
 }
 

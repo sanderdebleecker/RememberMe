@@ -408,9 +408,9 @@ public class MainActivity extends AppCompatActivity implements IMemoriesFListene
         startActivity(intent);
     }
     //Interface methods
-    public void onMemorySelect(int id) {
+    public void onMemorySelect(String identifier) {
         Intent intent = new Intent(this, MemoryActivity.class);
-        intent.putExtra(EXTRA_ID_MEMORY,id);
+        intent.putExtra(EXTRA_ID_MEMORY,identifier);
         startActivity(intent);
     }
     public void onNewMemory() {
@@ -418,9 +418,9 @@ public class MainActivity extends AppCompatActivity implements IMemoriesFListene
         startActivity(intent);
     }
     @Override
-    public void onAlbumSelect(int id) {
+    public void onAlbumSelect(String identifier) {
         Intent intent = new Intent(this, AlbumActivity.class);
-        intent.putExtra(EXTRA_ID_ALBUM,id);
+        intent.putExtra(EXTRA_ID_ALBUM,identifier);
         startActivity(intent);
         finish();
     }

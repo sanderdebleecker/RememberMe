@@ -9,17 +9,17 @@ public class Session extends Entity {
     private String notes;
     private int duration;
     private int count;
-    private int author;
+    private String author;
     private boolean isFinished;
 
     //CTOR
     public Session() {
 
     }
-    public Session(String name,String date,int author) {
+    public Session(String name,String date,String authorIdentifier) {
         this.name = name;
         this.date = date;
-        this.author = author;
+        this.author = authorIdentifier;
     }
 
     public String getName() {
@@ -58,11 +58,11 @@ public class Session extends Entity {
     public void setFinished(boolean finished) {
         this.isFinished = finished;
     }
-    public int getAuthor() {
+    public String getAuthor() {
         return author;
     }
-    public void setAuthor(int author) {
-        this.author = author;
+    public void setAuthor(String authorIdentifier) {
+        this.author = authorIdentifier;
     }
     public String getNotes() {
         return notes;

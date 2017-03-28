@@ -152,7 +152,7 @@ public class SessionRepository extends BaseRepository {
      * @param userIdentifier String uuid of user
      * @return List<SessionVM> Session Viewmodels
      */
-    protected List<SessionVM> get(String userIdentifier) {
+    public List<SessionVM> get(String userIdentifier) {
         List<SessionVM> sessions = new ArrayList<>();
         Cursor cursor = null;
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
@@ -184,7 +184,10 @@ public class SessionRepository extends BaseRepository {
      * @param session Session to be updated
      * @return boolean success
      */
-    protected boolean updateSession(Session session) {
+    public boolean update(Session session) {
+        if (session == null) {
+            return false;
+        }
         int rowsAffected = -1;
         ContentValues cv = new ContentValues();
         cv.put(MemoriesDbHelper.SessionColumns.SessionUuid.toString(),session.getUuid());
@@ -218,7 +221,7 @@ public class SessionRepository extends BaseRepository {
         session.setNotes(cursor.getString(cursor.getColumnIndex(MemoriesDbHelper.SessionColumns.SessionNotes.toString())));
         session.setDuration(cursor.getInt(cursor.getColumnIndex(MemoriesDbHelper.SessionColumns.SessionDuration.toString())));
         session.setCount(cursor.getInt(cursor.getColumnIndex(MemoriesDbHelper.SessionColumns.SessionCount.toString())));
-        session.setAuthor(cursor.getInt(cursor.getColumnIndex(MemoriesDbHelper.SessionColumns.SessionAuthor.toString())));
+        session.setAuthor(cursor.getString(cursor.getColumnIndex(MemoriesDbHelper.SessionColumns.SessionAuthor.toString())));
         session.setFinished(cursor.getInt(cursor.getColumnIndex(MemoriesDbHelper.SessionColumns.SessionIsFinished.toString()))==1);
         return session;
     }

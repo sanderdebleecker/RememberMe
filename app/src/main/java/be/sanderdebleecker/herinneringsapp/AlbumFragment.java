@@ -9,9 +9,7 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -28,12 +26,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import be.sanderdebleecker.herinneringsapp.Core.Adapters.SelectableMemoryAdapter;
-import be.sanderdebleecker.herinneringsapp.Core.Implementation.GUI.DividerItemDecoration;
-import be.sanderdebleecker.herinneringsapp.Core.Implementation.GUI.RecyclerTouchListener;
 import be.sanderdebleecker.herinneringsapp.Core.MainApplication;
 import be.sanderdebleecker.herinneringsapp.Data.AlbumDA;
 import be.sanderdebleecker.herinneringsapp.Data.MemoryDA;
-import be.sanderdebleecker.herinneringsapp.Interfaces.IClickListener;
 import be.sanderdebleecker.herinneringsapp.Interfaces.INewAlbumFListener;
 import be.sanderdebleecker.herinneringsapp.Models.Album;
 import be.sanderdebleecker.herinneringsapp.Models.Memory;
@@ -42,7 +37,7 @@ import be.sanderdebleecker.herinneringsapp.Models.View.AlbumVM;
 
 public class AlbumFragment extends Fragment {
     private static final int COLUMNS = 3;
-    private int albumId=-1;
+    private String albumIdentifier ="";
     private Toolbar mToolbar;
     private INewAlbumFListener mListener;
     private TextInputEditText etxtSearch;
@@ -58,9 +53,9 @@ public class AlbumFragment extends Fragment {
     //c
     public AlbumFragment() {
     }
-    public static AlbumFragment newInstance(int albumId) {
+    public static AlbumFragment newInstance(String albumIdentifier) {
         AlbumFragment frag = new AlbumFragment();
-        frag.albumId = albumId;
+        frag.albumIdentifier = albumIdentifier;
         return frag;
     }
     //lf
@@ -116,12 +111,12 @@ public class AlbumFragment extends Fragment {
     }
 
     private boolean updateAlbum() {
-        List<Integer> selectedMemories = mAdapter.getSelectedMemories();
+        List<String> selectedMemories = mAdapter.getSelectedMemories();
         Album a = new Album();
         a.setName(etxtName.getText().toString());
-        a.setId(albumId);
+        a.setUuid(albumIdentifier);
         Memory thumbnail = new Memory();
-        thumbnail.setId(selectedMemories.get(0));
+        thumbnail.setUuid(selectedMemories.get(0));
         a.setThumbnail(thumbnail);
         AlbumDA albumsData = new AlbumDA(getContext());
         albumsData.open();
@@ -229,8 +224,8 @@ public class AlbumFragment extends Fragment {
         //DbService db = new DbService(getContext());
         AlbumDA albumsData = new AlbumDA(getContext());
         albumsData.open();
-        viewmodel.setAlbum(albumsData.get(albumId));
-        viewmodel.setSelectedMemories(albumsData.getSelectedMemories(albumId));
+        viewmodel.setAlbum(albumsData.get(albumIdentifier));
+        viewmodel.setSelectedMemories(albumsData.getSelectedMemories(albumIdentifier));
         albumsData.close();
         return viewmodel;
     }
@@ -293,7 +288,7 @@ public class AlbumFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         AlbumDA albumsData = new AlbumDA(getContext());
                         albumsData.open();
-                        albumsData.delete(albumId);
+                        albumsData.delete(albumIdentifier);
                         albumsData.close();
                         mListener.cancel();
                         dialog.dismiss();
@@ -334,7 +329,7 @@ public class AlbumFragment extends Fragment {
             addActions();
             loadAdapter();
 
-            if(albumId!=-1)
+            if(albumIdentifier.equals(""))
                 new AlbumLoader().execute();
         }
     }

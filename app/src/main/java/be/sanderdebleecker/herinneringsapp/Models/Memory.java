@@ -7,12 +7,12 @@ public class Memory extends Entity {
     private Location location;
     private String path;
     private String type;
-    private int creator;
+    private String creator;
 
     public Memory() {
 
     }
-    public Memory(String uuid,String title,String desc,String date,String type,String path,String location,Double lng,Double lat,int creator) {
+    public Memory(String uuid,String title,String desc,String date,String type,String path,String location,Double lng,Double lat,String creator) {
         this.setUuid(uuid);
         this.title = title;
         this.description = desc;
@@ -22,7 +22,7 @@ public class Memory extends Entity {
         this.location = new Location(lng,lat,location);
         this.creator = creator;
     }
-    public Memory(String title,String desc,String date,String type,String path,String location,Double lng,Double lat,int creator) {
+    public Memory(String title,String desc,String date,String type,String path,String location,Double lng,Double lat,String creator) {
         this.title = title;
         this.description = desc;
         this.date = date;
@@ -31,7 +31,7 @@ public class Memory extends Entity {
         this.location = new Location(lng,lat,location);
         this.creator = creator;
     }
-    public Memory(String id,String title,String desc,String date,String type,String path,int creator) {
+    public Memory(String id,String title,String desc,String date,String type,String path,String creator) {
         this.setUuid(id);
         this.title = title;
         this.description = desc;
@@ -40,7 +40,7 @@ public class Memory extends Entity {
         this.path = path;
         this.creator = creator;
     }
-    public Memory(String title,String desc,String date,String type,String path,int creator) {
+    public Memory(String title,String desc,String date,String type,String path,String creator) {
         this.title = title;
         this.description = desc;
         this.date = date;
@@ -75,10 +75,10 @@ public class Memory extends Entity {
     public void setType(String type) {
         this.type = type;
     }
-    public int getCreator() {
+    public String getCreator() {
         return creator;
     }
-    public void setCreator(int creator) {
+    public void setCreator(String creator) {
         this.creator = creator;
     }
     public String getTitle() {

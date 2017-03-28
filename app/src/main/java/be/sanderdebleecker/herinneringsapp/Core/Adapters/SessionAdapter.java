@@ -87,7 +87,7 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.MyViewHo
             }
             @Override
             public boolean areItemsTheSame(SessionVM item1, SessionVM item2) {
-                return item1.getId()==item2.getId();
+                return item1.getUuid()==item2.getUuid();
             }
         });
     }

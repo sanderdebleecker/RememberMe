@@ -53,24 +53,24 @@ public class SelectableMemoryAdapter extends RecyclerView.Adapter<SelectableMemo
         return mMems.size();
     }
 
-    public List<Integer> getSelectedMemories() {
-        List<Integer> selectedMems = new ArrayList<Integer>();
+    public List<String> getSelectedMemories() {
+        List<String> selectedMems = new ArrayList<String>();
         for(int i=0;i<mMems.size();i++) {
             if(mMems.get(i).isSelected()) {
-                selectedMems.add(mMems.get(i).getId());
+                selectedMems.add(mMems.get(i).getUuid());
             }
         }
         return selectedMems;
     }
 
-    public void filterSelected(List<Integer> selectedMems) {
+    public void filterSelected(List<String> selectedMems) {
         for(int i=0;i<mMems.size();i++) {
-            if (selectedMems.contains(mMems.get(i).getId())) {
+            if (selectedMems.contains(mMems.get(i).getUuid())) {
                 mMems.get(i).setSelected(true);
             }
         }//cant remove in same loop since array.size is condition
         for(int j=0;j<mMems.size();j++) {
-            if(!selectedMems.contains(mMems.get(j).getId())) {
+            if(!selectedMems.contains(mMems.get(j).getUuid())) {
                 mMems.get(j).setSelected(false);
                 mMems.remove(mMems.get(j));
             }
@@ -160,7 +160,7 @@ public class SelectableMemoryAdapter extends RecyclerView.Adapter<SelectableMemo
             }
             @Override
             public boolean areItemsTheSame(SelectableMemory item1, SelectableMemory item2) {
-                return item1.getId() == item2.getId();
+                return item1.getUuid() == item2.getUuid();
             }
         });
     }

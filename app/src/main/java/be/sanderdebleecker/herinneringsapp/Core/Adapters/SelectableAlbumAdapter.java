@@ -121,23 +121,23 @@ public class SelectableAlbumAdapter extends RecyclerView.Adapter<SelectableAlbum
     }
 
     //Selection Methods
-    public List<Integer> getSelectedAlbums() {
-        List<Integer> selectedAlbums = new ArrayList<Integer>();
+    public List<String> getSelectedAlbums() {
+        List<String> selectedAlbums = new ArrayList<String>();
         for(int i=0;i<mAlbums.size();i++) {
             if(mAlbums.get(i).isSelected()) {
-                selectedAlbums.add(mAlbums.get(i).getId());
+                selectedAlbums.add(mAlbums.get(i).getUuid());
             }
         }
         return selectedAlbums;
     }
-    public void filterSelected(List<Integer> selectedAlbums) {
+    public void filterSelected(List<String> selectedAlbums) {
         for(int i=0;i<mAlbums.size();i++) {
-            if (selectedAlbums.contains(mAlbums.get(i).getId())) {
+            if (selectedAlbums.contains(mAlbums.get(i).getUuid())) {
                 mAlbums.get(i).setSelected(true);
             }
         }//cant remove in same loop since array.size is condition
         for(int j=0;j<mAlbums.size();j++) {
-            if(!selectedAlbums.contains(mAlbums.get(j).getId())) {
+            if(!selectedAlbums.contains(mAlbums.get(j).getUuid())) {
                 mAlbums.get(j).setSelected(false);
                 mAlbums.remove(mAlbums.get(j));
             }
@@ -184,7 +184,7 @@ public class SelectableAlbumAdapter extends RecyclerView.Adapter<SelectableAlbum
             }
             @Override
             public boolean areItemsTheSame(SelectableAlbum item1, SelectableAlbum item2) {
-                return item1.getId() == item2.getId();
+                return item1.getUuid() == item2.getUuid();
             }
         });
     }

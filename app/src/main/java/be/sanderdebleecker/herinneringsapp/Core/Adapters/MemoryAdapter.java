@@ -17,6 +17,7 @@ import com.google.android.gms.vision.text.Text;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import be.sanderdebleecker.herinneringsapp.Helpers.StorageHelper;
 import be.sanderdebleecker.herinneringsapp.Models.MediaItem;
@@ -29,18 +30,18 @@ import be.sanderdebleecker.herinneringsapp.R;
 //TODO : make generic adapter that devides screen into rows so MemoriesA and AlbumsA can inherit from it;
 
 public class MemoryAdapter extends RecyclerView.Adapter<MemoryAdapter.MyViewHolder>{
-    private ArrayList<Memory> mMemories;
+    private List<Memory> mMemories;
     private Context mContext;
     private int mColumns = 3;
     private float unitSize = 0;
 
     //CTOR
-    public MemoryAdapter(Context context, ArrayList<Memory> memories) {
+    public MemoryAdapter(Context context, List<Memory> memories) {
         this.mContext = context;
         this.mMemories = memories;
         calculateUnitDimensions();
     }
-    public MemoryAdapter(Context context, ArrayList<Memory> memories, int columns) {
+    public MemoryAdapter(Context context, List<Memory> memories, int columns) {
         this.mContext = context;
         this.mMemories = memories;
         calculateUnitDimensions();
@@ -100,13 +101,13 @@ public class MemoryAdapter extends RecyclerView.Adapter<MemoryAdapter.MyViewHold
     }
 
     //INTERMEDIATE METHODS
-    public void loadMemories(ArrayList<Memory> newMemories) {
+    public void loadMemories(List<Memory> newMemories) {
         this.mMemories= newMemories;
         this.notifyDataSetChanged();
     }
-    public int getId(int position) {
+    public String getIdentifier(int position) {
         Memory m = mMemories.get(position);
-        return m.getId();
+        return m.getUuid();
     }
     //DEFAULT METHODS
     public int getItemCount() {

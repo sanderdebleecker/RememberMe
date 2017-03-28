@@ -12,6 +12,7 @@ import android.widget.TextView;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import be.sanderdebleecker.herinneringsapp.Helpers.StorageHelper;
 import be.sanderdebleecker.herinneringsapp.Models.MediaItem;
@@ -25,12 +26,12 @@ public class TimelineMemoryAdapter extends RecyclerView.Adapter<TimelineMemoryAd
     private static final int IMG_WIDTH_PERCENT = 20;
     private static SimpleDateFormat formatter = new SimpleDateFormat("yyyy");
     private static SimpleDateFormat formatParser = new SimpleDateFormat("yyyy-MM-dd");
-    private ArrayList<Memory> mMemories;
+    private List<Memory> mMemories;
     private Context mContext;
     private String currYear = "";
     private int unitSize;
 
-    public TimelineMemoryAdapter(Context context, ArrayList<Memory> memories) {
+    public TimelineMemoryAdapter(Context context, List<Memory> memories) {
         this.mContext = context;
         this.mMemories = memories;
         calculateUnitDimensions();

@@ -21,6 +21,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import be.sanderdebleecker.herinneringsapp.Data.MemoryDA;
 import be.sanderdebleecker.herinneringsapp.Helpers.StorageHelper;
@@ -35,7 +36,7 @@ public class MemoryMapFragment extends Fragment implements OnMapReadyCallback,IQ
     private static final float DEFAULT_MAP_ZOOM = 7.00f;
     private BottomSheetBehavior mBottomsheetBehavior;
     private ViewGroup mBottomsheet;
-    private HashMap<Marker,Integer> mMarkers = new HashMap<>();
+    private HashMap<Marker,String> mMarkers = new HashMap<>();
     private Marker mCurrMarker;
     private MapView mapvMemories;
     private Bundle bundleMap;
@@ -143,18 +144,18 @@ public class MemoryMapFragment extends Fragment implements OnMapReadyCallback,IQ
     private void createMarkers(GoogleMap map) {
         MemoryDA memoryDA = new MemoryDA(getContext());
         memoryDA.open();
-        ArrayList<MappedMemory> memories = memoryDA.getMapped();
+        List<MappedMemory> memories = memoryDA.getMapped();
         memoryDA.close();
         for(MappedMemory memory : memories) {
             Marker m = map.addMarker(new MarkerOptions().position(new LatLng(memory.location.getLat(),memory.location.getLng())).title(memory.getTitle()));
-            mMarkers.put(m,memory.getId());
+            mMarkers.put(m,memory.getUuid());
         }
     }
     private boolean selectMarker(Marker marker) {
         boolean doubleClicked = mCurrMarker!=null && marker.getTitle().equals(mCurrMarker.getTitle());
         if(doubleClicked) {
             //when you click twice on the marker
-            int id = mMarkers.get(marker);
+            String id = mMarkers.get(marker);
             new LoadMarkerTask().execute(id);
         }else{
             //when you click once
@@ -163,7 +164,7 @@ public class MemoryMapFragment extends Fragment implements OnMapReadyCallback,IQ
         }
         return true;
     }
-    private Memory loadMarker(int id) {
+    private Memory loadMarker(String id) {
         MemoryDA memoryDA = new MemoryDA(getContext());
         memoryDA.open();
         Memory m = memoryDA.get(id);
@@ -199,9 +200,9 @@ public class MemoryMapFragment extends Fragment implements OnMapReadyCallback,IQ
             super.onPostExecute(aVoid);
         }
     }
-    public class LoadMarkerTask extends AsyncTask<Integer,Void,Memory> {
+    public class LoadMarkerTask extends AsyncTask<String,Void,Memory> {
         @Override
-        protected Memory doInBackground(Integer... params) {
+        protected Memory doInBackground(String... params) {
             if(!performingMarkerLoad) {
                 performingMarkerLoad=true;
                 return loadMarker(params[0]);

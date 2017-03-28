@@ -6,7 +6,7 @@ import be.sanderdebleecker.herinneringsapp.Models.Album;
 
 public class AlbumVM {
     private Album album;
-    private List<Integer> selectedMemories;
+    private List<String> selectedMemories;
 
     public AlbumVM() {
 
@@ -18,10 +18,10 @@ public class AlbumVM {
     public void setAlbum(Album album) {
         this.album = album;
     }
-    public List<Integer> getSelectedMemories() {
+    public List<String> getSelectedMemories() {
         return selectedMemories;
     }
-    public void setSelectedMemories(List<Integer> selectedMemories) {
+    public void setSelectedMemories(List<String> selectedMemories) {
         this.selectedMemories = selectedMemories;
     }
 }

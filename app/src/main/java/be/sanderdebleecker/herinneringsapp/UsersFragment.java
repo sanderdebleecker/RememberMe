@@ -101,7 +101,7 @@ public class UsersFragment extends Fragment {
             @Override
             public void onClick(View view, int position) {
                 UserVM userVM = userVMs.get(position);
-                mListener.onUserSelect(userVM.getUsername(),userVM.getId());
+                mListener.onUserSelect(userVM.getUsername(),userVM.getUuid());
                 //Toast.makeText(getActivity().getApplicationContext(), user.getUsername() + " is selected!", Toast.LENGTH_SHORT).show();
             }
             @Override

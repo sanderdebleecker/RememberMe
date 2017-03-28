@@ -4,14 +4,13 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import be.sanderdebleecker.herinneringsapp.Core.Adapters.AlbumAdapter;
 import be.sanderdebleecker.herinneringsapp.Core.MainApplication;
@@ -20,7 +19,6 @@ import be.sanderdebleecker.herinneringsapp.Data.AlbumDA;
 import be.sanderdebleecker.herinneringsapp.Interfaces.IClickListener;
 import be.sanderdebleecker.herinneringsapp.Interfaces.IAlbumsFListener;
 import be.sanderdebleecker.herinneringsapp.Models.Album;
-import be.sanderdebleecker.herinneringsapp.Models.View.AlbumVM;
 
 
 public class AlbumsFragment extends Fragment {
@@ -61,7 +59,7 @@ public class AlbumsFragment extends Fragment {
         MainApplication app = (MainApplication) getContext().getApplicationContext();
         AlbumDA albumSource = new AlbumDA(getContext());
         albumSource.open();
-        ArrayList<Album> albums = albumSource.getAll(app.getCurrSession().getAuthIdentity());
+        List<Album> albums = albumSource.getAll(app.getCurrSession().getAuthIdentity());
         albumSource.close();
         mAdapter = new AlbumAdapter(getContext(),albums);
 
@@ -73,8 +71,8 @@ public class AlbumsFragment extends Fragment {
         recycAlbums.addOnItemTouchListener(new RecyclerTouchListener(getActivity().getApplicationContext(), recycAlbums, new IClickListener() {
             @Override
             public void onClick(View view, int position) {
-                int id = mAdapter.getId(position);
-                mListener.onAlbumSelect(id);
+                String uuid = mAdapter.getUuid(position);
+                mListener.onAlbumSelect(uuid);
             }
             @Override
             public void onLongClick(View view, int position) {

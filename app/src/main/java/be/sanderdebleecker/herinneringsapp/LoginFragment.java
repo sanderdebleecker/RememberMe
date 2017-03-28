@@ -89,12 +89,12 @@ public class LoginFragment extends Fragment {
     private ClientSession login(String username,String password) {
         UserDA usersData = new UserDA(getContext());
         usersData.open();
-        int userIdentity = usersData.getIdentifier(username,password);
+        String userIdentity = usersData.getIdentifier(username,password);
         usersData.close();
         return new ClientSession(username,userIdentity);
     }
     private void onLoginResult(ClientSession loginSession) {
-        if(loginSession.getAuthIdentity() > -1) {
+        if(!loginSession.getAuthIdentity().equals("")) {
             Toast.makeText(getActivity(),"Login succesvol",Toast.LENGTH_LONG).show();
             listener.login(loginSession);
         }else{

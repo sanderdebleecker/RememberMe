@@ -138,7 +138,7 @@ public class MemoryRepository extends BaseRepository {
         stmt.bindString(2, memory.getTitle());
         stmt.bindString(3, memory.getDescription());
         stmt.bindString(4, memory.getDate());
-        stmt.bindLong(  5, memory.getCreator());
+        stmt.bindString(  5, memory.getCreator());
         stmt.bindString(6, memory.getPath());
         stmt.bindString(7, memory.getType());
         try{
@@ -162,7 +162,7 @@ public class MemoryRepository extends BaseRepository {
         stmt.bindDouble(4, memory.getLocation().getLat());
         stmt.bindDouble(5, memory.getLocation().getLng());
         stmt.bindString(6, memory.getLocation().getName());
-        stmt.bindLong(7,   memory.getCreator());
+        stmt.bindString(7,   memory.getCreator());
         stmt.bindString(8, memory.getPath());
         stmt.bindString(9, memory.getType());
         try{
@@ -185,7 +185,7 @@ public class MemoryRepository extends BaseRepository {
         stmt.bindString(1, memory.getTitle());
         stmt.bindString(2, memory.getDescription());
         stmt.bindString(3, memory.getDate());
-        stmt.bindLong(4, memory.getCreator());
+        stmt.bindString(4, memory.getCreator());
         stmt.bindString(5, memory.getPath());
         stmt.bindString(6, memory.getType());
         stmt.bindString(7, memory.getUuid());
@@ -214,7 +214,7 @@ public class MemoryRepository extends BaseRepository {
         stmt.bindDouble(4, l.getLat());
         stmt.bindDouble(5, l.getLng());
         stmt.bindString(6, l.getName());
-        stmt.bindLong(7, memory.getCreator());
+        stmt.bindString(7, memory.getCreator());
         stmt.bindString(8, memory.getPath());
         stmt.bindString(9, memory.getType());
         stmt.bindString(10, memory.getUuid());

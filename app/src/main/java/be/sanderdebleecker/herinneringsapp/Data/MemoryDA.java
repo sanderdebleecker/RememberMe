@@ -206,7 +206,7 @@ public class MemoryDA extends MemoryRepository {
         mem.setTitle(cursor.getString(cursor.getColumnIndex(MemoriesDbHelper.MemoryColumns.MemoryTitle.toString())));
         mem.setDescription(cursor.getString(cursor.getColumnIndex(MemoriesDbHelper.MemoryColumns.MemoryDescription.toString())));
         mem.setDate(cursor.getString(cursor.getColumnIndex(MemoriesDbHelper.MemoryColumns.MemoryDateTime.toString())));
-        mem.setCreator(cursor.getInt(cursor.getColumnIndex(MemoriesDbHelper.MemoryColumns.MemoryCreator.toString())));
+        mem.setCreator(cursor.getString(cursor.getColumnIndex(MemoriesDbHelper.MemoryColumns.MemoryCreator.toString())));
         mem.setPath(cursor.getString(cursor.getColumnIndex(MemoriesDbHelper.MemoryColumns.MemoryPath.toString())));
         mem.setType(cursor.getString(cursor.getColumnIndex(MemoriesDbHelper.MemoryColumns.MemoryType.toString())));
         Location loc = new Location(

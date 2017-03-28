@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TableRow;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import be.sanderdebleecker.herinneringsapp.Helpers.StorageHelper;
 import be.sanderdebleecker.herinneringsapp.Models.Album;
@@ -21,10 +22,10 @@ import be.sanderdebleecker.herinneringsapp.R;
 public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.MyViewHolder> {
     private float unitSize = 0;
     private int mColumns = 3;
-    private ArrayList<Album> mAlbums;
+    private List<Album> mAlbums;
     private Context mContext;
 
-    public AlbumAdapter(Context context,ArrayList<Album> albums) {
+    public AlbumAdapter(Context context,List<Album> albums) {
         this.mContext = context;
         this.mAlbums = albums;
         calculateUnitDimensions();
@@ -69,9 +70,9 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.MyViewHolder
         StorageHelper.loadCroppedMedia(mContext,imgv,new MediaItem(MediaItem.Type.valueOf(type),path), (int) unitSize);
     }
 
-    public int getId(int position) {
+    public String getUuid(int position) {
         Album a = mAlbums.get(position);
-        return a.getId();
+        return a.getUuid();
     }
 
     public int getItemCount() {

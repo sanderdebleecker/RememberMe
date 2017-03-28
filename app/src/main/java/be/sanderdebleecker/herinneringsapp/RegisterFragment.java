@@ -96,7 +96,7 @@ public class RegisterFragment extends Fragment {
     public boolean isValidated() {
         return mPagerAdapter.validate();
     }
-    public int regiserSuccess(UserDA usersData) {
+    public String regiserSuccess(UserDA usersData) {
         RegisterPagerAdapter.Form f = mPagerAdapter.getForm();
         User user = new User();
         user.setUsername(Validator.getValue(f.etxtUsername));
@@ -132,9 +132,9 @@ public class RegisterFragment extends Fragment {
                     String username = Validator.getValue(etxtUsername);
                     UserDA usersData = new UserDA(getContext());
                     usersData.open();
-                    if(!usersData.getIdentifier(username)){
-                        int newUserId = regiserSuccess(usersData);
-                        if(newUserId!=-1) {
+                    if(!usersData.exists(username)){
+                        String newUserId = regiserSuccess(usersData);
+                        if(!newUserId.equals("")) {
                             usersData.close();
                             listener.registerSuccess(Validator.getValue(etxtUsername),newUserId);
                         }else{

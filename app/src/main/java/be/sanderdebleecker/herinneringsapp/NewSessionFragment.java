@@ -35,7 +35,7 @@ public class NewSessionFragment extends Fragment implements IEndSessionPagerFLis
     private Toolbar mToolbar;
     private MenuItem menuContinue;
     private List<Memory> mMemories;
-    private int mSession;
+    private String mSession;
 
     public NewSessionFragment() {}
     public static NewSessionFragment newInstance() {
@@ -92,12 +92,12 @@ public class NewSessionFragment extends Fragment implements IEndSessionPagerFLis
         }
         return super.onOptionsItemSelected(item);
     }
-    private int createSession(Session newSession,List<Integer> albums) {
+    private String createSession(Session newSession,List<String> albums) {
         SessionDA sessionData = new SessionDA(getContext());
         sessionData.open();
-        int sessionId = sessionData.insert(newSession,albums);
+        String sessionIdentifier = sessionData.insert(newSession,albums);
         sessionData.close();
-        return sessionId;
+        return sessionIdentifier;
     }
     private void startSession() {
         //Get Memories
@@ -118,7 +118,7 @@ public class NewSessionFragment extends Fragment implements IEndSessionPagerFLis
             getSaveSessionFailureDialog("").show();
         }
     }
-    private void getMemories(List<Integer> albums) {
+    private void getMemories(List<String> albums) {
         MemoryDA memoryData = new MemoryDA(getContext());
         memoryData.open();
         mMemories = memoryData.getAllFromAlbums(albums);
@@ -151,11 +151,11 @@ public class NewSessionFragment extends Fragment implements IEndSessionPagerFLis
             }
         });
     }
-    private List<Integer> getAlbums(int session) {
-        List<Integer> albums;
+    private List<String> getAlbums(String sessionIdentifier) {
+        List<String> albums;
         SessionDA sessionData = new SessionDA(getContext());
         sessionData.open();
-        albums = sessionData.getAlbums(session);
+        albums = sessionData.getAlbums(sessionIdentifier);
         sessionData.close();
         return albums;
     }
@@ -215,24 +215,26 @@ public class NewSessionFragment extends Fragment implements IEndSessionPagerFLis
             mPager.setAdapter(mPagerAdapter);
         }
     }
-    private class SaveSession extends AsyncTask<NewSessionPagerFragment, Void, Integer> {
+    private class SaveSession extends AsyncTask<NewSessionPagerFragment, Void, String> {
         private String mErrorMessage="";
         @Override
-        protected Integer doInBackground(NewSessionPagerFragment... fragms) {
+        protected String doInBackground(NewSessionPagerFragment... fragms) {
             NewSessionPagerFragment fragm = fragms[0];
             mErrorMessage = fragm.validate();
             if(mErrorMessage.equals("")) {
                 MainApplication app = (MainApplication) getContext().getApplicationContext();
-                List<Integer> albums = fragm.getAlbums();
-                return createSession(new Session(fragm.getName(),fragm.getDate(),app.getCurrSession().getAuthIdentity()),albums);
+                List<String> albums = fragm.getAlbums();
+                Session session = new Session(fragm.getName(),fragm.getDate(),app.getCurrSession().getAuthIdentity());
+                return createSession(session,albums);
+
             }else{
-                return -1;
+                return "";
             }
         }
 
         @Override
-        protected void onPostExecute(Integer sessionId) {
-            if(sessionId==-1){
+        protected void onPostExecute(String sessionId) {
+            if(sessionId.equals("")){
                 getSaveSessionFailureDialog(mErrorMessage).show();
             }else{
                 mSession = sessionId;

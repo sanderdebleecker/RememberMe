@@ -97,7 +97,7 @@ public class NewSessionPagerFragment extends SessionPagerFragment {
     }
 
     //Get
-    public List<Integer> getAlbums() {
+    public List<String> getAlbums() {
         return mAdapter.getSelectedAlbums();
     }
     public String getName() {

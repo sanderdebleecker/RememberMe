@@ -82,8 +82,8 @@ public class MemoriesFragment extends Fragment implements IQueryableFragment {
         recycMemories.addOnItemTouchListener(new RecyclerTouchListener(getActivity().getApplicationContext(), recycMemories, new IClickListener() {
             @Override
             public void onClick(View view, int position) {
-                int id = adapter.getId(position);
-                listener.onMemorySelect(id);
+                String identifier = adapter.getIdentifier(position);
+                listener.onMemorySelect(identifier);
             }
             @Override
             public void onLongClick(View view, int position) {

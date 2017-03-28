@@ -19,25 +19,23 @@ public class AlbumActivity extends AppCompatActivity implements INewAlbumFListen
     }
 
     private void loadFragment() {
-        int id;
+        String identifier="";
         Bundle data = getIntent().getExtras();
-        if(data==null) {
-            id = -1;
-        }else{
-            id = data.getInt(MainActivity.EXTRA_ID_ALBUM);
+        if(data!=null) {
+            identifier = data.getString(MainActivity.EXTRA_ID_ALBUM);
         }
-        if(id!=-1) {
-            loadAlbumF(id);
-        }else{
+        if(identifier.equals("")) {
             loadNewAlbumF();
+        }else{
+            loadAlbumF(identifier);
         }
     }
 
 
-    private void loadAlbumF(int id) {
+    private void loadAlbumF(String identifier) {
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction trans = fm.beginTransaction();
-        AlbumFragment fragm = AlbumFragment.newInstance(id);
+        AlbumFragment fragm = AlbumFragment.newInstance(identifier);
         trans.replace(R.id.activity_album, fragm);
         trans.commit();
     }

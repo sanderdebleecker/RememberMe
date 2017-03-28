@@ -2,25 +2,25 @@ package be.sanderdebleecker.herinneringsapp.Helpers.Security;
 
 public class ClientSession {
     private String authUsername;
-    private int authIdentity;
+    private String authIdentity;
     private Modes mode;
 
     public enum Modes {
         OFFLINE,
         ONLINE;
     }
-    public ClientSession(String authUsername,int authIdentity) {
+    public ClientSession(String authUsername,String authIdentity) {
         this.authUsername = authUsername;
         this.authIdentity = authIdentity;
         this.mode = Modes.OFFLINE;
     }
-    public ClientSession(String authUsername, int authIdentity, Modes mode) {
+    public ClientSession(String authUsername, String authIdentity, Modes mode) {
         this.authUsername = authUsername;
         this.authIdentity = authIdentity;
         this.mode = mode;
     }
 
-    public int getAuthIdentity() {
+    public String getAuthIdentity() {
         return authIdentity;
     }
 

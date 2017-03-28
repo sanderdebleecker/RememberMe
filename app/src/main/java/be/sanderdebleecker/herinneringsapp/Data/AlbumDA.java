@@ -43,7 +43,7 @@ public class AlbumDA extends AlbumRepository {
     /**
      * Queries the local database for albums
      * @param userIdentifier String uuid of the user
-     * @return List<Album> albums of the user
+     * @return ArrayList<Album> albums of the user
      */
     public List<Album> getAll(String userIdentifier) {
         ArrayList<Album> albums = new ArrayList<>();

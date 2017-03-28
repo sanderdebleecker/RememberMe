@@ -38,16 +38,15 @@ public class MemoryActivity extends AppCompatActivity implements INewMemoryFList
     }
 
     private void loadFragment() {
-        int id;
+        String identifier="";
         Bundle data = getIntent().getExtras();
-        if(data==null) {
-            id = -1;
-        }else{
-            id = data.getInt(MainActivity.EXTRA_ID_MEMORY);
+
+        if(data!=null) {
+            identifier = data.getString(MainActivity.EXTRA_ID_MEMORY);
         }
-        if(id!=-1) {
-            loadMemF(id);
-        }else{
+        if(!identifier.equals("")){
+            loadMemF(identifier);
+        } else{
             loadNewMemF();
         }
     }
@@ -59,10 +58,10 @@ public class MemoryActivity extends AppCompatActivity implements INewMemoryFList
         trans.replace(R.id.aMemory_container, NewMemoryFragment.newInstance());
         trans.commit();
     }
-    private void loadMemF(int id) {
+    private void loadMemF(String identifier) {
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction trans = fm.beginTransaction();
-        MemoryFragment fragm = MemoryFragment.newInstance(id);
+        MemoryFragment fragm = MemoryFragment.newInstance(identifier);
         trans.replace(R.id.aMemory_container, fragm);
         trans.commit();
     }

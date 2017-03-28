@@ -55,16 +55,16 @@ public class MemoryFragment extends GenericMemoryFragment {
     private FloatingActionButton fabEdit;
     private FloatingActionButton fabDelete;
     private MenuItem menuTimeline;
-    private int memoryId=-1;
+    private String memoryIdentifier ="";
     private Memory mMemory;
     private boolean editable=false;
     private boolean onTimeline=false;
     //CTOR
     public MemoryFragment() {
     }
-    public static MemoryFragment newInstance(int id) {
+    public static MemoryFragment newInstance(String id) {
         MemoryFragment frag = new MemoryFragment();
-        frag.memoryId=id;
+        frag.memoryIdentifier = id;
         return frag;
     }
 
@@ -139,7 +139,7 @@ public class MemoryFragment extends GenericMemoryFragment {
         if(m==null) return false;
         MainApplication app = (MainApplication) getContext().getApplicationContext();
         m.setCreator(app.getCurrSession().getAuthIdentity());
-        m.setId(memoryId);
+        m.setUuid(memoryIdentifier);
         m.setPath(mMediaItem.getPath());
         m.setType(mMediaItem.getType().toString());
         //Open DB
@@ -270,10 +270,10 @@ public class MemoryFragment extends GenericMemoryFragment {
         });
     }
     private void loadMemory() {
-        if(memoryId<0) return;
+        if(memoryIdentifier.equals("")) return;
         MemoryDA memoryDA = new MemoryDA(getContext());
         memoryDA.open();
-        mMemory = memoryDA.get(memoryId);
+        mMemory = memoryDA.get(memoryIdentifier);
         memoryDA.close();
     }
     private void showMemory() {
@@ -353,7 +353,7 @@ public class MemoryFragment extends GenericMemoryFragment {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         MemoryDA memoriesData = new MemoryDA(getContext());
                         memoriesData.open();
-                        memoriesData.delete(memoryId);
+                        memoriesData.delete(memoryIdentifier);
                         memoriesData.close();
                         mListener.cancel();
                         dialog.dismiss();
@@ -378,7 +378,7 @@ public class MemoryFragment extends GenericMemoryFragment {
                         MainApplication app = (MainApplication) getContext().getApplicationContext();
                         TimelineDA timelineData = new TimelineDA(getContext());
                         timelineData.open();
-                        timelineData.delete(memoryId,app.getCurrSession().getAuthIdentity());
+                        timelineData.delete(memoryIdentifier,app.getCurrSession().getAuthIdentity());
                         timelineData.close();
                         mListener.cancel();
                         onTimeline=false;
@@ -405,7 +405,7 @@ public class MemoryFragment extends GenericMemoryFragment {
                         MainApplication app = (MainApplication) getContext().getApplicationContext();
                         TimelineDA timelineDA = new TimelineDA(getContext());
                         timelineDA.open();
-                        timelineDA.insert(memoryId,app.getCurrSession().getAuthIdentity());
+                        timelineDA.insert(memoryIdentifier,app.getCurrSession().getAuthIdentity());
                         timelineDA.close();
                         mListener.cancel();
                         onTimeline=true;

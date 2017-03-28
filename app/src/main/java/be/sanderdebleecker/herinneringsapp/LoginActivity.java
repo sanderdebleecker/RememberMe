@@ -24,9 +24,6 @@ public class LoginActivity extends AppCompatActivity implements ILoginFListener,
         setContentView(R.layout.activity_login);
         new Initializer().execute();
     }
-
-
-
     private int load() {
         UserDA usersData = new UserDA(this);
         usersData.open();
@@ -84,9 +81,9 @@ public class LoginActivity extends AppCompatActivity implements ILoginFListener,
         start();
     }
     @Override
-    public void registerSuccess(String user, int id) {
+    public void registerSuccess(String user, String identifier) {
         MainApplication app = (MainApplication) getApplicationContext();
-        app.setCurrSession(new ClientSession(user,id));
+        app.setCurrSession(new ClientSession(user,identifier));
         start();
     }
     @Override
@@ -94,9 +91,9 @@ public class LoginActivity extends AppCompatActivity implements ILoginFListener,
         loadLoginF();
     }
     @Override
-    public void onUserSelect(String user, int id) {
+    public void onUserSelect(String user, String identifier) {
         MainApplication app = (MainApplication) getApplicationContext();
-        app.setCurrSession(new ClientSession(user,id));
+        app.setCurrSession(new ClientSession(user,identifier));
         start();
     }
     public void onBackToLogin() {

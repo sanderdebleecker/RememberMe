@@ -75,7 +75,7 @@ public class DummyDA extends BaseRepository {
         stmt.bindString(1, newMemory.getTitle());
         stmt.bindString(2, newMemory.getDescription());
         stmt.bindString(3, newMemory.getDate());
-        stmt.bindLong(  4, newMemory.getCreator());
+        stmt.bindString(  4, newMemory.getCreator());
         stmt.bindString(5, newMemory.getPath());
         stmt.bindString(6, newMemory.getType());
         try{
@@ -202,28 +202,28 @@ public class DummyDA extends BaseRepository {
         Memory m1 = new Memory();
         m1.setUuid(UUID.randomUUID().toString().replaceAll("-",""));
         m1.setTitle("Mijn eerste herinnering");
-        m1.setCreator(3);
+        m1.setCreator(UUID.randomUUID().toString().replaceAll("-",""));
         m1.setDate("1999-09-28");
         m1.setDescription("Details eerste herinnering...");
         m1.setLocation(new Location(53.5f,17.41f,"KBO Bevere"));
         Memory m2 = new Memory();
         m2.setUuid(UUID.randomUUID().toString().replaceAll("-",""));
         m2.setTitle("Bevere");
-        m2.setCreator(3);
+        m2.setCreator(UUID.randomUUID().toString().replaceAll("-",""));
         m2.setDate("2003-04-14");
         m2.setDescription("Chiro Jeugd");
         m2.setLocation(new Location(53.501f,17.412f,"Bevere"));
         Memory m3 = new Memory();
         m3.setUuid(UUID.randomUUID().toString().replaceAll("-",""));
         m3.setTitle("Gent");
-        m3.setCreator(3);
+        m3.setCreator(UUID.randomUUID().toString().replaceAll("-",""));
         m3.setDate("2006-02-23");
         m3.setDescription("Familie uitstap");
         m3.setLocation(new Location(53.54f,17.4f,"Gent"));
         Memory m4 = new Memory();
         m4.setUuid(UUID.randomUUID().toString().replaceAll("-",""));
         m4.setTitle("Andere herinnering");
-        m4.setCreator(1);
+        m4.setCreator(UUID.randomUUID().toString().replaceAll("-",""));
         m4.setDate("1973-12-16");
         m4.setDescription("Andere herinnering");
         m4.setLocation(new Location(53,17,"Hasselt"));
@@ -256,9 +256,9 @@ public class DummyDA extends BaseRepository {
     }
     private List<Session> createSessions() {
         List<Session> sessions = new ArrayList<>();
-        Session s1 = new Session("NewSession 1","2016-10-27",3);
-        Session s2 = new Session("NewSession 2","2016-10-28",3);
-        Session s3 = new Session("NewSession 3","2016-12-05",1);
+        Session s1 = new Session("NewSession 1","2016-10-27",UUID.randomUUID().toString().replaceAll("-",""));
+        Session s2 = new Session("NewSession 2","2016-10-28",UUID.randomUUID().toString().replaceAll("-",""));
+        Session s3 = new Session("NewSession 3","2016-12-05",UUID.randomUUID().toString().replaceAll("-",""));
         sessions.add(s1);
         sessions.add(s2);
         sessions.add(s3);

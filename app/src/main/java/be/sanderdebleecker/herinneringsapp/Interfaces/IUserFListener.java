@@ -1,7 +1,7 @@
 package be.sanderdebleecker.herinneringsapp.Interfaces;
 
 public interface IUserFListener {
-    void onUserSelect(String user, int id);
+    void onUserSelect(String user, String identifier);
     void onBackToLogin();
     void onBackToRegister();
 }
